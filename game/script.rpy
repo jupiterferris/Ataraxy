@@ -147,6 +147,15 @@ init python:
             trackno = "Unknown"
             artist = "either Wilbur Soot or Lovejoy"
 
+    def zeldariff(outfitname, outfitno):
+        global ashley
+        if outfitno in ashley.getValue("unlockedOutfits"):
+            renpy.show("ash laugh")
+            renpy.say(a, "You cheeky fucker, you already have that outfit!")
+            renpy.show("ash")
+        else:
+            ashley.setValue("unlockedOutfits", ashley.getValue("unlockedOutfits").append(outfitno))
+            renpy.say(nar, f"You unlocked the {outfitname} outfit! Visit the unlockables menu to equip it!")
     def writeToFile(filename, text):
         with open(config.gamedir + "/" + filename, "a") as f:
             f.write(text)
@@ -729,23 +738,45 @@ label pick_convo:
                     exec(f"response{i} = currentresponse")
 
             a "Surprise! I'm going to ask you a question instead."
-
+            $ global ashley
+            $ unlocked = ashley.getValue("unlockedOutfits")
             menu:
                 a "[whichquestion]"
                 "[option0]":
                     a "[response0]"
+                    python:
+                        if whichquestion == questionlist[0]:
+                            relationship = ashley.getValue("relationship")
+                            relationship += 5
                 "[option1]":
                     a "[response1]"
+                    python:
+                        if whichquestion == questionlist[0]:
+                            zeldariff("William Eyebrows", "02")
                 "[option2]":
                     a "[response2]"
+                    python:
+                        if whichquestion == questionlist[0]:
+                            zeldariff("Depressed & Pronouns", "03")
                 "[option3]":
                     a "[response3]"
+                    python:
+                        if whichquestion == questionlist[0]:
+                            zeldariff("Sweet Tangerine", "04")
                 "[option4]":
                     a "[response4]"
+                    python:
+                        if whichquestion == questionlist[0]:
+                            zeldariff("Bodacious Babe", "05")
                 "[option5]":
                     a "[response5]"
+                    python:
+                        if whichquestion == questionlist[0]:
+                            zeldariff("Sumsar", "06")
                 "I don't have a favourite.":
                     a "That's alright. I know I'm your favourite, though. Ahaha."
+
+            jump random_events
         label question:
             # this is where the player can ask Ashley a question
             $ global ashley
