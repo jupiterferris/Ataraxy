@@ -84,6 +84,7 @@ init python:
         covers = ["Knee Deep At ATP", "Privately Owned Spiral Galaxy"]
         unlisted = ["Soft Boy", "The Nice Guy Ballad"]
         secret = ["Grapes"]
+        lastplayedsong = chosentrack
         renpy.music.stop(fadeout=3.0)
         file = renpy.open_file("tunes.txt")
         songs = file.readlines()
@@ -91,8 +92,12 @@ init python:
         a(f"Number of songs available: {numofjams}")
         randomsong = random.choice(songs).decode()
         chosentrack = randomsong.replace("\r\n","")
-        a(f"Track chosen: {chosentrack}")
-        renpy.music.play(f"audio/jams/{chosentrack}.mp3")
+        if chosentrack == lastplayedsong:
+            renpy.say(a, f"Oops! I was going to play {lastplayedsong}, but that was already playing!")
+            jams("")
+        else:
+            a(f"Track chosen: {chosentrack}")
+            renpy.music.play(f"audio/jams/{chosentrack}.mp3")
         if chosentrack == "Knee Deep At ATP":
             renpy.show("ash laugh")
             renpy.say(a, "You lucky thing, that's my creator's favourite song!")
@@ -155,6 +160,7 @@ init python:
             renpy.show("ash")
         else:
             ashley.setValue("unlockedOutfits", ashley.getValue("unlockedOutfits").append(outfitno))
+            renpy.play("audio/getitem.mp3")
             renpy.say(nar, f"You unlocked the {outfitname} outfit! Visit the unlockables menu to equip it!")
     def writeToFile(filename, text):
         with open(config.gamedir + "/" + filename, "a") as f:
@@ -163,9 +169,12 @@ init python:
     
     global wilburtext
     global outfit
+    global chosentrack
+    chosentrack = "Soft Boy"
     wilburtext = False
     tutorialGameCompleted = False
     tutorialConvoCompleted = False
+    outfitchanged = False
     import json
     import os
 
@@ -463,10 +472,12 @@ label tutorial:
             else:
                 unlocked.append("01")
                 ashley.setValue("unlockedOutfits", unlocked)
+                renpy.play("audio/itemget.mp3")
                 renpy.say(nar, "You have unlocked the 'MonoMono Pin' outfit. Visit the unlockables menu to equip it!")
             tutorialGameCompleted = True
             renpy.say(a, "Now, let's get back to the rest of the tutorial.")
         jump tutorial
+
     label tutorial_pick_convo:
         a "To start you off, I'm going to tell you a story."
         show ash laugh
@@ -475,7 +486,12 @@ label tutorial:
 
     label tutorial_change:
         $ global ashley
+        $ global outfitchanged
         a "Welcome to the character customisation menu!"
+        python:
+            if outfitchanged:
+                renpy.say(a, "Liking the new look?")
+                renpy.jump("tutorial")
         a "I see you've unlocked a new outfit."
         menu:
             a "Would you like to try it out?"
@@ -483,6 +499,7 @@ label tutorial:
                 a "One moment. No peeking, okay?"
                 $ ashley.setValue("outfit", "01")
                 $ outfit = ashley.getValue("outfit")
+                $ outfitchanged = True
                 show ash
                 with fade
                 a "Cute, right?"
