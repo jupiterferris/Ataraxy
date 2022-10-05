@@ -1,32 +1,24 @@
-﻿# The script of the game goes in this file.
-# cummies :heart_eyes:
-# Declare characters used by this game. The color argument colorizes the
-# name of the character.
+﻿# cummies :heart_eyes:
 
 define a = Character("Ashley")
-define y = Character("You")
 define nar = Character(what_italic=True)
 
 
 ##### TO DO #####
 
-# Add more outfits (EFFORT)- unlockedOutfits list and select outfit from menu in there?
-
 # figure out how to import time- add to greeting messages on boot (been a while, good morning etc)
-# relationship progress- list of low-relationship startup messages
 # player input option(?)
 # use seasonal music/skins- check on start to use diff text file
-# which song is playing quiz- part of the random questions/ do you remember who wrote this/ what album?
-# Enjoyer Of Things on youtube- Waiting on Screensaver- add grapes as secret?
 # random event on startup - how was your day? long time no see?
 # pick from a menu option of games- hangman, dice game, sudoku, card games/21? jump to python subroutine- you can choose from unlocked games?
 # winning games gives you relationship points- points can be used on unlockables at threshold. unlockable outfits based on criteria met?
 # text-based adventure game? - choose your own adventure
 # add a day structure? 3 conversations and she asks you to do something etc
-# get different colour hair ashley based on favourite colour
-# have main menu be overlay over ashley periodically opening her eyes and looking at you
 # add an option for random outfit on startup?
-
+# special item/ easter egg/ relationship points for 3 points in tutorial game?
+# bluescreen lmfaoooo
+# do something with outfit cheatsheet
+# add "lastseen": "2019-01-01 00:00:00", to json file
 # when you bi
 
 ####################
@@ -101,11 +93,11 @@ init python:
         if chosentrack == "Knee Deep At ATP":
             renpy.show("ash laugh")
             renpy.say(a, "You lucky thing, that's my creator's favourite song!")
-            ashley.setValue("ATP_played", True)
+            addQuizTopic("ATP")
             renpy.show("ash")
         elif chosentrack == "Soft Boy":
             renpy.say(a, "Fun fact- this is actually the main menu song!")
-            ashley.setValue("SoftBoy_played", True)
+            addQuizTopic("SoftBoy")
             #wait what's a main menu
         if chosentrack in egirltrilogy:
             albumname = "The E-Girl Trilogy"
@@ -162,6 +154,41 @@ init python:
             ashley.setValue("unlockedOutfits", ashley.getValue("unlockedOutfits").append(outfitno))
             renpy.play("audio/getitem.mp3")
             renpy.say(nar, f"You unlocked the {outfitname} outfit! Visit the unlockables menu to equip it!")
+    def addQuizTopic(topicToAdd):
+        global ashley
+        ashley.setValue("quiztopics", ashley.getValue("quiztopics") + [topicToAdd])
+    def initQuiz():
+        global ashley
+        global quizdict
+        quiztopics = ashley.getValue("quiztopics")
+        if "surname" in quiztopics:
+            quizdict["surname"] = "What's my last name?"
+        if "ATP" in quiztopics:
+            quizdict["ATP"] = "Do you remember my creator's favourite song?"
+        if "SoftBoy" in quiztopics:
+            quizdict["SoftBoy"] = "Do you know the name of the main menu song?"
+        if "wilburtextheard" in quiztopics:
+            quizdict["wilburtextheard"] = "What is the name of Wilbur Soot's band?"
+        if "grapes" in quiztopics:
+            quizdict["grapes"] = "Do you remember how you unlocked 'Grapes'?"
+        if "colour" in quiztopics:
+            quizdict["colour"] = "What's my favourite colour?"
+        if "food" in quiztopics:
+            quizdict["food"] = "What's my favourite food?"
+        if "dessert" in quiztopics:
+            quizdict["dessert"] = "What's my favourite dessert/sweets?"
+        if "animal" in quiztopics:
+            quizdict["animal"] = "What's my favourite animal?"
+        if "thing" in quiztopics:
+            quizdict["thing"] = "What's my favourite thing to do?"
+        if "genre" in quiztopics:
+            quizdict["genre"] = "What's my favourite genre?"
+        if "tall" in quiztopics:
+            quizdict["tall"] = "How tall am I?"
+        if len(ashley.getValue("unlockedOutfits")) > 1:
+            quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('unlockedOutfits'))} outfit?"
+        if len(quizdict) == 0:
+            return True
     def writeToFile(filename, text):
         with open(config.gamedir + "/" + filename, "a") as f:
             f.write(text)
@@ -175,6 +202,7 @@ init python:
     tutorialGameCompleted = False
     tutorialConvoCompleted = False
     outfitchanged = False
+    quizdict = {}
     import json
     import os
 
@@ -205,69 +233,16 @@ init python:
             if relationship is None:
                 self.setValue("relationship", 0)
 
-            # Secret track "Grapes" unlocked
-            grapes = self.json.get("grapes")
-            if grapes is None:
-                self.setValue("grapes", False)
-
-            # Player knows ATP is my favourite song
-            ATP_played = self.json.get("ATP_played")
-            if ATP_played is None:
-                self.setValue("ATP_played", False)
-
-            # Player know Soft Boy is the main menu song
-            SoftBoy_played = self.json.get("SoftBoy_played")
-            if SoftBoy_played is None:
-                self.setValue("SoftBoy_played", False)
-
-            # Player knows extra Wilbur lore
-            wilburtextheard = self.json.get("wilburtextheard")
-            if wilburtextheard is None:
-                self.setValue("wilburtextheard", False)
-
-            # Player knows Ashley's surname
-            surname = self.json.get("surname")
-            if surname is None:
-                self.setValue("surname", False)
-
-            # Player knows Ashley's favourite colour
-            colour = self.json.get("colour")
-            if colour is None:
-                self.setValue("colour", False)
-
-            # Player knows Ashley's favourite food
-            food = self.json.get("food")
-            if food is None:
-                self.setValue("food", False)
-
-            # Player knows Ashley's favourite dessert
-            dessert = self.json.get("dessert")
-            if dessert is None:
-                self.setValue("dessert", False)
-
-            # Player knows Ashley's favourite animal
-            animal = self.json.get("animal")
-            if animal is None:
-                self.setValue("animal", False)
-
-            # Player knows Ashley's favourite thing to do
-            thing = self.json.get("thing")
-            if thing is None:
-                self.setValue("thing", False)
-
-            # Player knows Ashley's favourite genre
-            genre = self.json.get("genre")
-            if genre is None:
-                self.setValue("genre", False)
-
-            # Player knows Ashley's height
-            tall = self.json.get("tall")
-            if tall is None:
-                self.setValue("tall", False)
+            # Unlocked quiz topics
+            quiztopics = self.json.get("quiztopics")
+            if quiztopics is None:
+                self.setValue("quiztopics", [])
             
+            # Ashley's unlocked outfits
             unlockedOutfits = self.json.get("unlockedOutfits")
             if unlockedOutfits is None:
                 self.setValue("unlockedOutfits", ["00"])
+
         def open(self):
             try:
                 with open(self.filename, "r") as f:
@@ -302,10 +277,8 @@ label start:
     stop music fadeout 1.0
     scene bg room
 
-    show ash
-    with fade
-
     show ash close
+    with fade
 
     a "Initialising..."
 
@@ -314,6 +287,9 @@ label start:
     show ash open
 
     a "Name in file = [name], relationship = [relationship], tutorialcomplete = [tutorialcompleted]."
+
+    a "Approaching hyperspeed!"
+    jump popquiz
 
     python:
         if tutorialcompleted and name != "":
@@ -581,7 +557,6 @@ label interact:
             a "Looking for an outfit change? Variety is the spice of life, after all."
             jump unlockables
 
-
 label pick_convo:
     # this is where the player can pick a conversation topic
     
@@ -603,7 +578,6 @@ label pick_convo:
             jump convo_ashchoice
             # Ashley chooses at random
             
-
     label convo_song:
     # this is where Ashley tells the player what song is playing and more information about it
         python:
@@ -676,8 +650,8 @@ label pick_convo:
                             a "I hope that was enough information for you. If you want to know more, you can always ask my creator."
                             show ash
                             python: 
-                                if not ashley.getValue("grapes"):
-                                    ashley.setValue("grapes", True)
+                                if not "grapes" in ashley.getValue("quiztopics"):
+                                    addQuizTopic("grapes")
                                     writeToFile("tunes.txt", "Grapes\n")
                                     renpy.say(a, "As a thank you for listening to my rambling, I've unlocked a secret track for you.")
                                     renpy.say(a, "It's a lesser-known song by James Marriott that was made collaboratively with Ash Kabosu- Lovejoy's bass guitarist.")
@@ -696,16 +670,8 @@ label pick_convo:
     # this is where Ashley picks a conversation topic for you
     python:
         import random
-        convotopic = random.randint(1,5)
-        if convotopic == 1:
-            renpy.jump("convo_anecdote")
-        elif convotopic == 2 or convotopic == 3:
-            renpy.jump("convo_question")
-        elif convotopic == 4:
-            renpy.jump("convo_poem")
-        elif convotopic == 5:
-            renpy.say(a, "How about we play a game instead?")
-            renpy.jump("gayme")
+        convotopics = ["anecdote", "question", "poem", "gayme"]
+        renpy.jump("convo_" + random.choice(convotopics))
 
             #a "I'm afraid I don't know much about it. I just know it's good."
             #a "I'm sure you can find out more about it online, though."
@@ -844,6 +810,7 @@ label unlockables:
     $ global ashley
     $ ashley.getValue("unlockedOutfits")
     a "Welcome to the unlockables menu!"
+    # have a You Choose! option where she picks an unlocked outfit at random
     # show a menu only showing unlocked outfits, and "default" using a for index, availableOutfits in unlockedOutfits:
                 
     jump interact
@@ -852,12 +819,35 @@ label unlockables:
             
                 
             
-    label quiz:
-        # quezzies from knowledge gained from convos / asking ashley questions (1/10 chance you get quizzed) (answer correctly and you get relationship points)
-        python: 
-            quezzies = ["What's my last name?", "Do you remember my creator's favourite song?", "What is the name of Wilbur's band?", "What is my favourite colour?", "What is my favourite food?", "What is my favourite dessert?", "What is my favourite animal?", "What is my favourite thing to do?", "What is my favourite genre?", "How tall am I?",]
+label popquiz:
+    # quezzies from knowledge gained from convos / asking ashley questions (1/10 chance you get quizzed) (answer correctly and you get relationship points)
+    python: 
+        # have an empty list, with if statements appending to the list.
+        global ashley
+        import json
+        import random
+        #quezzietopics = ashley.json.keys()
+        quizopener = [
+            "I hope you've been paying attention!", 
+            "Time to test your knowledge!", 
+            "Let's see how well you know me!", 
+            "Let's see how much you've been paying attention!", 
+            "Let's see how much you've learned!", 
+            "Pop quiz!", 
+            "Knowledge check!",
+            "Think fast!"
+        ]
+        renpy.say(a, f"{random.choice(quizopener)}")
 
+        initQuiz()
 
+        if initQuiz():
+            renpy.say (a, "Actually, I don't think you've learned anything from me yet. Come back later!")
+            renpy.jump("question")
+
+        renpy.say(a, f"{random.choice(list(quizdict.values()))}")
+
+    
+    
     # This ends the game.
-
     return
