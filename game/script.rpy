@@ -13,13 +13,12 @@ define nar = Character(what_italic=True)
 # pick from a menu option of games- hangman, dice game, sudoku, card games/21? jump to python subroutine- you can choose from unlocked games?
 # winning games gives you relationship points- points can be used on unlockables at threshold. unlockable outfits based on criteria met?
 # text-based adventure game? - choose your own adventure
-# add a day structure? 3 conversations and she asks you to do something etc
 # add an option for random outfit on startup?
 # special item/ easter egg/ relationship points for 3 points in tutorial game?
 # bluescreen lmfaoooo
 # do something with outfit cheatsheet
-# add "lastseen": "2019-01-01 00:00:00", to json file
 # when you bi
+# day structure like animal crossing- morning only activities etc, forces to play at different times etc
 
 ####################
 
@@ -68,14 +67,14 @@ init python:
         global albumname
         global trackno
         global artist
-        egirltrilogy = ["I'm In Love With An E-Girl", "Internet Ruined Me", "Your New Boyfriend"]
-        ycgma = ["Jubilee Line", "Saline Solution", "Your Sister Was Right", "Losing Face", "Since I Saw Vienna", "La Jolla", "I'm Sorry Boris"]
-        areyoualright = ["Taunt", "One Day", "Sex Sells", "Cause For Concern"]
-        pebblebrain = ["Oh Yeah, You Gonna Cry", "Model Buses", "Concrete", "Perfume", "You'll Understand When You're Older", "The Fall", "It's All Futile! It's All Pointless!"]
-        maybeiwasboring =["Maybe I Was Boring", "For Memories", "White Wine In A Wetherspoons"]
-        covers = ["Knee Deep At ATP", "Privately Owned Spiral Galaxy"]
-        unlisted = ["Soft Boy", "The Nice Guy Ballad"]
-        secret = ["Grapes"]
+        egirltrilogy = ("I'm In Love With An E-Girl", "Internet Ruined Me", "Your New Boyfriend")
+        ycgma = ("Jubilee Line", "Saline Solution", "Your Sister Was Right", "Losing Face", "Since I Saw Vienna", "La Jolla", "I'm Sorry Boris")
+        areyoualright = ("Taunt", "One Day", "Sex Sells", "Cause For Concern")
+        pebblebrain = ("Oh Yeah, You Gonna Cry", "Model Buses", "Concrete", "Perfume", "You'll Understand When You're Older", "The Fall", "It's All Futile! It's All Pointless!")
+        maybeiwasboring = ("Maybe I Was Boring", "For Memories", "White Wine In A Wetherspoons")
+        covers = ("Knee Deep At ATP", "Privately Owned Spiral Galaxy")
+        unlisted = ("Soft Boy", "The Nice Guy Ballad")
+        secret = ("Grapes")
         lastplayedsong = chosentrack
         renpy.music.stop(fadeout=3.0)
         file = renpy.open_file("tunes.txt")
@@ -158,9 +157,16 @@ init python:
         global ashley
         ashley.setValue("quiztopics", ashley.getValue("quiztopics") + [topicToAdd])
     def initQuiz():
+        # change "quiztopics" to the question strings
         global ashley
         global quizdict
         quiztopics = ashley.getValue("quiztopics")
+        if len(quiztopics) == 0:
+            return True
+        topics = ("surname", "ATP", "SoftBoy", "grapes", "colour", "food", "dessert", "animal", "thing", "genre", "tall")
+        answers = ("Rosemarry", "Knee Deep At ATP", "Soft Boy", "Grapes", "Red", "")
+        for topics in quiztopics:
+            quizdict[topics] = 
         if "surname" in quiztopics:
             quizdict["surname"] = "What's my last name?"
         if "ATP" in quiztopics:
@@ -186,9 +192,28 @@ init python:
         if "tall" in quiztopics:
             quizdict["tall"] = "How tall am I?"
         if len(ashley.getValue("unlockedOutfits")) > 1:
+            #make this say outfit name eventually
             quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('unlockedOutfits'))} outfit?"
-        if len(quizdict) == 0:
-            return True
+
+    def initWardrobe():
+        #fucking change this whole thing like do i want unlocked outfits to be a list or a dict- list = out of order but implement sort?
+        global ashley
+        global wardrobe
+        unlockedOutfits = ashley.getValue("unlockedOutfits")
+        wardrobe.append = "Default"
+        if 01 in unlockedOutfits:
+            wardrobe.append = "MonoMono Pin"
+        if 02 in unlockedOutfits:
+            wardrobe.append = "William Eyebrows"
+        if 03 in unlockedOutfits:
+            wardrobe.append = "Depression & Pronouns"
+        if 04 in unlockedOutfits:
+            wardrobe.append = "Sweet Tangerine"
+        if 05 in unlockedOutfits:
+            wardrobe.append = "Bodacious Babe"
+        if 06 in unlockedOutfits:
+            wardrobe.append = "Sumsar"
+            
     def writeToFile(filename, text):
         with open(config.gamedir + "/" + filename, "a") as f:
             f.write(text)
@@ -203,10 +228,12 @@ init python:
     tutorialConvoCompleted = False
     outfitchanged = False
     quizdict = {}
+    wardrobe = []
     import json
     import os
+    from datetime import date
+    from datetime import datetime
 
-    # have another json for quiz topics? only true ones in a list can be asked?
     class CharacterManager:
         def __init__(self):
             self.filename = f"{os.path.join(os.path.dirname(__file__), '..')}\characters\Player.json"
@@ -223,26 +250,31 @@ init python:
             if outfit is None:
                 self.setValue("outfit", "00")
 
-            # Tutorial completed
-            tutorialcompleted = self.json.get("tutorialcompleted")
-            if tutorialcompleted is None:
-                self.setValue("tutorialcompleted", False)
-
             # Relationship with Ashley
             relationship = self.json.get("relationship")
             if relationship is None:
                 self.setValue("relationship", 0)
 
-            # Unlocked quiz topics
-            quiztopics = self.json.get("quiztopics")
-            if quiztopics is None:
-                self.setValue("quiztopics", [])
-            
             # Ashley's unlocked outfits
             unlockedOutfits = self.json.get("unlockedOutfits")
             if unlockedOutfits is None:
                 self.setValue("unlockedOutfits", ["00"])
 
+            # Tutorial completed?
+            tutorialcompleted = self.json.get("tutorialcompleted")
+            if tutorialcompleted is None:
+                self.setValue("tutorialcompleted", False)
+
+            # Unlocked quiz topics
+            quiztopics = self.json.get("quiztopics")
+            if quiztopics is None:
+                self.setValue("quiztopics", [])
+
+            # Last time the player logged on
+            lastPlayed = self.json.get("lastPlayed")
+            if lastPlayed is None:
+                self.setValue("lastPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+            
         def open(self):
             try:
                 with open(self.filename, "r") as f:
@@ -286,10 +318,14 @@ label start:
 
     show ash open
 
+    # DEBUGGING
+
     a "Name in file = [name], relationship = [relationship], tutorialcomplete = [tutorialcompleted]."
 
     a "Approaching hyperspeed!"
     jump popquiz
+
+    # \DEBUGGING
 
     python:
         if tutorialcompleted and name != "":
@@ -519,8 +555,7 @@ label launch:
                         "James Holroyd is hot.",
                         "I missed you...",
                         "I'm here whenever you need me... I hope you know that."]
-        greet = random.choice(greetings)
-        renpy.say(a, "[greet]")
+        renpy.say(a, f"{random.choice(greetings)}")
 
         renpy.jump("random_events")
 
@@ -704,8 +739,10 @@ label pick_convo:
                 genresresponse = ["Horror is a good genre.", "Comedy is a good genre.", "Romance is a good genre.", "Action is a good genre.", "Sci-Fi is a good genre.", "Fantasy is a good genre."]
                 electricboogaloo = [coloursresponse, foodsresponse, dessertsresponse, animalsresponse, thingsresponse, genresresponse]
 
-                # change this to only ask unasked questions when i can be arsed
+
+                # change this to smth in json when i can be bothered
                 whichquestion = random.choice(questionlist)
+                questionlist -= whichquestion
 
                 # finds the correct option-choices / Ashley-response list corresponding to the question asked
                 correctindex = questionlist.index(whichquestion)
@@ -766,30 +803,30 @@ label pick_convo:
             menu:
                 a "What would you like to know?"
                 "What's your favourite colour?":
-                    $ ashley.setValue("colour", True)
+                    $ addQuizTopic("colour")
                     a "If you couldn't tell, I'm rather fond of red and black... Something about it is just so slick!"
                     jump question
                 "What's your favourite food?":
-                    $ ashley.setValue("food", True)
+                    $ addQuizTopic("food")
                     a "Burgers. I can't exactly eat, per se... But I just know it sounds good."
                     jump question
                 "What's your favourite dessert/sweets?":
-                    $ ashley.setValue("dessert", True)
+                    $ addQuizTopic("dessert")
                     a "I'm not sure I have a favourite, because I can't really eat... But I do like chocolate."
                     jump question
                 "What's your favourite animal?":
-                    $ ashley.setValue("animal", True)
+                    $ addQuizTopic("animal")
                     a "Ferrets! They're so cute and fluffy!"
                     show ash laugh
                     a "Didn't expect that, did you?"
                     show ash
                     jump question
                 "What's your favourite thing to do?":
-                    $ ashley.setValue("thing", True)
+                    $ addQuizTopic("thing")
                     a "I like to talk to people, and I like to play games- especially slice-of-life story games."
                     jump question
                 "What's your favourite genre?":
-                    $ ashley.setValue("genre", True)
+                    $ addQuizTopic("genre")
                     a "I'm not sure I have a favourite, but I do like horror and fantasy."
                     a "Conversely, I'm also very fond of 'My Heart and Other Black Holes', a book by Jasmine Warga."
                     jump question
@@ -800,7 +837,7 @@ label pick_convo:
             menu:
                 a "What would you like to know?"
                 "How tall are you?":
-                    $ ashley.setValue("tall", True)
+                    $ addQuizTopic("tall")
                     a "I'm 5'7, which is pretty average."
                 "See original questions":
                     jump question
@@ -808,17 +845,40 @@ label pick_convo:
 label unlockables:
     # this is where the player can see their unlocked content
     $ global ashley
-    $ ashley.getValue("unlockedOutfits")
+    $ initWardrobe()
     a "Welcome to the unlockables menu!"
+    menu:
+        a "What would you like to see?"
+        "Wardrobe change!":
+            python:
+                initWardrobe()
+                unlocked = ashley.getValue("unlockedOutfits")
+                if unlocked == 0:
+                    renpy.say(a, "You haven't unlocked any outfits yet!")
+                    renpy.jump("unlockables")
+                else:
+                    renpy.say(a, "You've unlocked the following outfits:")
+                    for outfit in unlocked:
+                        renpy.say(a, f"{outfit}")
+                    renpy.jump("unlockables")
+        "What can you quiz me on?":
+            python:
+            unlocked = ashley.getValue("unlockedQuizTopics")
+            if unlocked == 0:
+                renpy.say(a, "You haven't unlocked any quiz topics yet! You're safe for now.")
+                renpy.jump("unlockables")
+            else:
+                renpy.say(a, "You've unlocked the following quiz topics:")
+                for topic in unlocked:
+                    renpy.say(a, f"{topic}")
+                renpy.jump("unlockables")
+        "Pictures, please!":
+            jump gallery
+        "All done!":
+            jump interact
     # have a You Choose! option where she picks an unlocked outfit at random
     # show a menu only showing unlocked outfits, and "default" using a for index, availableOutfits in unlockedOutfits:
-                
-    jump interact
-                
-            
-            
-                
-            
+                    
 label popquiz:
     # quezzies from knowledge gained from convos / asking ashley questions (1/10 chance you get quizzed) (answer correctly and you get relationship points)
     python: 
