@@ -587,14 +587,14 @@ screen save():
 
     tag menu
 
-    use file_slots(_("Save"))
+    #use file_slots(_("Save"))
 
 
 screen load():
 
     tag menu
 
-    use file_slots(_("Load"))
+    #use file_slots(_("Load"))
 
 
 screen file_slots(title):
