@@ -22,7 +22,14 @@ define nar = Character(what_italic=True)
 
 ####################
 
+##### Execution Flow #####
+# 1. "Start" label
+# 2. Branch to meet Ashley -> tutorial if first time, or to "launch" if not
+# 3. Once tutorial is completed, branch to "launch" as if it is a cold open.
+# 4. "launch" label determines time of day and handles which bg to use based on TOD.
+####################
 
+# declaring renpy variables (ashley)
 init:
     image ash:
         f"ashley{outfit} open"
@@ -57,6 +64,7 @@ init:
     image ash laugh:
         f"ashley{outfit} laugh"
 
+# declaring functions
 init python:
 
     def jams(name, **kwargs):
@@ -165,8 +173,8 @@ init python:
             return True
         topics = ("surname", "ATP", "SoftBoy", "grapes", "colour", "food", "dessert", "animal", "thing", "genre", "tall")
         answers = ("Rosemarry", "Knee Deep At ATP", "Soft Boy", "Grapes", "Red", "")
-        for topics in quiztopics:
-            quizdict[topics] = 
+        #for topics in quiztopics:
+        #    quizdict[topics] = 
         if "surname" in quiztopics:
             quizdict["surname"] = "What's my last name?"
         if "ATP" in quiztopics:
@@ -296,6 +304,7 @@ init python:
 
 # The game starts here.
 
+# what the game does on bootup
 label start:
     # this is the intro- also serves as initial loading progress.
     python:
@@ -335,6 +344,7 @@ label start:
         else:
             renpy.jump("meet_ashley")
 
+# the precursor to the tutorial, only shown at the very beginning of the game
 label meet_ashley:
     # this is the first time you meet Ashley, and you set your name.
     a "Hello. I'm Ashley. I'm a virtual girlfriend."
@@ -377,6 +387,7 @@ label meet_ashley:
     a "With that said, shall we begin?"
     jump tutorial
 
+# tutorial game
 label tutorial:
     # this is the tutorial run from a preset set of events
     python:
@@ -523,6 +534,7 @@ label tutorial:
         a "You're almost done. Back into the fray!"
         jump tutorial
 
+# normal game start provided tutorial is completed
 label launch:
     # this is where the player will be taken on launch after the tutorial is complete
     python:
@@ -559,6 +571,7 @@ label launch:
 
         renpy.jump("random_events")
 
+# decides what extra events will be played before the player gets control
 label random_events:
     # when the game is launched, before you get to interact with Ashley, you might have a random event.
     python:
@@ -577,6 +590,7 @@ label random_events:
         #        "Not so good.":
     jump interact
 
+# main interaction menu with Ashley
 label interact:
     # this is where the player can interact with Ashley
     # you can play a game, chat, or go to the unlockables menu
@@ -592,6 +606,7 @@ label interact:
             a "Looking for an outfit change? Variety is the spice of life, after all."
             jump unlockables
 
+# chat section of Ashley interaction
 label pick_convo:
     # this is where the player can pick a conversation topic
     
@@ -842,6 +857,7 @@ label pick_convo:
                 "See original questions":
                     jump question
 
+# unlockables menu from the interaction menu
 label unlockables:
     # this is where the player can see their unlocked content
     $ global ashley
@@ -863,14 +879,14 @@ label unlockables:
                     renpy.jump("unlockables")
         "What can you quiz me on?":
             python:
-            unlocked = ashley.getValue("unlockedQuizTopics")
-            if unlocked == 0:
-                renpy.say(a, "You haven't unlocked any quiz topics yet! You're safe for now.")
-                renpy.jump("unlockables")
-            else:
-                renpy.say(a, "You've unlocked the following quiz topics:")
-                for topic in unlocked:
-                    renpy.say(a, f"{topic}")
+                unlocked = ashley.getValue("unlockedQuizTopics")
+                if unlocked == 0:
+                    renpy.say(a, "You haven't unlocked any quiz topics yet! You're safe for now.")
+                    renpy.jump("unlockables")
+                else:
+                    renpy.say(a, "You've unlocked the following quiz topics:")
+                    for topic in unlocked:
+                        renpy.say(a, f"{topic}")
                 renpy.jump("unlockables")
         "Pictures, please!":
             jump gallery
@@ -878,7 +894,8 @@ label unlockables:
             jump interact
     # have a You Choose! option where she picks an unlocked outfit at random
     # show a menu only showing unlocked outfits, and "default" using a for index, availableOutfits in unlockedOutfits:
-                    
+
+# 
 label popquiz:
     # quezzies from knowledge gained from convos / asking ashley questions (1/10 chance you get quizzed) (answer correctly and you get relationship points)
     python: 

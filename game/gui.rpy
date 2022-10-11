@@ -10,10 +10,43 @@ init offset = -2
 ## width and height of the game.
 init python:
     gui.init(1920, 1080)
-
     import json
     import os
+    import requests
+    from datetime import datetime
 
+    # get Lat/Lon for use with sunrise/sunset API
+    def getLocation():
+        ipRequest = requests.get('https://ipwho.is')
+        if ipRequest.status_code != 200:
+            print("Error making request!")
+            return
+        json = ipRequest.json()
+        return (json["latitude"], json["longitude"])
+
+    # get sunrise/sunset times for use with getTimeOfDay
+    def getTimeBounds():
+        lat, lon = getLocation()
+        queryParameters = {
+            "lat": lat,
+            "lon": lon
+        }
+        boundsRequest = requests.get("https://api.sunrise-sunset.org/json", params=queryParameters)
+        json = boundsRequest.json()
+        results = json["results"]
+        sunrise = results["sunrise"]
+        sunset = results["sunset"]
+        return (sunrise, sunset)
+    def getTimeOfDay():
+        currentTime = datetime.now().strftime("%I:%M:%S %p")
+        print(currentTime)
+        sunrise, sunset = getTimeBounds()
+        print(sunrise, sunset)
+        if currentTime > sunrise and currentTime < sunset:
+            return "day"
+        else:
+            return "night"
+    
     class CharacterManager:
         def __init__(self):
             self.filename = f"{os.path.join(os.path.dirname(__file__), '..')}\characters\Player.json"
@@ -42,6 +75,15 @@ init python:
             dump = json.dumps(self.json)
             with open(self.filename, "w+") as f:
                 f.write(dump)
+
+init:
+    image ashley_menu:
+        f"images/ashleys/ashley{CharacterManager().getValue('outfit')} close.png"
+        f"images/bgs/bg {getTimeOfDay()}.png"
+    # USE API FOR SUNRISE/SUNSET TIMES USING GEOIP
+    # Request to ipwho.is, returns a json and you can get city 
+    # Request to geoip thing
+
 
 
 ################################################################################
@@ -117,7 +159,9 @@ define gui.title_text_size = 75
 
 ## The images used for the main and game menus.
 
-define gui.main_menu_background = f"gui/main_menu{CharacterManager().getValue('outfit')}.png"
+
+define gui.main_menu_background = "ashley_menu"
+#f"gui/main_menu{CharacterManager().getValue('outfit')}.png"
 define gui.game_menu_background = "gui/game_menu.png"
 
 
