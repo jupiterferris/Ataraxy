@@ -36,14 +36,26 @@ init python:
         results = json["results"]
         sunrise = results["sunrise"]
         sunset = results["sunset"]
-        return (sunrise, sunset)
+        noon = results["solar_noon"]
+        return (sunrise, sunset, noon)
     def getTimeOfDay():
-        currentTime = datetime.now().strftime("%I:%M:%S %p")
-        print(currentTime)
-        sunrise, sunset = getTimeBounds()
-        print(sunrise, sunset)
-        if currentTime > sunrise and currentTime < sunset:
+        currentTime = datetime.now().strftime("%H:%M:%S")
+        midnightTime = datetime.now().replace(hour=0, minute=0, second=0).strftime("%H:%M:%S")
+        sunrise, sunset, noon = getTimeBounds()
+        sunriseTime = datetime.strptime(sunrise, "%I:%M:%S %p").strftime("%H:%M:%S")
+        sunsetTime = datetime.strptime(sunset, "%I:%M:%S %p").strftime("%H:%M:%S")
+        noonTime = datetime.strptime(noon, "%I:%M:%S %p").strftime("%H:%M:%S")
+        print(f"Current time: {currentTime}")
+        print(f"Sunrise today: {sunriseTime}")
+        print(f"Sunset today: {sunsetTime}")
+        print(f"Noon today: {noonTime}")
+        # [midnight] | morning | [sunrise] | day | [noon] | evening | [sunset] | night | [midnight]
+        if currentTime > midnightTime and currentTime < sunriseTime:
+            return "morning"
+        elif currentTime > sunriseTime and currentTime < noonTime:
             return "day"
+        elif currentTime > noonTime and currentTime < sunsetTime:
+            return "evening"
         else:
             return "night"
     
@@ -75,16 +87,6 @@ init python:
             dump = json.dumps(self.json)
             with open(self.filename, "w+") as f:
                 f.write(dump)
-
-init:
-    image ashley_menu:
-        f"images/ashleys/ashley{CharacterManager().getValue('outfit')} close.png"
-        f"images/bgs/bg {getTimeOfDay()}.png"
-    # USE API FOR SUNRISE/SUNSET TIMES USING GEOIP
-    # Request to ipwho.is, returns a json and you can get city 
-    # Request to geoip thing
-
-
 
 ################################################################################
 ## GUI Configuration Variables
@@ -160,7 +162,7 @@ define gui.title_text_size = 75
 ## The images used for the main and game menus.
 
 
-define gui.main_menu_background = "ashley_menu"
+define gui.main_menu_background = f"images/bgs/bg {getTimeOfDay()}.png"
 #f"gui/main_menu{CharacterManager().getValue('outfit')}.png"
 define gui.game_menu_background = "gui/game_menu.png"
 

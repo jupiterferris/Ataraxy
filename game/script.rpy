@@ -30,6 +30,7 @@ define nar = Character(what_italic=True)
 ####################
 
 # declaring renpy variables (ashley)
+# IMAGES REFRESH EVERY SECOND! USE FOR BACKGROUND CHANGES
 init:
     image ash:
         f"ashley{outfit} open"
@@ -63,6 +64,8 @@ init:
         f"ashley{outfit} open"
     image ash laugh:
         f"ashley{outfit} laugh"
+    image bg room:
+        f"images/bgs/bg {fetchTimeOfDay()}.png"
 
 # declaring functions
 init python:
@@ -241,6 +244,58 @@ init python:
     import os
     from datetime import date
     from datetime import datetime
+    import threading
+    import time
+
+    # get Lat/Lon for use with sunrise/sunset API
+    def getLocation():
+        ipRequest = requests.get('https://ipwho.is')
+        if ipRequest.status_code != 200:
+            print("Error making request!")
+            return
+        json = ipRequest.json()
+        return (json["latitude"], json["longitude"])
+
+    # get sunrise/sunset times for use with getTimeOfDay
+    def getTimeBounds():
+        lat, lon = getLocation()
+        queryParameters = {
+            "lat": lat,
+            "lon": lon
+        }
+        boundsRequest = requests.get("https://api.sunrise-sunset.org/json", params=queryParameters)
+        json = boundsRequest.json()
+        results = json["results"]
+        sunrise = results["sunrise"]
+        sunset = results["sunset"]
+        noon = results["solar_noon"]
+        return (sunrise, sunset, noon)
+    def getTimeOfDay():
+        currentTime = datetime.now().strftime("%H:%M:%S")
+        midnightTime = datetime.now().replace(hour=0, minute=0, second=0).strftime("%H:%M:%S")
+        sunrise, sunset, noon = getTimeBounds()
+        sunriseTime = datetime.strptime(sunrise, "%I:%M:%S %p").strftime("%H:%M:%S")
+        sunsetTime = datetime.strptime(sunset, "%I:%M:%S %p").strftime("%H:%M:%S")
+        noonTime = datetime.strptime(noon, "%I:%M:%S %p").strftime("%H:%M:%S")
+        print(f"Current time: {currentTime}")
+        print(f"Sunrise today: {sunriseTime}")
+        print(f"Sunset today: {sunsetTime}")
+        print(f"Noon today: {noonTime}")
+        # [midnight] | morning | [sunrise] | day | [noon] | evening | [sunset] | night | [midnight]
+        if currentTime > midnightTime and currentTime < sunriseTime:
+            return "morning"
+        elif currentTime > sunriseTime and currentTime < noonTime:
+            return "day"
+        elif currentTime > noonTime and currentTime < sunsetTime:
+            return "evening"
+        else:
+            return "night"
+
+    def fetchTimeOfDay():
+        getLocation()
+        getTimeBounds()
+        getTimeOfDay()
+        threading.Timer(60, fetchTimeOfDay).start()
 
     class CharacterManager:
         def __init__(self):
@@ -329,10 +384,10 @@ label start:
 
     # DEBUGGING
 
-    a "Name in file = [name], relationship = [relationship], tutorialcomplete = [tutorialcompleted]."
+    #a "Name in file = [name], relationship = [relationship], tutorialcomplete = [tutorialcompleted]."
 
-    a "Approaching hyperspeed!"
-    jump popquiz
+    #a "Approaching hyperspeed!"
+    #jump popquiz
 
     # \DEBUGGING
 
