@@ -65,7 +65,7 @@ init:
     image ash laugh:
         f"ashley{outfit} laugh"
     image bg room:
-        f"images/bgs/bg {fetchTimeOfDay()}.png"
+        f"images/bgs/bg {timeOfDay}.png"
 
 # declaring functions
 init python:
@@ -233,19 +233,19 @@ init python:
     global wilburtext
     global outfit
     global chosentrack
+    global timeOfDay
     chosentrack = "Soft Boy"
     wilburtext = False
     tutorialGameCompleted = False
     tutorialConvoCompleted = False
     outfitchanged = False
+    timeOfDay = getTimeOfDay()
     quizdict = {}
     wardrobe = []
     import json
     import os
     from datetime import date
     from datetime import datetime
-    import threading
-    import time
 
     # get Lat/Lon for use with sunrise/sunset API
     def getLocation():
@@ -283,19 +283,14 @@ init python:
         print(f"Noon today: {noonTime}")
         # [midnight] | morning | [sunrise] | day | [noon] | evening | [sunset] | night | [midnight]
         if currentTime > midnightTime and currentTime < sunriseTime:
-            return "morning"
+            timeOfDay = "morning"
         elif currentTime > sunriseTime and currentTime < noonTime:
-            return "day"
+            timeOfDay = "day"
         elif currentTime > noonTime and currentTime < sunsetTime:
-            return "evening"
+            timeOfDay = "evening"
         else:
-            return "night"
+            timeOfDay = "night"
 
-    def fetchTimeOfDay():
-        getLocation()
-        getTimeBounds()
-        getTimeOfDay()
-        threading.Timer(60, fetchTimeOfDay).start()
 
     class CharacterManager:
         def __init__(self):
