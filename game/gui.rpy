@@ -10,35 +10,45 @@ init offset = -2
 ## width and height of the game.
 init python:
     gui.init(1920, 1080)
-    import json
-    import os
-    import requests
+
+    from datetime import date
     from datetime import datetime
-
-    # get Lat/Lon for use with sunrise/sunset API
+    
     def getLocation():
-        ipRequest = requests.get('https://ipwho.is')
-        if ipRequest.status_code != 200:
-            print("Error making request!")
-            return
-        json = ipRequest.json()
-        return (json["latitude"], json["longitude"])
+        try:
+            ipRequest = requests.get('https://ipwho.is')
+            if ipRequest.status_code != 200:
+                print("Error making request!")
+                return
+            json = ipRequest.json()
+            return (json["latitude"], json["longitude"])
+        except:
+            print("IP could not be retrieved! Are you using a VPN?")
+            return (53.3676, 3.1626)
 
-    # get sunrise/sunset times for use with getTimeOfDay
     def getTimeBounds():
         lat, lon = getLocation()
         queryParameters = {
             "lat": lat,
             "lon": lon
         }
-        boundsRequest = requests.get("https://api.sunrise-sunset.org/json", params=queryParameters)
-        json = boundsRequest.json()
-        results = json["results"]
-        sunrise = results["sunrise"]
-        sunset = results["sunset"]
-        noon = results["solar_noon"]
+        try:
+            boundsRequest = requests.get("https://api.sunrise-sunset.org/json", params=queryParameters)
+            json = boundsRequest.json()
+            results = json["results"]
+            sunrise = results["sunrise"]
+            sunset = results["sunset"]
+            noon = results["solar_noon"]
+        except:
+            print("Local day cycle unavailable! Using default values.")
+            sunrise = "06:00:00 AM"
+            sunset = "06:00:00 PM"
+            noon = "12:00:00 PM"
+
         return (sunrise, sunset, noon)
+
     def getTimeOfDay():
+        global timeOfDay
         currentTime = datetime.now().strftime("%H:%M:%S")
         midnightTime = datetime.now().replace(hour=0, minute=0, second=0).strftime("%H:%M:%S")
         sunrise, sunset, noon = getTimeBounds()
@@ -49,44 +59,18 @@ init python:
         print(f"Sunrise today: {sunriseTime}")
         print(f"Sunset today: {sunsetTime}")
         print(f"Noon today: {noonTime}")
-        # [midnight] | morning | [sunrise] | day | [noon] | evening | [sunset] | night | [midnight]
+        # [midnight] | morning | [sunrise] | day | [noon] | afternoon | [sunset] | night | [midnight]
         if currentTime > midnightTime and currentTime < sunriseTime:
-            return "morning"
+            timeOfDay = "morning"
         elif currentTime > sunriseTime and currentTime < noonTime:
-            return "day"
+            timeOfDay = "day"
         elif currentTime > noonTime and currentTime < sunsetTime:
-            return "evening"
+            timeOfDay = "afternoon"
         else:
-            return "night"
-    
-    class CharacterManager:
-        def __init__(self):
-            self.filename = f"{os.path.join(os.path.dirname(__file__), '..')}\characters\Player.json"
-            os.makedirs(os.path.dirname(self.filename), exist_ok=True)
-            self.open()
+            timeOfDay = "night"
+        print(f"Time of day: {timeOfDay}")
 
-            outfit = self.json.get("outfit")
-            if outfit is None:
-                self.setValue("outfit", "00")
-
-        def open(self):
-            try:
-                with open(self.filename, "r") as f:
-                    try:
-                        self.json = json.load(f)
-                    except:
-                        self.json = {}
-            except:
-                self.json = {}
-
-        def getValue(self, keymies):
-            return self.json.get(keymies)
-
-        def setValue(self, keymies, value):
-            self.json[keymies] = value
-            dump = json.dumps(self.json)
-            with open(self.filename, "w+") as f:
-                f.write(dump)
+    getTimeOfDay()
 
 ################################################################################
 ## GUI Configuration Variables
@@ -161,9 +145,8 @@ define gui.title_text_size = 75
 
 ## The images used for the main and game menus.
 
+define gui.main_menu_background = f"images/bgs/bg {timeOfDay}.png"
 
-define gui.main_menu_background = f"images/bgs/bg {getTimeOfDay()}.png"
-#f"gui/main_menu{CharacterManager().getValue('outfit')}.png"
 define gui.game_menu_background = "gui/game_menu.png"
 
 

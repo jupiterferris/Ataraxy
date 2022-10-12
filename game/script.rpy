@@ -69,7 +69,71 @@ init:
 
 # declaring functions
 init python:
+    import json
+    import os
+    from datetime import date
+    from datetime import datetime
+    # JSON handler
+    class CharacterManager:
+        def __init__(self):
+            self.filename = f"{os.path.join(os.path.dirname(__file__), '..')}\characters\Player.json"
+            os.makedirs(os.path.dirname(self.filename), exist_ok=True)
 
+            self.open()
+            # Player Name
+            name = self.json.get("name")
+            if name is None:
+                self.setValue("name", "")
+
+            # Ashley's current outfit
+            outfit = self.json.get("outfit")
+            if outfit is None:
+                self.setValue("outfit", "00")
+
+            # Relationship with Ashley
+            relationship = self.json.get("relationship")
+            if relationship is None:
+                self.setValue("relationship", 0)
+
+            # Ashley's unlocked outfits
+            unlockedOutfits = self.json.get("unlockedOutfits")
+            if unlockedOutfits is None:
+                self.setValue("unlockedOutfits", ["00"])
+
+            # Tutorial completed?
+            tutorialCompleted = self.json.get("tutorialCompleted")
+            if tutorialCompleted is None:
+                self.setValue("tutorialCompleted", False)
+
+            # Unlocked quiz topics
+            quizTopics = self.json.get("quizTopics")
+            if quizTopics is None:
+                self.setValue("quizTopics", [])
+
+            # Last time the player logged on
+            lastPlayed = self.json.get("lastPlayed")
+            if lastPlayed is None:
+                self.setValue("lastPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+            
+        def open(self):
+            try:
+                with open(self.filename, "r") as f:
+                    try:
+                        self.json = json.load(f)
+                    except:
+                        self.json = {}
+            except:
+                self.json = {}
+
+        def getValue(self, keymies):
+            return self.json.get(keymies)
+
+        def setValue(self, keymies, value):
+            self.json[keymies] = value
+            dump = json.dumps(self.json)
+            with open(self.filename, "w+") as f:
+                f.write(dump)
+    # music player
     def jams(name, **kwargs):
         global ashley
         global chosentrack
@@ -153,8 +217,8 @@ init python:
             albumname = "Unknown"
             trackno = "Unknown"
             artist = "either Wilbur Soot or Lovejoy"
-
-    def zeldariff(outfitname, outfitno):
+    # item get sound
+    def zeldaRiff(outfitname, outfitno):
         global ashley
         if outfitno in ashley.getValue("unlockedOutfits"):
             renpy.show("ash laugh")
@@ -164,48 +228,50 @@ init python:
             ashley.setValue("unlockedOutfits", ashley.getValue("unlockedOutfits").append(outfitno))
             renpy.play("audio/getitem.mp3")
             renpy.say(nar, f"You unlocked the {outfitname} outfit! Visit the unlockables menu to equip it!")
+    # add quiz topic to JSON
     def addQuizTopic(topicToAdd):
         global ashley
-        ashley.setValue("quiztopics", ashley.getValue("quiztopics") + [topicToAdd])
+        ashley.setValue("quizTopics", ashley.getValue("quizTopics") + [topicToAdd])
+    # setup quiz
     def initQuiz():
-        # change "quiztopics" to the question strings
+        # change "quizTopics" to the question strings
         global ashley
         global quizdict
-        quiztopics = ashley.getValue("quiztopics")
-        if len(quiztopics) == 0:
+        quizTopics = ashley.getValue("quizTopics")
+        if len(quizTopics) == 0:
             return True
         topics = ("surname", "ATP", "SoftBoy", "grapes", "colour", "food", "dessert", "animal", "thing", "genre", "tall")
         answers = ("Rosemarry", "Knee Deep At ATP", "Soft Boy", "Grapes", "Red", "")
-        #for topics in quiztopics:
+        #for topics in quizTopics:
         #    quizdict[topics] = 
-        if "surname" in quiztopics:
+        if "surname" in quizTopics:
             quizdict["surname"] = "What's my last name?"
-        if "ATP" in quiztopics:
+        if "ATP" in quizTopics:
             quizdict["ATP"] = "Do you remember my creator's favourite song?"
-        if "SoftBoy" in quiztopics:
+        if "SoftBoy" in quizTopics:
             quizdict["SoftBoy"] = "Do you know the name of the main menu song?"
-        if "wilburtextheard" in quiztopics:
-            quizdict["wilburtextheard"] = "What is the name of Wilbur Soot's band?"
-        if "grapes" in quiztopics:
+        if "wilburTextHeard" in quizTopics:
+            quizdict["wilburTextHeard"] = "What is the name of Wilbur Soot's band?"
+        if "grapes" in quizTopics:
             quizdict["grapes"] = "Do you remember how you unlocked 'Grapes'?"
-        if "colour" in quiztopics:
+        if "colour" in quizTopics:
             quizdict["colour"] = "What's my favourite colour?"
-        if "food" in quiztopics:
+        if "food" in quizTopics:
             quizdict["food"] = "What's my favourite food?"
-        if "dessert" in quiztopics:
+        if "dessert" in quizTopics:
             quizdict["dessert"] = "What's my favourite dessert/sweets?"
-        if "animal" in quiztopics:
+        if "animal" in quizTopics:
             quizdict["animal"] = "What's my favourite animal?"
-        if "thing" in quiztopics:
+        if "thing" in quizTopics:
             quizdict["thing"] = "What's my favourite thing to do?"
-        if "genre" in quiztopics:
+        if "genre" in quizTopics:
             quizdict["genre"] = "What's my favourite genre?"
-        if "tall" in quiztopics:
+        if "tall" in quizTopics:
             quizdict["tall"] = "How tall am I?"
         if len(ashley.getValue("unlockedOutfits")) > 1:
             #make this say outfit name eventually
             quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('unlockedOutfits'))} outfit?"
-
+    # setup character customisation menu
     def initWardrobe():
         #fucking change this whole thing like do i want unlocked outfits to be a list or a dict- list = out of order but implement sort?
         global ashley
@@ -224,37 +290,61 @@ init python:
             wardrobe.append = "Bodacious Babe"
         if 06 in unlockedOutfits:
             wardrobe.append = "Sumsar"
-            
+    # write to a file         
     def writeToFile(filename, text):
         with open(config.gamedir + "/" + filename, "a") as f:
             f.write(text)
         return
-    
-    global wilburtext
-    global outfit
-    global chosentrack
-    global timeOfDay
-    chosentrack = "Soft Boy"
-    wilburtext = False
-    tutorialGameCompleted = False
-    tutorialConvoCompleted = False
-    outfitchanged = False
-    timeOfDay = getTimeOfDay()
-    quizdict = {}
-    wardrobe = []
-    import json
-    import os
-    from datetime import date
-    from datetime import datetime
-
+    # declaring all the variables for use in the game, startup defaults etc
+    def initGame():
+        global ashley
+        global wilburtext
+        global outfit
+        global chosentrack
+        global tutorialGameCompleted
+        global tutorialConvoCompleted
+        global outfitchanged
+        global quizdict
+        global wardrobe
+        ashley = CharacterManager()
+        chosentrack = "Soft Boy"
+        wilburtext = False
+        tutorialGameCompleted = False
+        tutorialConvoCompleted = False
+        outfitchanged = False
+        quizdict = {}
+        wardrobe = []
+        getAshBasics()
+        setBG()
+    def setBG():
+        global ashley
+        global timeOfDay
+        if ashley.getValue("name") == "" or ashley.getValue("tutorialCompleted") == False:
+            timeOfDay = "day"
+        else:
+            getTimeOfDay()
+    def getAshBasics():
+        global ashley
+        global outfit
+        global tutorialCompleted
+        global name
+        global relationship
+        outfit = ashley.getValue("outfit")
+        tutorialCompleted = ashley.getValue("tutorialCompleted")
+        name = ashley.getValue("name")
+        relationship = ashley.getValue("relationship")
     # get Lat/Lon for use with sunrise/sunset API
     def getLocation():
-        ipRequest = requests.get('https://ipwho.is')
-        if ipRequest.status_code != 200:
-            print("Error making request!")
-            return
-        json = ipRequest.json()
-        return (json["latitude"], json["longitude"])
+        try:
+            ipRequest = requests.get('https://ipwho.is')
+            if ipRequest.status_code != 200:
+                print("Error making request!")
+                return
+            json = ipRequest.json()
+            return (json["latitude"], json["longitude"])
+        except:
+            print("IP could not be retrieved! Are you using a VPN?")
+            return (53.3676, 3.1626)
 
     # get sunrise/sunset times for use with getTimeOfDay
     def getTimeBounds():
@@ -263,14 +353,24 @@ init python:
             "lat": lat,
             "lon": lon
         }
-        boundsRequest = requests.get("https://api.sunrise-sunset.org/json", params=queryParameters)
-        json = boundsRequest.json()
-        results = json["results"]
-        sunrise = results["sunrise"]
-        sunset = results["sunset"]
-        noon = results["solar_noon"]
+        try:
+            boundsRequest = requests.get("https://api.sunrise-sunset.org/json", params=queryParameters)
+            json = boundsRequest.json()
+            results = json["results"]
+            sunrise = results["sunrise"]
+            sunset = results["sunset"]
+            noon = results["solar_noon"]
+        except:
+            print("Local day cycle unavailable! Using default values.")
+            sunrise = "06:00:00 AM"
+            sunset = "06:00:00 PM"
+            noon = "12:00:00 PM"
+
         return (sunrise, sunset, noon)
+
+    # use current time and sunrise/sunset times to determine time of day
     def getTimeOfDay():
+        global timeOfDay
         currentTime = datetime.now().strftime("%H:%M:%S")
         midnightTime = datetime.now().replace(hour=0, minute=0, second=0).strftime("%H:%M:%S")
         sunrise, sunset, noon = getTimeBounds()
@@ -281,91 +381,27 @@ init python:
         print(f"Sunrise today: {sunriseTime}")
         print(f"Sunset today: {sunsetTime}")
         print(f"Noon today: {noonTime}")
-        # [midnight] | morning | [sunrise] | day | [noon] | evening | [sunset] | night | [midnight]
+        # [midnight] | morning | [sunrise] | day | [noon] | afternoon | [sunset] | night | [midnight]
         if currentTime > midnightTime and currentTime < sunriseTime:
             timeOfDay = "morning"
         elif currentTime > sunriseTime and currentTime < noonTime:
             timeOfDay = "day"
         elif currentTime > noonTime and currentTime < sunsetTime:
-            timeOfDay = "evening"
+            timeOfDay = "afternoon"
         else:
             timeOfDay = "night"
-
-
-    class CharacterManager:
-        def __init__(self):
-            self.filename = f"{os.path.join(os.path.dirname(__file__), '..')}\characters\Player.json"
-            os.makedirs(os.path.dirname(self.filename), exist_ok=True)
-
-            self.open()
-            # Player Name
-            name = self.json.get("name")
-            if name is None:
-                self.setValue("name", "")
-
-            # Ashley's current outfit
-            outfit = self.json.get("outfit")
-            if outfit is None:
-                self.setValue("outfit", "00")
-
-            # Relationship with Ashley
-            relationship = self.json.get("relationship")
-            if relationship is None:
-                self.setValue("relationship", 0)
-
-            # Ashley's unlocked outfits
-            unlockedOutfits = self.json.get("unlockedOutfits")
-            if unlockedOutfits is None:
-                self.setValue("unlockedOutfits", ["00"])
-
-            # Tutorial completed?
-            tutorialcompleted = self.json.get("tutorialcompleted")
-            if tutorialcompleted is None:
-                self.setValue("tutorialcompleted", False)
-
-            # Unlocked quiz topics
-            quiztopics = self.json.get("quiztopics")
-            if quiztopics is None:
-                self.setValue("quiztopics", [])
-
-            # Last time the player logged on
-            lastPlayed = self.json.get("lastPlayed")
-            if lastPlayed is None:
-                self.setValue("lastPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-            
-        def open(self):
-            try:
-                with open(self.filename, "r") as f:
-                    try:
-                        self.json = json.load(f)
-                    except:
-                        self.json = {}
-            except:
-                self.json = {}
-
-        def getValue(self, keymies):
-            return self.json.get(keymies)
-
-        def setValue(self, keymies, value):
-            self.json[keymies] = value
-            dump = json.dumps(self.json)
-            with open(self.filename, "w+") as f:
-                f.write(dump)
+        print(f"Time of day: {timeOfDay}")
 
 # The game starts here.
 
 # what the game does on bootup
 label start:
     # this is the intro- also serves as initial loading progress.
-    python:
-        global ashley
-        ashley = CharacterManager()
-        outfit = ashley.getValue("outfit")
-        tutorialcompleted = ashley.getValue("tutorialcompleted")
-        name = ashley.getValue("name")
-        relationship = ashley.getValue("relationship")
-
     stop music fadeout 1.0
+
+    $ global timeOfDay
+    $ initGame()
+    $ print(f"In-game time of day: {timeOfDay}")
     scene bg room
 
     show ash close
@@ -379,7 +415,7 @@ label start:
 
     # DEBUGGING
 
-    #a "Name in file = [name], relationship = [relationship], tutorialcomplete = [tutorialcompleted]."
+    #a "Name in file = [name]. Relationship level [relationship]. Tutorial done? [tutorialCompleted]."
 
     #a "Approaching hyperspeed!"
     #jump popquiz
@@ -387,9 +423,9 @@ label start:
     # \DEBUGGING
 
     python:
-        if tutorialcompleted and name != "":
+        if tutorialCompleted and name != "":
             renpy.jump("launch")
-        elif not tutorialcompleted and name != "":
+        elif not tutorialCompleted and name != "":
             renpy.jump("tutorial")
         else:
             renpy.jump("meet_ashley")
@@ -440,10 +476,10 @@ label meet_ashley:
 # tutorial game
 label tutorial:
     # this is the tutorial run from a preset set of events
-    python:
-        global ashley
-        global tutorialGameCompleted
-        global tutorialConvoCompleted
+    #python:
+    #    global ashley
+    #    global tutorialGameCompleted
+    #    global tutorialConvoCompleted
     menu:
         nar "Because this is the first time you've played, you get to pick what you do from a predetermined set of events."
         "Let's play a game." if not tutorialGameCompleted:
@@ -458,7 +494,7 @@ label tutorial:
                     renpy.say(a, "Welcome back!")
                     renpy.say(nar, "You've completed the tutorial. You can now play the game as you wish.")
                     renpy.say(a, "I hope you enjoy your time with me.")
-                    ashley.setValue("tutorialcompleted", True)
+                    ashley.setValue("tutorialCompleted", True)
                     renpy.jump("launch")
                 elif tutorialGameCompleted or tutorialConvoCompleted:
                     renpy.jump("tutorial_change")
@@ -691,11 +727,11 @@ label pick_convo:
             renpy.say(a, f"The current song playing is {chosentrack}, by {artist}.")
             if wilburtext == False:
                 wilburtext = True 
-                ashley.setValue("wilburtextheard", True)
+                ashley.setValue("wilburTextHeard", True)
                 renpy.say(a, "The person who coded this really loves Wilbur Soot's music... Ahaha.")
                 renpy.say(a, "Can't say I blame her... He's quite something. Don't you agree?")
                 # if the player says yes, they get a special outfit?
-                if ashley.getValue("wilburtextheard"): 
+                if ashley.getValue("wilburTextHeard"): 
                     renpy.show("ash laugh")
                     renpy.say(a, "But you've already heard this before, haven't you?")
                     renpy.show("ash")
@@ -750,7 +786,7 @@ label pick_convo:
                             a "I hope that was enough information for you. If you want to know more, you can always ask my creator."
                             show ash
                             python: 
-                                if not "grapes" in ashley.getValue("quiztopics"):
+                                if not "grapes" in ashley.getValue("quizTopics"):
                                     addQuizTopic("grapes")
                                     writeToFile("tunes.txt", "Grapes\n")
                                     renpy.say(a, "As a thank you for listening to my rambling, I've unlocked a secret track for you.")
@@ -837,27 +873,27 @@ label pick_convo:
                     a "[response1]"
                     python:
                         if whichquestion == questionlist[0]:
-                            zeldariff("William Eyebrows", "02")
+                            zeldaRiff("William Eyebrows", "02")
                 "[option2]":
                     a "[response2]"
                     python:
                         if whichquestion == questionlist[0]:
-                            zeldariff("Depressed & Pronouns", "03")
+                            zeldaRiff("Depressed & Pronouns", "03")
                 "[option3]":
                     a "[response3]"
                     python:
                         if whichquestion == questionlist[0]:
-                            zeldariff("Sweet Tangerine", "04")
+                            zeldaRiff("Sweet Tangerine", "04")
                 "[option4]":
                     a "[response4]"
                     python:
                         if whichquestion == questionlist[0]:
-                            zeldariff("Bodacious Babe", "05")
+                            zeldaRiff("Bodacious Babe", "05")
                 "[option5]":
                     a "[response5]"
                     python:
                         if whichquestion == questionlist[0]:
-                            zeldariff("Sumsar", "06")
+                            zeldaRiff("Sumsar", "06")
                 "I don't have a favourite.":
                     a "That's alright. I know I'm your favourite, though. Ahaha."
 
