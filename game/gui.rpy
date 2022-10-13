@@ -13,7 +13,7 @@ init python:
 
     from datetime import date
     from datetime import datetime
-    
+
     def getLocation():
         try:
             ipRequest = requests.get('https://ipwho.is')
@@ -55,10 +55,10 @@ init python:
         sunriseTime = datetime.strptime(sunrise, "%I:%M:%S %p").strftime("%H:%M:%S")
         sunsetTime = datetime.strptime(sunset, "%I:%M:%S %p").strftime("%H:%M:%S")
         noonTime = datetime.strptime(noon, "%I:%M:%S %p").strftime("%H:%M:%S")
-        print(f"Current time: {currentTime}")
-        print(f"Sunrise today: {sunriseTime}")
-        print(f"Sunset today: {sunsetTime}")
-        print(f"Noon today: {noonTime}")
+        print(f"MENU | Current time: {currentTime}")
+        print(f"MENU | Sunrise today: {sunriseTime}")
+        print(f"MENU | Sunset today: {sunsetTime}")
+        print(f"MENU | Noon today: {noonTime}")
         # [midnight] | morning | [sunrise] | day | [noon] | afternoon | [sunset] | night | [midnight]
         if currentTime > midnightTime and currentTime < sunriseTime:
             timeOfDay = "morning"
@@ -68,7 +68,7 @@ init python:
             timeOfDay = "afternoon"
         else:
             timeOfDay = "night"
-        print(f"Time of day: {timeOfDay}")
+        print(f"Current time of day: {timeOfDay}")
 
     getTimeOfDay()
 

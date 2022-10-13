@@ -71,6 +71,7 @@ init:
 init python:
     import json
     import os
+    import random
     from datetime import date
     from datetime import datetime
     # JSON handler
@@ -134,89 +135,73 @@ init python:
             with open(self.filename, "w+") as f:
                 f.write(dump)
     # music player
-    def jams(name, **kwargs):
-        global ashley
-        global chosentrack
-        global ATP_played
-        import random
-        global albumname
-        global trackno
-        global artist
-        egirltrilogy = ("I'm In Love With An E-Girl", "Internet Ruined Me", "Your New Boyfriend")
-        ycgma = ("Jubilee Line", "Saline Solution", "Your Sister Was Right", "Losing Face", "Since I Saw Vienna", "La Jolla", "I'm Sorry Boris")
-        areyoualright = ("Taunt", "One Day", "Sex Sells", "Cause For Concern")
-        pebblebrain = ("Oh Yeah, You Gonna Cry", "Model Buses", "Concrete", "Perfume", "You'll Understand When You're Older", "The Fall", "It's All Futile! It's All Pointless!")
-        maybeiwasboring = ("Maybe I Was Boring", "For Memories", "White Wine In A Wetherspoons")
-        covers = ("Knee Deep At ATP", "Privately Owned Spiral Galaxy")
-        unlisted = ("Soft Boy", "The Nice Guy Ballad")
-        secret = ("Grapes")
-        lastplayedsong = chosentrack
+    def initJams():
+        global albums
+        global artists
+        albums = {
+            "The E-Girl Trilogy" : ("I'm In Love With An E-Girl", "Internet Ruined Me", "Your New Boyfriend"),
+            "Your City Gave Me Asthma" : ("Jubilee Line", "Saline Solution", "Your Sister Was Right", "Losing Face", "Since I Saw Vienna", "La Jolla", "I'm Sorry Boris"),
+            "Are You Alright?" : ("Taunt", "One Day", "Sex Sells", "Cause For Concern"),
+            "Pebblebrain" : ("Oh Yeah, You Gonna Cry", "Model Buses", "Concrete", "Perfume", "You'll Understand When You're Older", "The Fall", "It's All Futile! It's All Pointless!"),
+            "Maybe I Was Boring" : ("Maybe I Was Boring", "For Memories", "White Wine In A Wetherspoons"),
+            "Covers" : ("Knee Deep At ATP", "Privately Owned Spiral Galaxy"),
+            "Unlisted" : ("Soft Boy", "The Nice Guy Ballad"),
+            "Secret" : ("Grapes")
+        }
+        artists = {
+            "Wilbur Soot" : ("The E-Girl Trilogy", "Your City Gave Me Asthma", "Maybe I Was Boring", "Unlisted"),
+            "Lovejoy" : ("Are You Alright?", "Pebblebrain", "Covers"),
+            "James Marriott" : ("Grapes")
+        }
+    def jams():
+        global albums
+        global chosenTrack
+        global artistName
+        global albumName
+        global trackNo
+        global tutorialCompleted
+
         renpy.music.stop(fadeout=3.0)
-        file = renpy.open_file("tunes.txt")
-        songs = file.readlines()
+        lastSong = chosenTrack
+        songs = renpy.open_file("tunes.txt").readlines()
         numofjams = len(songs)
         a(f"Number of songs available: {numofjams}")
         randomsong = random.choice(songs).decode()
-        chosentrack = randomsong.replace("\r\n","")
-        if chosentrack == lastplayedsong:
-            renpy.say(a, f"Oops! I was going to play {lastplayedsong}, but that was already playing!")
-            jams("")
+        chosenTrack = randomsong.replace("\r\n","")
+        albumName = None
+        # find album name, track number
+        for key, value in albums.items():
+            if chosenTrack in value:
+                albumName = key 
+                index = value.index(chosenTrack)
+                trackNo = index + 1
+                break
+        # find artistName name
+        for key, value in artists.items():
+            if albumName in value:
+                artistName = key
+                break
+        # error catching (incase i add new tracks and forget to add to the dictionary)
+        if albumName is None:
+            albumName = "Unknown"
+            trackNo = "N/A"
+            artistName = "Unknown"
+        # stops the same song from playing twice in a row
+        if chosenTrack == lastSong:
+            a(f"Oops! I was going to play {lastSong}, but that was already playing!")
+            jams()
         else:
-            a(f"Track chosen: {chosentrack}")
-            renpy.music.play(f"audio/jams/{chosentrack}.mp3")
-        if chosentrack == "Knee Deep At ATP":
+            a(f"Track chosen: {chosenTrack}")
+            renpy.music.play(f"audio/jams/{chosenTrack}.mp3")
+        # song-specific contingencies
+        if chosenTrack == "Knee Deep At ATP":
             renpy.show("ash laugh")
-            renpy.say(a, "You lucky thing, that's my creator's favourite song!")
+            a("You lucky thing, that's my creator's favourite song!")
             addQuizTopic("ATP")
             renpy.show("ash")
-        elif chosentrack == "Soft Boy":
-            renpy.say(a, "Fun fact- this is actually the main menu song!")
+        elif chosenTrack == "Soft Boy":
+            a("Fun fact- this is actually the main menu song!")
             addQuizTopic("SoftBoy")
-            #wait what's a main menu
-        if chosentrack in egirltrilogy:
-            albumname = "The E-Girl Trilogy"
-            trackno = egirltrilogy.index(chosentrack)
-            trackno += 1
-            artist = "Wilbur Soot"
-        elif chosentrack in ycgma:
-            albumname = "Your City Gave Me Asthma"
-            trackno = ycgma.index(chosentrack)
-            trackno += 1
-            artist = "Wilbur Soot"
-        elif chosentrack in areyoualright:
-            albumname = "Are You Alright?"
-            trackno = areyoualright.index(chosentrack)
-            trackno += 1
-            artist = "Lovejoy"
-        elif chosentrack in pebblebrain:
-            albumname = "Pebblebrain"
-            trackno = pebblebrain.index(chosentrack)
-            trackno += 1
-            artist = "Lovejoy"
-        elif chosentrack in maybeiwasboring:
-            albumname = "Maybe I Was Boring"
-            trackno = maybeiwasboring.index(chosentrack)
-            trackno += 1
-            artist = "Wilbur Soot"
-        elif chosentrack in covers:
-            albumname = "Covers"
-            trackno = covers.index(chosentrack)
-            trackno += 1
-            artist = "Lovejoy"
-        elif chosentrack in unlisted:
-            albumname = "the collection of unlisted songs"
-            trackno = unlisted.index(chosentrack)
-            trackno += 1
-            artist = "Wilbur Soot"
-        elif chosentrack in secret:
-            albumname = "the secret tracks"
-            trackno = secret.index(chosentrack)
-            trackno += 1
-            artist = "James Marriott"
-        else:
-            albumname = "Unknown"
-            trackno = "Unknown"
-            artist = "either Wilbur Soot or Lovejoy"
     # item get sound
     def zeldaRiff(outfitname, outfitno):
         global ashley
@@ -300,14 +285,14 @@ init python:
         global ashley
         global wilburtext
         global outfit
-        global chosentrack
+        global chosenTrack
         global tutorialGameCompleted
         global tutorialConvoCompleted
         global outfitchanged
         global quizdict
         global wardrobe
         ashley = CharacterManager()
-        chosentrack = "Soft Boy"
+        chosenTrack = "Soft Boy"
         wilburtext = False
         tutorialGameCompleted = False
         tutorialConvoCompleted = False
@@ -316,6 +301,8 @@ init python:
         wardrobe = []
         getAshBasics()
         setBG()
+        initJams()
+    # contingencies for time of day whether tutorial is completed or not
     def setBG():
         global ashley
         global timeOfDay
@@ -323,6 +310,7 @@ init python:
             timeOfDay = "day"
         else:
             getTimeOfDay()
+    # get frequently used basics from the JSON file
     def getAshBasics():
         global ashley
         global outfit
@@ -345,7 +333,6 @@ init python:
         except:
             print("IP could not be retrieved! Are you using a VPN?")
             return (53.3676, 3.1626)
-
     # get sunrise/sunset times for use with getTimeOfDay
     def getTimeBounds():
         lat, lon = getLocation()
@@ -367,7 +354,6 @@ init python:
             noon = "12:00:00 PM"
 
         return (sunrise, sunset, noon)
-
     # use current time and sunrise/sunset times to determine time of day
     def getTimeOfDay():
         global timeOfDay
@@ -390,48 +376,43 @@ init python:
             timeOfDay = "afternoon"
         else:
             timeOfDay = "night"
-        print(f"Time of day: {timeOfDay}")
 
 # The game starts here.
 
 # what the game does on bootup
 label start:
     # this is the intro- also serves as initial loading progress.
-    stop music fadeout 1.0
+    python:
+        global timeOfDay
+        initGame()
+        print(f"In-game time of day: {timeOfDay}")
+        print(f"Name in file: {name}\nRelationship level {relationship}\nTutorial done? {tutorialCompleted}\nCurrent outfit: {outfit}")
+        if not tutorialCompleted and name != "":
+            renpy.jump("tutorial")
+        elif name == "":
+            renpy.jump("meet_ashley")
 
-    $ global timeOfDay
-    $ initGame()
-    $ print(f"In-game time of day: {timeOfDay}")
-    scene bg room
-
-    show ash close
-    with fade
-
-    a "Initialising..."
-
-    $ jams("")
-
-    show ash open
+    stop music fadeout 1.0        
+    $ jams()
 
     # DEBUGGING
-
-    #a "Name in file = [name]. Relationship level [relationship]. Tutorial done? [tutorialCompleted]."
 
     #a "Approaching hyperspeed!"
     #jump popquiz
 
     # \DEBUGGING
 
-    python:
-        if tutorialCompleted and name != "":
-            renpy.jump("launch")
-        elif not tutorialCompleted and name != "":
-            renpy.jump("tutorial")
-        else:
-            renpy.jump("meet_ashley")
+    jump launch
 
 # the precursor to the tutorial, only shown at the very beginning of the game
 label meet_ashley:
+
+    scene bg room
+    show ash close
+    with fade
+    nar "Performing first time setup..."
+    show ash open
+
     # this is the first time you meet Ashley, and you set your name.
     a "Hello. I'm Ashley. I'm a virtual girlfriend."
     show ash wink
@@ -476,10 +457,9 @@ label meet_ashley:
 # tutorial game
 label tutorial:
     # this is the tutorial run from a preset set of events
-    #python:
-    #    global ashley
-    #    global tutorialGameCompleted
-    #    global tutorialConvoCompleted
+    scene bg room
+    show ash open
+    with fade(5.0)
     menu:
         nar "Because this is the first time you've played, you get to pick what you do from a predetermined set of events."
         "Let's play a game." if not tutorialGameCompleted:
@@ -623,11 +603,11 @@ label tutorial:
 # normal game start provided tutorial is completed
 label launch:
     # this is where the player will be taken on launch after the tutorial is complete
+    scene bg room
+    show ash open
+    with fade
     python:
-        global ashley
-        import random
-        relationship = ashley.getValue("relationship")
-        name = ashley.getValue("name")
+        getAshBasics()
         if relationship < 10:
             greetings = ["Well hello again.",
                         "Welcome back, [name].",
@@ -662,13 +642,13 @@ label random_events:
     # when the game is launched, before you get to interact with Ashley, you might have a random event.
     python:
         event = random.randint(1, 100)
-        renpy.say(a, "Event value = [event]")
+        a("Event value = [event]")
         if event == 1:
-            renpy.say(a, "I'm sorry, I'm not feeling well today. I'll be back next time.")
+            a("I'm sorry, I'm not feeling well today. I'll be back next time.")
             renpy.show ("ash close")
             renpy.jump("quit")
         elif event > 90:
-            renpy.say(a, "Let me ask you something...")
+            a("Let me ask you something...")
         #    menu:
         #        a "How's your day been?"
         #        "Great!":
@@ -717,35 +697,28 @@ label pick_convo:
     label convo_song:
     # this is where Ashley tells the player what song is playing and more information about it
         python:
-            global chosentrack
-            global albumname
-            global trackno
-            global artist
-            global name
-            global wilburtext
-            global ashley
-            renpy.say(a, f"The current song playing is {chosentrack}, by {artist}.")
+            a(f"The current song playing is {chosenTrack}, by {artistName}.")
             if wilburtext == False:
                 wilburtext = True 
                 ashley.setValue("wilburTextHeard", True)
-                renpy.say(a, "The person who coded this really loves Wilbur Soot's music... Ahaha.")
-                renpy.say(a, "Can't say I blame her... He's quite something. Don't you agree?")
+                a("The person who coded this really loves Wilbur Soot's music... Ahaha.")
+                a("Can't say I blame her... He's quite something. Don't you agree?")
                 # if the player says yes, they get a special outfit?
                 if ashley.getValue("wilburTextHeard"): 
                     renpy.show("ash laugh")
-                    renpy.say(a, "But you've already heard this before, haven't you?")
+                    a("But you've already heard this before, haven't you?")
                     renpy.show("ash")
-                    renpy.say(a, "In another session, I mean.")
+                    a("In another session, I mean.")
                 else:    
                     renpy.show("ash laugh")
-                    renpy.say(a, "What am I saying, of course you do.")
+                    a("What am I saying, of course you do.")
                     renpy.show("ash")
             else:
                 renpy.say(a, "I'm glad you like it.")
         menu:
             "Can I hear some more?":
                 a "Of course you can. Give me a moment."
-                $ jams("")
+                $ jams()
                 a "Better?"
                 label song_pick_loop:
                     menu:
@@ -758,7 +731,7 @@ label pick_convo:
                                             f"Sure thing, {name}."]
                                 retort = random.choice(responses)
                                 renpy.say(a, "[retort]")
-                                jams("")
+                                jams()
                             jump song_pick_loop
                         "Based. I'll stick with this one.":
                             a "Have fun~"
@@ -771,7 +744,7 @@ label pick_convo:
                 jump pick_convo
             "Tell me more about this song.":
                 label tellmemore:
-                    a "This is Enjoyer Of Things' piano cover of [chosentrack], track [trackno] from [albumname], by [artist]."
+                    a "This is Enjoyer Of Things' piano cover of [chosenTrack], track [trackNo] from [albumName], by [artistName]."
                     menu:
                         a "Would you like to hear more?"
                         "Of course.":
