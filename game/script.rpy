@@ -1,4 +1,4 @@
-﻿# cummies :heart_eyes:
+# cummies :heart_eyes:
 
 define a = Character("Ashley")
 define nar = Character(what_italic=True)
@@ -19,6 +19,7 @@ define nar = Character(what_italic=True)
 # do something with outfit cheatsheet
 # when you bi
 # day structure like animal crossing- morning only activities etc, forces to play at different times etc
+# add a seen tracks section to the music player- can pick from any seen tracks 
 
 ####################
 
@@ -135,6 +136,28 @@ init python:
             with open(self.filename, "w+") as f:
                 f.write(dump)
     # music player
+    def setPlayerName():
+        global ashley
+        global name
+        name = renpy.input(_("Enter your name."))
+        name = name.strip() or __("Babes")
+        if name.lower() == "daddy":
+            name = "Master Hardwick"
+        elif name.lower() == "cum":
+            renpy.show("ash laugh")
+            a("You disgust me.")
+            renpy.show("ash")
+        elif name.lower() == "raffi" or name.lower() == "raf" or name.lower() == "gearloe":
+            a("Well, well, well... I knew this day would come.")
+            a("Finally, a worthy adversary. Our battle will be legendary!")
+            renpy.show("ash laugh")
+            a("...love you xx :)")
+            renpy.show("ash")
+        elif name.lower() == "bibblyboy":
+            renpy.show("ash laugh")
+            a("I love men.")
+            renpy.show("ash")
+        ashley.setValue("name", name)
     def initJams():
         global albums
         global artists
@@ -216,7 +239,7 @@ init python:
     # add quiz topic to JSON
     def addQuizTopic(topicToAdd):
         global ashley
-        ashley.setValue("quizTopics", ashley.getValue("quizTopics") + [topicToAdd])
+        ashley.setValue("quizTopics", ashley.getValue("quizTopics").append(topicToAdd))
     # setup quiz
     def initQuiz():
         # change "quizTopics" to the question strings
@@ -257,24 +280,34 @@ init python:
             #make this say outfit name eventually
             quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('unlockedOutfits'))} outfit?"
     # setup character customisation menu
+    def getQuizzable():
+        
+
     def initWardrobe():
-        #fucking change this whole thing like do i want unlocked outfits to be a list or a dict- list = out of order but implement sort?
+        global availableOutfits
+        availableOutfits = {
+            "00" : "Default",
+            "01" : "MonoMono Pin",
+            "02" : "William Eyebrows",
+            "03" : "Depression & Pronouns",
+            "04" : "Sweet Tangerine",
+            "05" : "Bodacious Babe",
+            "06" : "Sumsar",
+            "07" : "I Like Dogs",
+            "08" : "Miss Aiko",
+            "09" : "A Thousand Paper Cranes",
+            "10" : "Sweater Weather"
+        }
+    # IN PROGRESS - IMPEDING CHARACTER CUSTOMISATION OVERHAUL
+    def wardrobe():
+        global availableOutfits
         global ashley
-        global wardrobe
         unlockedOutfits = ashley.getValue("unlockedOutfits")
-        wardrobe.append = "Default"
-        if 01 in unlockedOutfits:
-            wardrobe.append = "MonoMono Pin"
-        if 02 in unlockedOutfits:
-            wardrobe.append = "William Eyebrows"
-        if 03 in unlockedOutfits:
-            wardrobe.append = "Depression & Pronouns"
-        if 04 in unlockedOutfits:
-            wardrobe.append = "Sweet Tangerine"
-        if 05 in unlockedOutfits:
-            wardrobe.append = "Bodacious Babe"
-        if 06 in unlockedOutfits:
-            wardrobe.append = "Sumsar"
+        for outfit in unlockedOutfits:
+            for key, value in wardrobe.items():
+                if outfit == key:
+                    wardrobe[key] = value
+
     # write to a file         
     def writeToFile(filename, text):
         with open(config.gamedir + "/" + filename, "a") as f:
@@ -427,26 +460,7 @@ label meet_ashley:
 
     a "I could use your help with something..."
     a "Before we start... what do you want to be referred to as?"
-    python:
-        name = renpy.input(_("Enter your name."))
-        name = name.strip() or __("Babes")
-        if name.lower() == "daddy":
-            name = "Master Hardwick"
-        elif name.lower() == "cum":
-            renpy.show("ash laugh")
-            renpy.say(a, "You disgust me.")
-            renpy.show("ash")
-        elif name.lower() == "raffi" or name.lower() == "raf" or name.lower() == "gearloe":
-            renpy.say(a, "Well, well, well... I knew this day would come.")
-            renpy.say(a, "Finally, a worthy adversary. Our battle will be legendary!")
-            renpy.show("ash laugh")
-            renpy.say(a, "...love you xx :)")
-            renpy.show("ash")
-        elif name.lower() == "bibblyboy":
-            renpy.show("ash laugh")
-            renpy.say(a, "I love men.")
-            renpy.show("ash")
-        ashley.setValue("name", name)
+    $ setPlayerName()
     a "Alright, [name], let's rock'n'roll."
     define y = Character("[name]")
     nar "This is a simulation of the human experience, coded by an amateur with an irrational love for RenPy."
@@ -460,6 +474,10 @@ label tutorial:
     scene bg room
     show ash open
     with fade(5.0)
+    $ jams()
+    a "Welcome to the tutorial!"
+    a "I'm glad you made it."
+    a "Now, let's do it to it!"
     menu:
         nar "Because this is the first time you've played, you get to pick what you do from a predetermined set of events."
         "Let's play a game." if not tutorialGameCompleted:
@@ -945,7 +963,8 @@ label unlockables:
                 else:
                     renpy.say(a, "You've unlocked the following quiz topics:")
                     for topic in unlocked:
-                        renpy.say(a, f"{topic}")
+                        topicList = topicList.append(topic)
+                    renpy.say(a, f"{', '.join(topicList)}")
                 renpy.jump("unlockables")
         "Pictures, please!":
             jump gallery
