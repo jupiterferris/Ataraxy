@@ -1,4 +1,4 @@
-# cummies :heart_eyes:
+﻿# cummies :heart_eyes:
 
 define a = Character("Ashley")
 define nar = Character(what_italic=True)
@@ -33,48 +33,94 @@ define nar = Character(what_italic=True)
 # declaring renpy variables (ashley)
 # IMAGES REFRESH EVERY SECOND! USE FOR BACKGROUND CHANGES
 init:
-    image ash:
-        f"ashley{outfit} open"
+    image ash_hair_back:
+        f"ash_hair_back_{hairBack}"
+    image ash_clothes:
+        f"ash_clothes_{clothes}"
+    image ash_nails:
+        f"ash_nails_{nails}"
+    image ash_hair_front:
+        f"ash_hair_front_{hairFront}"
+    image ash_accessory:
+        f"ash_accessory_{accessory}"
+    image ash_eyebrows:
+        f"ash_eyebrows_{eyebrows}"
+    image ash_blink:
+        f"ash_eyes_{eyes}"
         pause 8.0
-        f"ashley{outfit} laugh"
+        f"ash_eyes_mid_{eyes}"
         pause 0.1
-        f"ashley{outfit} close"
+        f"ash_eyes_close_{eyes}"
         pause 0.5
-        f"ashley{outfit} laugh"
+        f"ash_eyes_mid_{eyes}"
         pause 0.1
         repeat
-    image ash wink:
-        f"ashley{outfit} winkr1"
+    image ash_wink:
+        f"ash_eyes_wink_right_mid_{eyes}"
         pause 0.1
-        f"ashley{outfit} winkr2"
+        f"ash_eyes_wink_right_close_{eyes}"
         pause 0.5
-        f"ashley{outfit} winkr1"
+        f"ash_eyes_wink_right_mid_{eyes}"
         pause 0.1
-        f"ashley{outfit} open"
-    image ash close:
-        f"ashley{outfit} open"
+        f"ash_eyes_{eyes}"
+    image ash_close:
+        f"ash_eyes_open_{eyes}"
         pause 0.1
-        f"ashley{outfit} laugh"
+        f"ash_eyes_mid_{eyes}"
         pause 0.1
-        f"ashley{outfit} close"
-    image ash open:
-        f"ashley{outfit} close"
+        f"ash_eyes_close_{eyes}"
+    image ash_open:
+        f"ash_eyes_close_{eyes}"
         pause 0.5
-        f"ashley{outfit} laugh"
+        f"ash_eyes_mid_{eyes}"
         pause 0.1
-        f"ashley{outfit} open"
-    image ash laugh:
-        f"ashley{outfit} laugh"
+        f"ashley_eyes_open_{eyes}"
+    image ash_laugh:
+        f"ash_eyes_mid_{eyes}"
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
+    # in ascending layer order: Hair back, clothes, nails, hair front, accessories, eyebrows, eyes
+    layeredimage ash:
+        always:
+            "ash_base"
+        group hairBack:
+            attribute back default:
+                "ash_hair_back"
+        group body:
+            attribute clothes default:
+                "ash_clothes"
+        group hands:
+            attribute nails default:
+                "ash_nails"
+        group hairFront:
+            attribute front default:
+                "ash_hair_front"
+        group hairTop:
+            attribute accessory:
+                "ash_accessory"
+        group eyebrows:
+            attribute eyebrows default:
+                "ash_eyebrows"  
+        group eyes:
+            attribute blink default:
+                "ash_blink"
+            attribute wink:
+                "ash_wink"
+            attribute close:
+                "ash_close"
+            attribute open:
+                "ash_open"
+            attribute laugh:
+                "ash_laugh"
 
 # declaring functions
-init python:
+init -1 python:
     import json
     import os
     import random
     from datetime import date
     from datetime import datetime
+init python:
     # JSON handler
     class CharacterManager:
         def __init__(self):
@@ -90,7 +136,7 @@ init python:
             # Ashley's current outfit
             outfit = self.json.get("outfit")
             if outfit is None:
-                self.setValue("outfit", "00")
+                self.setValue("outfit", ["00", "00", "00", "00", "00", "00", "00"])
 
             # Relationship with Ashley
             relationship = self.json.get("relationship")
@@ -116,7 +162,7 @@ init python:
             lastPlayed = self.json.get("lastPlayed")
             if lastPlayed is None:
                 self.setValue("lastPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-            
+        # Opens the JSON file
         def open(self):
             try:
                 with open(self.filename, "r") as f:
@@ -126,10 +172,10 @@ init python:
                         self.json = {}
             except:
                 self.json = {}
-
+        # Gets stored value from JSON
         def getValue(self, keymies):
             return self.json.get(keymies)
-
+        # Sets value to JSON
         def setValue(self, keymies, value):
             self.json[keymies] = value
             dump = json.dumps(self.json)
@@ -280,28 +326,48 @@ init python:
             #make this say outfit name eventually
             quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('unlockedOutfits'))} outfit?"
     # setup character customisation menu
-    def getQuizzable():
-        
-
+    # def getQuizzable():
     def initWardrobe():
-        global availableOutfits
-        availableOutfits = {
+        global allCosmetics
+        allOutfits = (allClothes, allNails, allHairFronts, allHairBacks, allAccessories, allEyes,)
+        allClothes = {
+            "00" : "Default",
+            "01" : "I Like Dogs",
+            "02" : "A Thousand Paper Cranes",
+            "03" : "Sweater Weather"
+        }
+        allNails = {
+            "00" : "Default",
+            "01" : "Thirium Blue",
+            "02" : "Crimson",
+            "03" : "Brisk Beige"
+        }
+        allHairBacks = {
+            "00" : "Default",
+            "01" : "Miss Aiko",
+        }
+        allHairFronts = {
+            "00" : "Default",
+            "01" : "William Eyebrows",
+            "02" : "Depression & Pronouns",
+            "03" : "Sweet Tangerine",
+            "04" : "Bodacious Babe",
+            "05" : "Sumsar"
+        }
+        allAccessories = {
             "00" : "Default",
             "01" : "MonoMono Pin",
-            "02" : "William Eyebrows",
-            "03" : "Depression & Pronouns",
-            "04" : "Sweet Tangerine",
-            "05" : "Bodacious Babe",
-            "06" : "Sumsar",
-            "07" : "I Like Dogs",
-            "08" : "Miss Aiko",
-            "09" : "A Thousand Paper Cranes",
-            "10" : "Sweater Weather"
+            "02" : "Squid Pin",
+            "03" : "Thorny Rose",
+        }
+        allEyes = {
+            "00" : "Default"
         }
     # IN PROGRESS - IMPEDING CHARACTER CUSTOMISATION OVERHAUL
     def wardrobe():
-        global availableOutfits
+        global allOutfits
         global ashley
+        # ["clothes", "nails", "hairBack", "hairFront", "hairAccessory", "eyes"]
         unlockedOutfits = ashley.getValue("unlockedOutfits")
         for outfit in unlockedOutfits:
             for key, value in wardrobe.items():
@@ -317,7 +383,6 @@ init python:
     def initGame():
         global ashley
         global wilburtext
-        global outfit
         global chosenTrack
         global tutorialGameCompleted
         global tutorialConvoCompleted
@@ -346,11 +411,25 @@ init python:
     # get frequently used basics from the JSON file
     def getAshBasics():
         global ashley
-        global outfit
+        global hairBack
+        global clothes
+        global nails
+        global hairFront
+        global accessory
+        global eyebrows
+        global eyes
         global tutorialCompleted
         global name
         global relationship
         outfit = ashley.getValue("outfit")
+        # in ascending layer order: Hair back, clothes, nails, hair front, accessories, eyebrows, eyes
+        hairBack = outfit[0]
+        clothes = outfit[1]
+        nails = outfit[2]
+        hairFront = outfit[3]
+        accessory = outfit[4]
+        eyebrows = outfit[5]
+        eyes = outfit[6]
         tutorialCompleted = ashley.getValue("tutorialCompleted")
         name = ashley.getValue("name")
         relationship = ashley.getValue("relationship")
@@ -409,6 +488,7 @@ init python:
             timeOfDay = "afternoon"
         else:
             timeOfDay = "night"
+    
 
 # The game starts here.
 
@@ -416,10 +496,9 @@ init python:
 label start:
     # this is the intro- also serves as initial loading progress.
     python:
-        global timeOfDay
         initGame()
         print(f"In-game time of day: {timeOfDay}")
-        print(f"Name in file: {name}\nRelationship level {relationship}\nTutorial done? {tutorialCompleted}\nCurrent outfit: {outfit}")
+        print(f"Name in file: {name}\nRelationship level {relationship}\nTutorial done? {tutorialCompleted}\n")
         if not tutorialCompleted and name != "":
             renpy.jump("tutorial")
         elif name == "":
