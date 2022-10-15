@@ -35,8 +35,8 @@ define nar = Character(what_italic=True)
 init:
     image ash_hair_back:
         f"ash_hair_back_{hairBack}"
-    image ash_clothes:
-        f"ash_clothes_{clothes}"
+    image ash_body:
+        f"ash_body_{body}"
     image ash_nails:
         f"ash_nails_{nails}"
     image ash_hair_front:
@@ -50,7 +50,7 @@ init:
         pause 8.0
         f"ash_eyes_mid_{eyes}"
         pause 0.1
-        f"ash_eyes_close_{eyes}"
+        f"ash_eyes_close"
         pause 0.5
         f"ash_eyes_mid_{eyes}"
         pause 0.1
@@ -68,39 +68,31 @@ init:
         pause 0.1
         f"ash_eyes_mid_{eyes}"
         pause 0.1
-        f"ash_eyes_close_{eyes}"
+        f"ash_eyes_close"
     image ash_open:
-        f"ash_eyes_close_{eyes}"
+        f"ash_eyes_close"
         pause 0.5
         f"ash_eyes_mid_{eyes}"
         pause 0.1
         f"ashley_eyes_open_{eyes}"
     image ash_laugh:
         f"ash_eyes_mid_{eyes}"
+    
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
-    # in ascending layer order: Hair back, clothes, nails, hair front, accessories, eyebrows, eyes
+    # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
     layeredimage ash:
         always:
-            "ash_base"
-        group hairBack:
-            attribute back default:
-                "ash_hair_back"
-        group body:
-            attribute clothes default:
-                "ash_clothes"
+            "ash_hair_back"
+        group torso:
+            attribute body default:
+                "ash_body"
         group hands:
             attribute nails default:
                 "ash_nails"
-        group hairFront:
-            attribute front default:
-                "ash_hair_front"
-        group hairTop:
-            attribute accessory:
-                "ash_accessory"
-        group eyebrows:
-            attribute eyebrows default:
-                "ash_eyebrows"  
+        group head:
+            attribute face default:
+                "ash_face"
         group eyes:
             attribute blink default:
                 "ash_blink"
@@ -112,6 +104,16 @@ init:
                 "ash_open"
             attribute laugh:
                 "ash_laugh"
+        group hairFront:
+            attribute front default:
+                "ash_hair_front"
+        group hairTop:
+            attribute accessory:
+                "ash_accessory"
+        group eyebrows:
+            attribute eyebrows default:
+                "ash_eyebrows"  
+
 
 # declaring functions
 init -1 python:
@@ -143,10 +145,10 @@ init python:
             if relationship is None:
                 self.setValue("relationship", 0)
 
-            # Ashley's unlocked outfits
-            unlockedOutfits = self.json.get("unlockedOutfits")
-            if unlockedOutfits is None:
-                self.setValue("unlockedOutfits", ["00"])
+            # Cosmetics unlocked for Ashley, given in tuples of order (hairBack, body, nails, eyes, hairFront, accessory, eyebrows)
+            unlockedCosmetics = self.json.get("unlockedCosmetics")
+            if unlockedCosmetics is None:
+                self.setValue("unlockedCosmetics", [("00"), ("00"), ("00"), ("00"), ("00"), (), ("00")])
 
             # Tutorial completed?
             tutorialCompleted = self.json.get("tutorialCompleted")
@@ -274,12 +276,12 @@ init python:
     # item get sound
     def zeldaRiff(outfitname, outfitno):
         global ashley
-        if outfitno in ashley.getValue("unlockedOutfits"):
+        if outfitno in ashley.getValue("unlockedCosmetics"):
             renpy.show("ash laugh")
             renpy.say(a, "You cheeky fucker, you already have that outfit!")
             renpy.show("ash")
         else:
-            ashley.setValue("unlockedOutfits", ashley.getValue("unlockedOutfits").append(outfitno))
+            ashley.setValue("unlockedCosmetics", ashley.getValue("unlockedCosmetics").append(outfitno))
             renpy.play("audio/getitem.mp3")
             renpy.say(nar, f"You unlocked the {outfitname} outfit! Visit the unlockables menu to equip it!")
     # add quiz topic to JSON
@@ -322,9 +324,9 @@ init python:
             quizdict["genre"] = "What's my favourite genre?"
         if "tall" in quizTopics:
             quizdict["tall"] = "How tall am I?"
-        if len(ashley.getValue("unlockedOutfits")) > 1:
+        if len(ashley.getValue("unlockedCosmetics")) > 1:
             #make this say outfit name eventually
-            quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('unlockedOutfits'))} outfit?"
+            quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('unlockedCosmetics'))} outfit?"
     # setup character customisation menu
     # def getQuizzable():
     def initWardrobe():
@@ -367,9 +369,9 @@ init python:
     def wardrobe():
         global allOutfits
         global ashley
-        # ["clothes", "nails", "hairBack", "hairFront", "hairAccessory", "eyes"]
-        unlockedOutfits = ashley.getValue("unlockedOutfits")
-        for outfit in unlockedOutfits:
+        # ["body", "nails", "hairBack", "hairFront", "hairAccessory", "eyes"]
+        unlockedCosmetics = ashley.getValue("unlockedCosmetics")
+        for outfit in unlockedCosmetics:
             for key, value in wardrobe.items():
                 if outfit == key:
                     wardrobe[key] = value
@@ -412,7 +414,7 @@ init python:
     def getAshBasics():
         global ashley
         global hairBack
-        global clothes
+        global body
         global nails
         global hairFront
         global accessory
@@ -422,9 +424,9 @@ init python:
         global name
         global relationship
         outfit = ashley.getValue("outfit")
-        # in ascending layer order: Hair back, clothes, nails, hair front, accessories, eyebrows, eyes
+        # in ascending layer order: Hair back, body, nails, hair front, accessories, eyebrows, eyes
         hairBack = outfit[0]
-        clothes = outfit[1]
+        body = outfit[1]
         nails = outfit[2]
         hairFront = outfit[3]
         accessory = outfit[4]
@@ -645,7 +647,7 @@ label tutorial:
         a "For humoring me on this remarkably dull game, I'll give you a reward."
         # Ashley gives the player a reward- the 'MonoMono' outfit.
         python:
-            unlocked = ashley.getValue("unlockedOutfits")
+            unlocked = ashley.getValue("unlockedCosmetics")
             if "01" in unlocked:
                 # 01 is only unlocked from the tutorial and it's only playable once. It shouldn't already be there
                 renpy.say(a, "Wait... that's not right.")
@@ -657,7 +659,7 @@ label tutorial:
                 renpy.say(a, "Ahaha. I'm kidding.")
             else:
                 unlocked.append("01")
-                ashley.setValue("unlockedOutfits", unlocked)
+                ashley.setValue("unlockedCosmetics", unlocked)
                 renpy.play("audio/itemget.mp3")
                 renpy.say(nar, "You have unlocked the 'MonoMono Pin' outfit. Visit the unlockables menu to equip it!")
             tutorialGameCompleted = True
@@ -701,7 +703,7 @@ label tutorial:
 label launch:
     # this is where the player will be taken on launch after the tutorial is complete
     scene bg room
-    show ash open
+    show ash blink
     with fade
     python:
         getAshBasics()
@@ -930,7 +932,7 @@ label pick_convo:
 
             a "Surprise! I'm going to ask you a question instead."
             $ global ashley
-            $ unlocked = ashley.getValue("unlockedOutfits")
+            $ unlocked = ashley.getValue("unlockedCosmetics")
             menu:
                 a "[whichquestion]"
                 "[option0]":
@@ -1024,7 +1026,7 @@ label unlockables:
         "Wardrobe change!":
             python:
                 initWardrobe()
-                unlocked = ashley.getValue("unlockedOutfits")
+                unlocked = ashley.getValue("unlockedCosmetics")
                 if unlocked == 0:
                     renpy.say(a, "You haven't unlocked any outfits yet!")
                     renpy.jump("unlockables")
@@ -1050,7 +1052,7 @@ label unlockables:
         "All done!":
             jump interact
     # have a You Choose! option where she picks an unlocked outfit at random
-    # show a menu only showing unlocked outfits, and "default" using a for index, availableOutfits in unlockedOutfits:
+    # show a menu only showing unlocked outfits, and "default" using a for index, availableOutfits in unlockedCosmetics:
 
 # 
 label popquiz:
