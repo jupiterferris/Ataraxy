@@ -115,7 +115,6 @@ init:
             attribute eyebrows default:
                 "ash_eyebrows"  
 
-
 # declaring functions
 init -1 python:
     import json
@@ -184,7 +183,6 @@ init python:
             dump = json.dumps(self.json)
             with open(self.filename, "w+") as f:
                 f.write(dump)
-    # music player
     def setPlayerName():
         global ashley
         global name
@@ -207,6 +205,7 @@ init python:
             a("I love men.")
             renpy.show("ash")
         ashley.setValue("name", name)
+    # music player
     def initJams():
         global albums
         global artists
@@ -216,14 +215,16 @@ init python:
             "Are You Alright?" : ("Taunt", "One Day", "Sex Sells", "Cause For Concern"),
             "Pebblebrain" : ("Oh Yeah, You Gonna Cry", "Model Buses", "Concrete", "Perfume", "You'll Understand When You're Older", "The Fall", "It's All Futile! It's All Pointless!"),
             "Maybe I Was Boring" : ("Maybe I Was Boring", "For Memories", "White Wine In A Wetherspoons"),
-            "Covers" : ("Knee Deep At ATP", "Privately Owned Spiral Galaxy"),
-            "Unlisted" : ("Soft Boy", "The Nice Guy Ballad"),
-            "Secret" : ("Grapes")
+            "covers" : ("Knee Deep At ATP", "Privately Owned Spiral Galaxy"),
+            "unlisted" : ("Soft Boy", "The Nice Guy Ballad"),
+            "secret" : ("Grapes"),
+            "misc songs" : ("Rose's Fountain", "Lily Flower")
         }
         artists = {
-            "Wilbur Soot" : ("The E-Girl Trilogy", "Your City Gave Me Asthma", "Maybe I Was Boring", "Unlisted"),
-            "Lovejoy" : ("Are You Alright?", "Pebblebrain", "Covers"),
-            "James Marriott" : ("Grapes")
+            "Wilbur Soot" : ("The E-Girl Trilogy", "Your City Gave Me Asthma", "Maybe I Was Boring", "unlisted"),
+            "Lovejoy" : ("Are You Alright?", "Pebblebrain", "covers"),
+            "James Marriott" : ("secret"),
+            "a very talented team" : ("misc songs")
         }
     def jams():
         global albums
@@ -235,7 +236,6 @@ init python:
 
         renpy.music.stop(fadeout=3.0)
         lastSong = chosenTrack
-        heardSongs = renpy.open_file("heardSongs.txt", "a+").readlines()
         songs = renpy.open_file("tunes.txt").readlines()
         numofjams = len(songs)
         a(f"Number of songs available: {numofjams}")
@@ -266,8 +266,7 @@ init python:
         else:
             a(f"Track chosen: {chosenTrack}")
             renpy.music.play(f"audio/jams/{chosenTrack}.mp3")
-            if chosenTrack not in heardSongs:
-                writeToFile("heardSongs.txt", chosenTrack)
+            writeToFile("heardSongs.txt", chosenTrack)
         # song-specific contingencies
         if chosenTrack == "Knee Deep At ATP":
             renpy.show("ash laugh")
@@ -277,9 +276,10 @@ init python:
         elif chosenTrack == "Soft Boy":
             a("Fun fact- this is actually the main menu song!")
             addQuizTopic("SoftBoy")
-         
+    #def getCosmeticName():
+
     # item get sound
-    def zeldaRiff(outfitname, outfitno):
+    def zeldaRiff(cosmeticType, cosmeticNo):
         global ashley
         if outfitno in ashley.getValue("cosmetics"):
             renpy.show("ash laugh")
@@ -288,11 +288,14 @@ init python:
         else:
             ashley.setValue("cosmetics", ashley.getValue("cosmetics").append(outfitno))
             renpy.play("audio/getitem.mp3")
-            renpy.say(nar, f"You unlocked the {outfitname} outfit! Visit the unlockables menu to equip it!")
+            renpy.say(nar, f"You unlocked the {cosmeticName} cosmetic! Visit the unlockables menu to equip it!")
     # add quiz topic to JSON
     def addQuizTopic(topicToAdd):
         global ashley
-        ashley.setValue("quizTopics", ashley.getValue("quizTopics").append(topicToAdd))
+        if not topicToAdd in ashley.getValue("quizTopics"):
+            ashley.setValue("quizTopics", ashley.getValue("quizTopics").append(topicToAdd))
+        else:
+            a("But, you already know about that.")
     # setup quiz
     def initQuiz():
         # change "quizTopics" to the question strings
@@ -336,25 +339,25 @@ init python:
     # def getQuizzable():
     def initWardrobe():
         global allCosmetics
-        allOutfits = (allClothes, allNails, allHairFronts, allHairBacks, allAccessories, allEyes,)
-        allClothes = {
-            "00" : "Default",
+        allCosmetics = (allHairBacks, allBodies, allNails, allEyes, allHairFronts, allAccessories, allEyebrows,)
+        allHairBacks = {
+            "00" : "Black Bob",
+            "01" : "Miss Aiko",
+        }
+        allBodies = {
+            "00" : "Casual Friday",
             "01" : "I Like Dogs",
             "02" : "A Thousand Paper Cranes",
             "03" : "Sweater Weather"
         }
         allNails = {
-            "00" : "Default",
+            "00" : "Noire",
             "01" : "Thirium Blue",
-            "02" : "Crimson",
-            "03" : "Brisk Beige"
-        }
-        allHairBacks = {
-            "00" : "Default",
-            "01" : "Miss Aiko",
+            "02" : "Laceration",
+            "03" : "Natural"
         }
         allHairFronts = {
-            "00" : "Default",
+            "00" : "Sideswept Crimson",
             "01" : "William Eyebrows",
             "02" : "Depression & Pronouns",
             "03" : "Sweet Tangerine",
@@ -362,13 +365,16 @@ init python:
             "05" : "Sumsar"
         }
         allAccessories = {
-            "00" : "Default",
+            "00" : "None",
             "01" : "MonoMono Pin",
-            "02" : "Squid Pin",
+            "02" : "Oh Lardy",
             "03" : "Thorny Rose",
         }
         allEyes = {
-            "00" : "Default"
+            "00" : "Slate Grey"
+        }
+        allEyebrows = {
+            "00" : "Thinly Veiled",
         }
     # IN PROGRESS - IMPEDING CHARACTER CUSTOMISATION OVERHAUL
     def wardrobe():
@@ -534,6 +540,9 @@ label start:
             renpy.jump("init_tutorial")
         elif name == "":
             renpy.jump("meet_ashley")
+    scene bg room
+    show ash blink
+    with fade
     $ jams()
     # DEBUGGING
     #a "Approaching hyperspeed!"
@@ -599,6 +608,7 @@ label tutorial:
                     nar("You've completed the tutorial. You can now play the game as you wish.")
                     a("I hope you enjoy your time with me.")
                     ashley.setValue("tutorialCompleted", True)
+                    renpy.music.stop(fadeout=1.0)
                     renpy.jump("launch")
                 elif tutorialGameCompleted:
                     renpy.jump("tutorial_change")
@@ -619,7 +629,7 @@ label tutorial:
         show ash blink
         $ inputQuestion("What's my name?", "Ashley")
         a "Let's try another one."
-        $ menuQuestion("What's my favorite color?", "Red", [("Red"), ("Blue"), ("Green"), ("Yellow")])
+        $ menuQuestion("What's my favorite color?", "r", [("Red", "r"), ("Blue", "b"), ("Green", "g"), ("Yellow", "y")])
         a "One last question."
         a "How many fingers am I holding up?"
         show ash laugh
@@ -631,11 +641,12 @@ label tutorial:
         a "Let's see...."
         show ash open
         show ash blink
-        a f"You have reached [points] {correctNoun()}. Congratulations!"
+        $ noun = correctNoun()
+        a "You have reached [points] [noun]. Congratulations!"
         a "For humoring me on this remarkably dull game, I'll give you a reward."
         # Ashley gives the player a reward- the 'MonoMono' outfit.
         python:
-            unlocked = ashley.getValue("cosmetics")
+            cosmetics = ashley.getValue("cosmetics")
             if "01" in unlocked[5]:
                 # 01 is only unlocked from the tutorial and it's only playable once. It shouldn't already be there
                 renpy.say(a, "Wait... that's not right.")
@@ -647,7 +658,7 @@ label tutorial:
                 renpy.say(a, "Ahaha. I'm kidding.")
             else:
                 unlocked[5].append("01")
-                ashley.setValue("cosmetics", unlocked)
+                ashley.setValue("cosmetics", cosmetics)
                 renpy.play("audio/itemget.mp3")
                 renpy.say(nar, "You have unlocked the 'MonoMono Pin' accesory. Visit the unlockables menu to equip it!")
             tutorialGameCompleted = True
@@ -689,15 +700,18 @@ label tutorial:
             a "Would you like to try it out?"
             "Absolutely!":
                 a "One moment. No peeking, okay?"
-                $ ashley.setValue("outfit", "01")
-                $ outfit = ashley.getValue("outfit")
-                $ outfitchanged = True
-                show ash
+                python:
+                    outfit = ashley.getValue("outfit")
+                    outfit[5] = "01"
+                    ashley.setValue("outfit", outfit)
+                    outfitchanged = True
+                    getAshBasics()
+                show ash blink
                 with fade
                 a "Cute, right?"
                 show ash laugh
                 a "Ahaha. I know it is."
-                show ash
+                show ash blink
             "Maybe later.":
                 a "Okay. I'll leave it for now."
         a "You're almost done. Back into the fray!"
@@ -706,9 +720,6 @@ label tutorial:
 # normal game start provided tutorial is completed
 label launch:
     # this is where the player will be taken on launch after the tutorial is complete
-    scene bg room
-    show ash blink
-    with fade
     python:
         getAshBasics()
         if relationship < 10:
@@ -806,18 +817,17 @@ label pick_convo:
                 ashley.setValue("wilburTextHeard", True)
                 a("The person who coded this really loves Wilbur Soot's music... Ahaha.")
                 a("Can't say I blame her... He's quite something. Don't you agree?")
-                # if the player says yes, they get a special outfit?
                 if ashley.getValue("wilburTextHeard"): 
                     renpy.show("ash laugh")
                     a("But you've already heard this before, haven't you?")
-                    renpy.show("ash")
+                    renpy.show("ash blink")
                     a("In another session, I mean.")
                 else:    
                     renpy.show("ash laugh")
                     a("What am I saying, of course you do.")
-                    renpy.show("ash")
+                    renpy.show("ash blink")
             else:
-                renpy.say(a, "I'm glad you like it.")
+                a("I'm glad you like it.")
         menu:
             "Can I hear some more?":
                 a "Of course you can. Give me a moment."
@@ -827,13 +837,12 @@ label pick_convo:
                     menu:
                         "Another! Let's keep this train rolling.":
                             python:
-                                import random
                                 responses = ["And so it shall be.",
                                             "Anything for you...",
                                             "I don't think so. Haha, just kidding!",
                                             f"Sure thing, {name}."]
                                 retort = random.choice(responses)
-                                renpy.say(a, "[retort]")
+                                a("[retort]")
                                 jams()
                             jump song_pick_loop
                         "Based. I'll stick with this one.":
@@ -860,19 +869,19 @@ label pick_convo:
                             a "They have also released a few covers of songs by other artists, such as Crywank's Privately Owned Spiral Galaxy and Knee Deep At ATP by Los Campesinos!" 
                             show ash laugh
                             a "I hope that was enough information for you. If you want to know more, you can always ask my creator."
-                            show ash
+                            show ash blink
                             python: 
                                 if not "grapes" in ashley.getValue("quizTopics"):
                                     addQuizTopic("grapes")
                                     writeToFile("tunes.txt", "Grapes\n")
-                                    renpy.say(a, "As a thank you for listening to my rambling, I've unlocked a secret track for you.")
-                                    renpy.say(a, "It's a lesser-known song by James Marriott that was made collaboratively with Ash Kabosu- Lovejoy's bass guitarist.")
-                                    renpy.say(a, "Enjoy~")
+                                    a("As a thank you for listening to my rambling, I've unlocked a secret track for you.")
+                                    a("It's a lesser-known song by James Marriott that was made collaboratively with Ash Kabosu- Lovejoy's bass guitarist.")
+                                    a("Enjoy~")
                                 else: 
-                                    renpy.say(a, "I was going to give you a secret track as thanks, but it appears you've already unlocked it.")
+                                    a("I was going to give you a secret track as thanks, but it appears you've already unlocked it.")
                                     renpy.show("ash laugh")
-                                    renpy.say(a, "Did you hope I would give you another one? Haha, sorry. You only get the one.")         
-                                    renpy.show("ash")       
+                                    a("Did you hope I would give you another one? Haha, sorry. You only get the one.")         
+                                    renpy.show("ash blink")       
                             jump song_pick_loop
                         "No thanks.":
                             a "As you wish."
@@ -996,7 +1005,7 @@ label pick_convo:
                     a "Ferrets! They're so cute and fluffy!"
                     show ash laugh
                     a "Didn't expect that, did you?"
-                    show ash
+                    show ash blink
                     jump question
                 "What's your favourite thing to do?":
                     $ addQuizTopic("thing")
@@ -1077,7 +1086,7 @@ label popquiz:
             "Knowledge check!",
             "Think fast!"
         ]
-        renpy.say(a, f"{random.choice(quizopener)}")
+        a(f"{random.choice(quizopener)}")
 
         initQuiz()
 
