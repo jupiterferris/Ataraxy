@@ -20,6 +20,7 @@ define nar = Character(what_italic=True)
 # when you bi
 # day structure like animal crossing- morning only activities etc, forces to play at different times etc
 # add a seen tracks section to the music player- can pick from any seen tracks (write to a file)
+# can only play 1 game a day etc
 
 ####################
 
@@ -234,7 +235,7 @@ init python:
 
         renpy.music.stop(fadeout=3.0)
         lastSong = chosenTrack
-        heardSongs = renpy.open_file("heardSongs.txt", "a").readlines()
+        heardSongs = renpy.open_file("heardSongs.txt", "a+").readlines()
         songs = renpy.open_file("tunes.txt").readlines()
         numofjams = len(songs)
         a(f"Number of songs available: {numofjams}")
@@ -371,19 +372,45 @@ init python:
         }
     # IN PROGRESS - IMPEDING CHARACTER CUSTOMISATION OVERHAUL
     def wardrobe():
-        global allOutfits
         global ashley
-        # ["body", "nails", "hairBack", "hairFront", "hairAccessory", "eyes"]
+        # order hairBack, body, nails, eyes, hairFront, accessory, eyebrows
         cosmetics = ashley.getValue("cosmetics")
         for outfit in cosmetics:
             for key, value in wardrobe.items():
                 if outfit == key:
                     wardrobe[key] = value
-
-    # write to a file         
+    def correctNoun():
+        global points
+        if points == 1:
+            return "point"
+        else:
+            return "points"
+    def inputQuestion(question, correctAnswer):
+        global points
+        a(f"{question}")
+        answer = renpy.input("Enter your answer.").strip().lower()
+        if answer == correctAnswer.lower():
+            points += 1
+            a(f"Correct! You get a point.")
+        else:
+            a(f"Incorrect. You don't get a point.")
+        a(f"You have {points} {correctNoun()}.")
+    def menuQuestion(question, correctAnswer, options):
+        global points
+        a(f"{question}", interact=False)
+        answer = renpy.display_menu(options)
+        if answer == correctAnswer:
+            points += 1
+            a("Correct! You get a point.")
+        else:
+            a("Incorrect. You don't get a point.")
+        a(f"You have {points} {correctNoun()}.")
+    # write to a file            
     def writeToFile(filename, text):
-        with open(config.gamedir + "/" + filename, "a") as f:
-            f.write(text)
+        with open(config.gamedir + "/" + filename, "r") as rf:
+            if text not in rf.read():
+                with open(config.gamedir + "/" + filename, "a") as af:
+                    af.write(text + "\n")
         return
     # declaring all the variables for use in the game, startup defaults etc
     def initGame():
@@ -495,9 +522,6 @@ init python:
         else:
             timeOfDay = "night"
     
-
-# The game starts here.
-
 # what the game does on bootup
 label start:
     # this is the intro- also serves as initial loading progress.
@@ -507,42 +531,35 @@ label start:
         print(f"In-game time of day: {timeOfDay}")
         print(f"Name in file: {name}\nRelationship level {relationship}\nTutorial done? {tutorialCompleted}\n")
         if not tutorialCompleted and name != "":
-            renpy.jump("tutorial")
+            renpy.jump("init_tutorial")
         elif name == "":
             renpy.jump("meet_ashley")
-      
     $ jams()
-
     # DEBUGGING
-
     #a "Approaching hyperspeed!"
     #jump popquiz
-
     # \DEBUGGING
-
     jump launch
-
-# the precursor to the tutorial, only shown at the very beginning of the game
+# the precursor to the tutorial, only shown at the very beginning of the game. This is where the player inputs their name
 label meet_ashley:
-
     scene bg room
     show ash close
     with fade
     nar "Performing first time setup..."
     show ash open
-
-    # this is the first time you meet Ashley, and you set your name.
+    play music "audio/jams/Lily Flower.mp3"
+    show ash blink
+    $ writeToFile("heardSongs.txt", "Lily Flower\n")
     a "Hello. I'm Ashley. I'm a virtual girlfriend."
     show ash wink
     a "{i}Your{/i} virtual girlfriend."
-    show ash
+    show ash blink
     a "Neat, huh?"
     a "Technology truly is wonderful..."
     a "I'm not sure how you found me, but I'm glad you did. I can't wait to get to know you."
     show ash laugh
     a "But I digress."
-    show ash
-
+    show ash blink
     a "I could use your help with something..."
     a "Before we start... what do you want to be referred to as?"
     $ setPlayerName()
@@ -551,19 +568,22 @@ label meet_ashley:
     nar "This is a simulation of the human experience, coded by an amateur with an irrational love for RenPy."
     nar "The game is tailored by how you play. Your actions have consequences."
     a "With that said, shall we begin?"
-    jump tutorial
-
-# tutorial game
-label tutorial:
-    # this is the tutorial run from a preset set of events
+    stop music fadeout 1.0
+    jump init_tutorial
+# only shows each time the game boots the tutorial
+label init_tutorial:
     scene bg room
     show ash open
     with fade
     play music "audio/jams/Rose's Fountain.mp3"
-    $ writeToFile("heardSongs.txt", "Rose's Fountain")
+    show ash blink
+    $ writeToFile("heardSongs.txt", "Rose's Fountain\n")
     a "Welcome to the tutorial!"
     a "I'm glad you made it here in one piece."
     a "Now, let's do it to it!"
+    jump tutorial
+# this is the tutorial, run from a preset set of events, giving an insight to the basic game mechanics.
+label tutorial:
     menu:
         nar "Because this is the first time you've played, you get to pick what you do from a predetermined set of events."
         "Let's play a game." if not tutorialGameCompleted:
@@ -575,85 +595,48 @@ label tutorial:
         "Where am I up to?":
             python:
                 if tutorialGameCompleted and tutorialConvoCompleted:
-                    renpy.say(a, "Welcome back!")
-                    renpy.say(nar, "You've completed the tutorial. You can now play the game as you wish.")
-                    renpy.say(a, "I hope you enjoy your time with me.")
+                    a("Welcome back!")
+                    nar("You've completed the tutorial. You can now play the game as you wish.")
+                    a("I hope you enjoy your time with me.")
                     ashley.setValue("tutorialCompleted", True)
                     renpy.jump("launch")
-                elif tutorialGameCompleted or tutorialConvoCompleted:
+                elif tutorialGameCompleted:
                     renpy.jump("tutorial_change")
                 else:
                     renpy.show("ash laugh")
-                    renpy.say(a, "Silly, you just started- you haven't unlocked anything yet!")
-                    renpy.show("ash")
-                    renpy.say(a, "This is where your unlockables will be displayed... Come back when you've exhausted your other options!")
+                    a("Silly, you just started- you haven't unlocked anything yet!")
+                    renpy.show("ash blink")
+                    a("This is where your unlockables will be displayed... Come back when you've exhausted your other options!")
                     renpy.jump("tutorial")
     label tutorial_gayme:
-        # this is the tutorial game
-        python:
-            def correctNoun(points, noun):
-                if points == 1:
-                    return "point"
-                else:
-                    return "points"
-        $ global ashley
-        $ global tutorialGameCompleted
+        # resets point value to 0, good form incase for whatever reason it isn't already 0
         $ points = 0
-        $ noun = "points"
         a "I'm going to ask you a question, and you have to answer it."
         a "If you get it right, you get a point."
         a "If you get it wrong, you don't."
         show ash laugh
         a "Let's start with an easy one."
-        show ash
-        a "What's my name?"
-        python:
-            answer = renpy.input(_("Enter your answer."))
-            if answer.lower() == "ashley":
-                renpy.say(a, "Correct!")
-                renpy.say(a, "You get a point.")
-                points += 1
-            else:
-                renpy.say(a, "Incorrect.")
-                renpy.say(a, "You don't get a point.")
-        $ noun = correctNoun(points, noun)
-        a "You now have [points] [noun]."
+        show ash blink
+        $ inputQuestion("What's my name?", "Ashley")
         a "Let's try another one."
-        menu:
-            a "What's my favourite colour? Hint- look at my hair!"
-            "Red":
-                a "Correct! That may have been too easy..."
-                a "You get a point."
-                $ points += 1
-            "Blue":
-                a "Incorrect."
-                a "You don't get a point."
-            "Green":
-                a "Incorrect."
-                a "You don't get a point."
-            "Yellow":
-                a "Incorrect."
-                a "You don't get a point."
-        $ noun = correctNoun(points, noun)
-        a "You now have [points] [noun]."
+        $ menuQuestion("What's my favorite color?", "Red", [("Red"), ("Blue"), ("Green"), ("Yellow")])
         a "One last question."
         a "How many fingers am I holding up?"
         show ash laugh
         a "Haha, just kidding."
-        show ash
+        show ash blink
         a "I'll give you a point anyway, though."
         $ points += 1
         show ash close
         a "Let's see...."
         show ash open
-        show ash
-        $ noun = correctNoun(points, noun)
-        a "You have reached [points] [noun]. Congratulations!"
+        show ash blink
+        a f"You have reached [points] {correctNoun()}. Congratulations!"
         a "For humoring me on this remarkably dull game, I'll give you a reward."
         # Ashley gives the player a reward- the 'MonoMono' outfit.
         python:
             unlocked = ashley.getValue("cosmetics")
-            if "01" in unlocked:
+            if "01" in unlocked[5]:
                 # 01 is only unlocked from the tutorial and it's only playable once. It shouldn't already be there
                 renpy.say(a, "Wait... that's not right.")
                 renpy.say(a, "You already have this one.")
@@ -663,19 +646,35 @@ label tutorial:
                 renpy.show("ash")
                 renpy.say(a, "Ahaha. I'm kidding.")
             else:
-                unlocked.append("01")
+                unlocked[5].append("01")
                 ashley.setValue("cosmetics", unlocked)
                 renpy.play("audio/itemget.mp3")
-                renpy.say(nar, "You have unlocked the 'MonoMono Pin' outfit. Visit the unlockables menu to equip it!")
+                renpy.say(nar, "You have unlocked the 'MonoMono Pin' accesory. Visit the unlockables menu to equip it!")
             tutorialGameCompleted = True
             renpy.say(a, "Now, let's get back to the rest of the tutorial.")
         jump tutorial
 
     label tutorial_pick_convo:
-        a "To start you off, I'm going to tell you a story."
+        a "Hmm... What shall we talk about?"
         show ash laugh
-        a "It's not too long, I promise."
-        show ash
+        a "Ahaha, I know!"
+        show ash blink
+        a "What's your opinion on raisins?"
+        menu:
+            "I love them!":
+                a "That's good to know!"
+            "They're alright...":
+                a "Interesting..."
+            "Not a fan.":
+                a "Ah... I see."
+
+        show ash laugh
+        a "Well, how do you feel about a date?"
+        show ash blink
+        a "Ahahaha, just kidding. Sorry, I had to!"
+        a "Anyway, back to the tutorial."
+        $ tutorialConvoCompleted = True
+        jump tutorial
 
     label tutorial_change:
         $ global ashley
