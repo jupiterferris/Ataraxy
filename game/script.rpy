@@ -19,7 +19,7 @@ define nar = Character(what_italic=True)
 # do something with outfit cheatsheet
 # when you bi
 # day structure like animal crossing- morning only activities etc, forces to play at different times etc
-# add a seen tracks section to the music player- can pick from any seen tracks 
+# add a seen tracks section to the music player- can pick from any seen tracks (write to a file)
 
 ####################
 
@@ -64,7 +64,7 @@ init:
         pause 0.1
         f"ash_eyes_{eyes}"
     image ash_close:
-        f"ash_eyes_open_{eyes}"
+        f"ash_eyes_{eyes}"
         pause 0.1
         f"ash_eyes_mid_{eyes}"
         pause 0.1
@@ -74,7 +74,7 @@ init:
         pause 0.5
         f"ash_eyes_mid_{eyes}"
         pause 0.1
-        f"ashley_eyes_open_{eyes}"
+        f"ash_eyes_{eyes}"
     image ash_laugh:
         f"ash_eyes_mid_{eyes}"
     
@@ -145,10 +145,10 @@ init python:
             if relationship is None:
                 self.setValue("relationship", 0)
 
-            # Cosmetics unlocked for Ashley, given in tuples of order (hairBack, body, nails, eyes, hairFront, accessory, eyebrows)
-            unlockedCosmetics = self.json.get("unlockedCosmetics")
-            if unlockedCosmetics is None:
-                self.setValue("unlockedCosmetics", [("00"), ("00"), ("00"), ("00"), ("00"), (), ("00")])
+            # Cosmetics unlocked for Ashley, given in lists of order (hairBack, body, nails, eyes, hairFront, accessory, eyebrows)
+            cosmetics = self.json.get("cosmetics")
+            if cosmetics is None:
+                self.setValue("cosmetics", [["00"], ["00"], ["00"], ["00"], ["00"], ["00"], ["00"]])
 
             # Tutorial completed?
             tutorialCompleted = self.json.get("tutorialCompleted")
@@ -234,6 +234,7 @@ init python:
 
         renpy.music.stop(fadeout=3.0)
         lastSong = chosenTrack
+        heardSongs = renpy.open_file("heardSongs.txt", "a").readlines()
         songs = renpy.open_file("tunes.txt").readlines()
         numofjams = len(songs)
         a(f"Number of songs available: {numofjams}")
@@ -259,11 +260,13 @@ init python:
             artistName = "Unknown"
         # stops the same song from playing twice in a row
         if chosenTrack == lastSong:
-            a(f"Oops! I was going to play {lastSong}, but that was already playing!")
+            a(f"Oops! I was going to play {lastSong}, but you just heard that one!")
             jams()
         else:
             a(f"Track chosen: {chosenTrack}")
             renpy.music.play(f"audio/jams/{chosenTrack}.mp3")
+            if chosenTrack not in heardSongs:
+                writeToFile("heardSongs.txt", chosenTrack)
         # song-specific contingencies
         if chosenTrack == "Knee Deep At ATP":
             renpy.show("ash laugh")
@@ -273,15 +276,16 @@ init python:
         elif chosenTrack == "Soft Boy":
             a("Fun fact- this is actually the main menu song!")
             addQuizTopic("SoftBoy")
+         
     # item get sound
     def zeldaRiff(outfitname, outfitno):
         global ashley
-        if outfitno in ashley.getValue("unlockedCosmetics"):
+        if outfitno in ashley.getValue("cosmetics"):
             renpy.show("ash laugh")
             renpy.say(a, "You cheeky fucker, you already have that outfit!")
             renpy.show("ash")
         else:
-            ashley.setValue("unlockedCosmetics", ashley.getValue("unlockedCosmetics").append(outfitno))
+            ashley.setValue("cosmetics", ashley.getValue("cosmetics").append(outfitno))
             renpy.play("audio/getitem.mp3")
             renpy.say(nar, f"You unlocked the {outfitname} outfit! Visit the unlockables menu to equip it!")
     # add quiz topic to JSON
@@ -324,9 +328,9 @@ init python:
             quizdict["genre"] = "What's my favourite genre?"
         if "tall" in quizTopics:
             quizdict["tall"] = "How tall am I?"
-        if len(ashley.getValue("unlockedCosmetics")) > 1:
+        if len(ashley.getValue("cosmetics")) > 1:
             #make this say outfit name eventually
-            quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('unlockedCosmetics'))} outfit?"
+            quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('cosmetics'))} outfit?"
     # setup character customisation menu
     # def getQuizzable():
     def initWardrobe():
@@ -370,8 +374,8 @@ init python:
         global allOutfits
         global ashley
         # ["body", "nails", "hairBack", "hairFront", "hairAccessory", "eyes"]
-        unlockedCosmetics = ashley.getValue("unlockedCosmetics")
-        for outfit in unlockedCosmetics:
+        cosmetics = ashley.getValue("cosmetics")
+        for outfit in cosmetics:
             for key, value in wardrobe.items():
                 if outfit == key:
                     wardrobe[key] = value
@@ -424,14 +428,14 @@ init python:
         global name
         global relationship
         outfit = ashley.getValue("outfit")
-        # in ascending layer order: Hair back, body, nails, hair front, accessories, eyebrows, eyes
+        # (hairBack, body, nails, eyes, hairFront, accessory, eyebrows)
         hairBack = outfit[0]
         body = outfit[1]
         nails = outfit[2]
-        hairFront = outfit[3]
-        accessory = outfit[4]
-        eyebrows = outfit[5]
-        eyes = outfit[6]
+        eyes = outfit[3]
+        hairFront = outfit[4]
+        accessory = outfit[5]
+        eyebrows = outfit[6]
         tutorialCompleted = ashley.getValue("tutorialCompleted")
         name = ashley.getValue("name")
         relationship = ashley.getValue("relationship")
@@ -497,6 +501,7 @@ init python:
 # what the game does on bootup
 label start:
     # this is the intro- also serves as initial loading progress.
+    stop music fadeout 1.0 
     python:
         initGame()
         print(f"In-game time of day: {timeOfDay}")
@@ -505,8 +510,7 @@ label start:
             renpy.jump("tutorial")
         elif name == "":
             renpy.jump("meet_ashley")
-
-    stop music fadeout 1.0        
+      
     $ jams()
 
     # DEBUGGING
@@ -554,10 +558,11 @@ label tutorial:
     # this is the tutorial run from a preset set of events
     scene bg room
     show ash open
-    with fade(5.0)
-    $ jams()
+    with fade
+    play music "audio/jams/Rose's Fountain.mp3"
+    $ writeToFile("heardSongs.txt", "Rose's Fountain")
     a "Welcome to the tutorial!"
-    a "I'm glad you made it."
+    a "I'm glad you made it here in one piece."
     a "Now, let's do it to it!"
     menu:
         nar "Because this is the first time you've played, you get to pick what you do from a predetermined set of events."
@@ -647,7 +652,7 @@ label tutorial:
         a "For humoring me on this remarkably dull game, I'll give you a reward."
         # Ashley gives the player a reward- the 'MonoMono' outfit.
         python:
-            unlocked = ashley.getValue("unlockedCosmetics")
+            unlocked = ashley.getValue("cosmetics")
             if "01" in unlocked:
                 # 01 is only unlocked from the tutorial and it's only playable once. It shouldn't already be there
                 renpy.say(a, "Wait... that's not right.")
@@ -659,7 +664,7 @@ label tutorial:
                 renpy.say(a, "Ahaha. I'm kidding.")
             else:
                 unlocked.append("01")
-                ashley.setValue("unlockedCosmetics", unlocked)
+                ashley.setValue("cosmetics", unlocked)
                 renpy.play("audio/itemget.mp3")
                 renpy.say(nar, "You have unlocked the 'MonoMono Pin' outfit. Visit the unlockables menu to equip it!")
             tutorialGameCompleted = True
@@ -932,7 +937,7 @@ label pick_convo:
 
             a "Surprise! I'm going to ask you a question instead."
             $ global ashley
-            $ unlocked = ashley.getValue("unlockedCosmetics")
+            $ unlocked = ashley.getValue("cosmetics")
             menu:
                 a "[whichquestion]"
                 "[option0]":
@@ -1026,7 +1031,7 @@ label unlockables:
         "Wardrobe change!":
             python:
                 initWardrobe()
-                unlocked = ashley.getValue("unlockedCosmetics")
+                unlocked = ashley.getValue("cosmetics")
                 if unlocked == 0:
                     renpy.say(a, "You haven't unlocked any outfits yet!")
                     renpy.jump("unlockables")
@@ -1052,7 +1057,7 @@ label unlockables:
         "All done!":
             jump interact
     # have a You Choose! option where she picks an unlocked outfit at random
-    # show a menu only showing unlocked outfits, and "default" using a for index, availableOutfits in unlockedCosmetics:
+    # show a menu only showing unlocked outfits, and "default" using a for index, availableOutfits in cosmetics:
 
 # 
 label popquiz:
