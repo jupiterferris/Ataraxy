@@ -174,128 +174,28 @@ init python:
             dump = json.dumps(self.json)
             with open(self.filename, "w+") as f:
                 f.write(dump)
-    def setPlayerName():
-        global ashley
-        global name
-        name = renpy.input(_("Enter your name."))
-        name = name.strip() or __("Babes")
-        if name.lower() == "daddy":
-            name = "Master Hardwick"
-        elif name.lower() == "cum":
-            renpy.show("ash laugh")
-            a("You disgust me.")
-            renpy.show("ash")
-        elif name.lower() == "raffi" or name.lower() == "raf" or name.lower() == "gearloe":
-            a("Well, well, well... I knew this day would come.")
-            a("Finally, a worthy adversary. Our battle will be legendary!")
-            renpy.show("ash laugh")
-            a("...love you xx :)")
-            renpy.show("ash")
-        elif name.lower() == "bibblyboy":
-            renpy.show("ash laugh")
-            a("I love men.")
-            renpy.show("ash")
-        ashley.setValue("name", name)
-    # music player
+    # setup all main functions with permanent data i.e all collectibles
     def initJams():
-        global albums
-        global artists
-        albums = {
-            "The E-Girl Trilogy" : ("I'm In Love With An E-Girl", "Internet Ruined Me", "Your New Boyfriend"),
-            "Your City Gave Me Asthma" : ("Jubilee Line", "Saline Solution", "Your Sister Was Right", "Losing Face", "Since I Saw Vienna", "La Jolla", "I'm Sorry Boris"),
-            "Are You Alright?" : ("Taunt", "One Day", "Sex Sells", "Cause For Concern"),
-            "Pebblebrain" : ("Oh Yeah, You Gonna Cry", "Model Buses", "Concrete", "Perfume", "You'll Understand When You're Older", "The Fall", "It's All Futile! It's All Pointless!"),
-            "Maybe I Was Boring" : ("Maybe I Was Boring", "For Memories", "White Wine In A Wetherspoons"),
-            "covers" : ("Knee Deep At ATP", "Privately Owned Spiral Galaxy"),
-            "unlisted" : ("Soft Boy", "The Nice Guy Ballad"),
-            "secret" : ("Grapes"),
-            "misc songs" : ("Rose's Fountain", "Lily Flower")
+        global allSongs
+        allSongs = {
+            "Wilbur Soot" : {
+                "The E-Girl Trilogy" : ("I'm In Love With An E-Girl", "Internet Ruined Me", "Your New Boyfriend"),
+                "Your City Gave Me Asthma" : ("Jubilee Line", "Saline Solution", "Your Sister Was Right", "Losing Face", "Since I Saw Vienna", "La Jolla", "I'm Sorry Boris"),
+                "Maybe I Was Boring" : ("Maybe I Was Boring", "For Memories", "White Wine In A Wetherspoons"),
+                "unlisted" : ("Soft Boy", "The Nice Guy Ballad")
+            },
+            "Lovejoy" : {
+                "Are You Alright?" : ("Taunt", "One Day", "Sex Sells", "Cause For Concern"),
+                "Pebblebrain" : ("Oh Yeah, You Gonna Cry", "Model Buses", "Concrete", "Perfume", "You'll Understand When You're Older", "The Fall", "It's All Futile! It's All Pointless!"),
+                "covers" : ("Knee Deep At ATP", "Privately Owned Spiral Galaxy")
+            },
+            "James Marriott" : { 
+                "secret" : ("Grapes")
+            },
+            "a very talented team" : {
+                "misc songs" : ("Rose's Fountain", "Lily Flower")
+            }
         }
-        artists = {
-            "Wilbur Soot" : ("The E-Girl Trilogy", "Your City Gave Me Asthma", "Maybe I Was Boring", "unlisted"),
-            "Lovejoy" : ("Are You Alright?", "Pebblebrain", "covers"),
-            "James Marriott" : ("secret"),
-            "a very talented team" : ("misc songs")
-        }
-    def jams():
-        global albums
-        global chosenTrack
-        global artistName
-        global albumName
-        global trackNo
-        global tutorialCompleted
-
-        renpy.music.stop(fadeout=3.0)
-        lastSong = chosenTrack
-        songs = renpy.open_file("tunes.txt").readlines()
-        numofjams = len(songs)
-        a(f"Number of songs available: {numofjams}")
-        randomsong = random.choice(songs).decode()
-        chosenTrack = randomsong.replace("\r\n","")
-        albumName = None
-        # find album name, track number
-        for key, value in albums.items():
-            if chosenTrack in value:
-                albumName = key 
-                index = value.index(chosenTrack)
-                trackNo = index + 1
-                break
-        # find artistName name
-        for key, value in artists.items():
-            if albumName in value:
-                artistName = key
-                break
-        # error catching (incase i add new tracks and forget to add to the dictionary)
-        if albumName is None:
-            albumName = "Unknown"
-            trackNo = "N/A"
-            artistName = "Unknown"
-        # stops the same song from playing twice in a row
-        if chosenTrack == lastSong:
-            a(f"Oops! I was going to play {lastSong}, but you just heard that one!")
-            jams()
-        else:
-            a(f"Track chosen: {chosenTrack}")
-            renpy.music.play(f"audio/jams/{chosenTrack}.mp3")
-            writeToFile("heardSongs.txt", chosenTrack)
-        # song-specific contingencies
-        if chosenTrack == "Knee Deep At ATP":
-            renpy.show("ash laugh")
-            a("You lucky thing, that's my creator's favourite song!")
-            addQuizTopic("ATP")
-            renpy.show("ash")
-        elif chosenTrack == "Soft Boy":
-            a("Fun fact- this is actually the main menu song!")
-            addQuizTopic("SoftBoy")
-    def getCosmeticName(cosmeticType, cosmeticNo):
-        global cosmeticsAll
-        dictName = cosmeticType + "All"
-        return cosmeticsAll[dictName][cosmeticNo]
-
-    # item get sound
-    def zeldaRiff(cosmeticType, cosmeticNo):
-        global ashley
-        cosmeticTypes = ["hairBack", "body", "nails", "eyes", "hairFront", "accessory", "eyebrows"]
-        cosmeticIndex = cosmeticTypes.index(cosmeticType)
-        cosmeticName = getCosmeticName(cosmeticType, cosmeticNo)
-        cosmetics = ashley.getValue("cosmetics")
-        if cosmeticNo in cosmetics[cosmeticIndex]:
-            renpy.show("ash laugh")
-            a(f"You cheeky fucker, you already have '{cosmeticName}'!")
-            renpy.show("ash blink")
-        else:
-            cosmetics[cosmeticIndex].append(cosmeticNo)
-            ashley.setValue("cosmetics", cosmetics)
-            renpy.play("audio/itemget.mp3")
-            nar(f"You unlocked the '{cosmeticName}' cosmetic! Visit the unlockables menu to equip it!")
-    # add quiz topic to JSON
-    def addQuizTopic(topicToAdd):
-        global ashley
-        if not topicToAdd in ashley.getValue("quizTopics"):
-            ashley.setValue("quizTopics", ashley.getValue("quizTopics").append(topicToAdd))
-        else:
-            a("But, you already know about that.")
-    # setup quiz
     def initQuiz():
         # change "quizTopics" to the question strings
         global ashley
@@ -334,8 +234,74 @@ init python:
         if len(ashley.getValue("cosmetics")) > 1:
             #make this say outfit name eventually
             quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('cosmetics'))} outfit?"
-    # setup character customisation menu
-    # def getQuizzable():
+    def initUnoReverse():
+        global playerQuestions
+        playerQuestions = {
+            "What's your favourite colour?" : {
+                "Red" : "I love red. It's one of my favourite colours. Especially crimson.",
+                "Purple" : "Ah, purple... reminds me of the end of a rainbow. I like it.",
+                "Green" : "Green is a good colour. It reminds me of nature. Or at least, my notion of it.",
+                "Blue" : "Blue is nice... I can see it through my window every day, and I can see it when I look through myself.",
+                "Orange" : "Orange reminds me of the sunset... What a pretty favourite colour.",
+                "Brown" : "A lot of things are brown... Tree trunks, mud. It's very earthy. It suits you."
+            },
+            "What's your favourite dessert?" : {
+                "Chocolate" : "",
+                "Ice cream" : "",
+                "Cake" : "",
+                "Donuts" : "",
+                "Sweets" : "",
+                "Pie" : ""
+            },
+            "What's your favourite drink?" : {
+                "Water" : "",
+                "Tea" : "",
+                "Coffee" : "",
+                "Juice" : "",
+                "Milk" : "",
+                "Fizzy drinks" : ""
+            },
+            "What's your favourite season?" : {
+                "Spring" : "",
+                "Summer" : "",
+                "Autumn" : "",
+                "Winter" : "",
+                "All of them" : "",
+                "None of them" : ""
+            },
+            "What's your favourite holiday?" : {
+                "Christmas" : "",
+                "Halloween" : "",
+                "Easter" : "",
+                "New Year" : "",
+                "Valentine's Day" : "",
+                "Thanksgiving" : ""
+            },
+            "What's your favourite fruit?" : {
+                "Apple" : "",
+                "Banana" : "",
+                "Orange" : "",
+                "Pear" : "",
+                "Grapes" : "",
+                "Strawberry" : ""
+            },
+            "What's your favourite thing to do?" : {
+                "Listen to music" : "",
+                "Play video games" : "",
+                "Watch TV" : "",
+                "Read" : "",
+                "Go outside" : "",
+                "Sleep" : ""
+            },
+            "What's your favourite genre?" : {
+                "Horror" : "",
+                "Romance" : "",
+                "Comedy" : "",
+                "Action" : "",
+                "Drama" : "",
+                "Mystery" : ""
+            }
+        }
     def initWardrobe():
         global cosmeticsAll
         cosmeticsAll = {
@@ -377,7 +343,64 @@ init python:
                 "00" : "Thinly Veiled",
             }
         }
-    # IN PROGRESS - IMPEDING CHARACTER CUSTOMISATION OVERHAUL
+    # situational functions used as a specific part of a label
+    def namePlayer():
+        global ashley
+        global name
+        name = renpy.input(_("Enter your name."))
+        name = name.strip() or __("Babes")
+        lowerName = name.lower()
+        nameContingencies(lowerName)
+        ashley.setValue("name", name)
+    def nameContingencies(lowerName):
+        if lowerName == "daddy":
+            name = "Master Hardwick"
+        elif lowerName == "raffi" or name.lower() == "raf" or name.lower() == "gearloe":
+            a("Well, well, well... I knew this day would come.")
+            a("Finally, a worthy adversary. Our battle will be legendary!")
+            renpy.show("ash laugh")
+            a("...love you xx :)")
+            renpy.show("ash")
+        elif lowerName == "bibblyboy":
+            renpy.show("ash laugh")
+            a("I love men.")
+            renpy.show("ash")
+        elif lowerName == "pipster":
+            a("Fuck, this is painful, isn't it?")
+            renpy.show("ash laugh")
+            a("It's okay, it might work this time!")
+            renpy.show("ash blink")
+    def jamSelector(selectionMethod):
+        global songsPlayed
+        renpy.music.stop(fadeout=3.0)
+        numOfJams = len(readFile("tunes.txt"))
+        numOfHeard = len(readFile("heardSongs.txt"))
+        if selectionMethod == "previous":
+            chosenTrack = getPreviousSong(songsPlayed)
+            songsPlayed = songsPlayed[:-1]
+        elif selectionMethod == "specific":
+            a(f"Number of songs heard: {numOfHeard}/{numOfJams}")
+            chosenTrack = getSpecificSong()
+        else:
+            a(f"Number of songs available: {numOfJams}")
+            chosenTrack = getRandomSong(songsPlayed)
+        a(f"Track chosen: {chosenTrack}")
+        renpy.music.play(f"audio/jams/{chosenTrack}.mp3")
+        writeToFile("heardSongs.txt", chosenTrack)
+        songsPlayed.append(chosenTrack)
+        songsPlayed = songsPlayed[-5:]
+        print(songsPlayed)
+        jamContingencies(chosenTrack)
+        getTrackDetails(chosenTrack)
+    def jamContingencies(chosenTrack):
+        if chosenTrack == "Knee Deep At ATP":
+            renpy.show("ash laugh")
+            a("You lucky thing, that's my creator's favourite song!")
+            addQuizTopic("ATP")
+            renpy.show("ash")
+        elif chosenTrack == "Soft Boy":
+            a("Fun fact- this is actually the main menu song!")
+            addQuizTopic("SoftBoy")
     def wardrobe():
         global ashley
         # order hairBack, body, nails, eyes, hairFront, accessory, eyebrows
@@ -386,12 +409,40 @@ init python:
             for key, value in wardrobe.items():
                 if outfit == key:
                     wardrobe[key] = value
-    def correctNoun():
-        global points
-        if points == 1:
-            return "point"
+    # useful, commonly used functions
+    def zeldaRiff(cosmeticType, cosmeticNo):
+        global ashley
+        cosmeticTypes = ["hairBack", "body", "nails", "eyes", "hairFront", "accessory", "eyebrows"]
+        cosmeticIndex = cosmeticTypes.index(cosmeticType)
+        cosmeticName = getCosmeticName(cosmeticType, cosmeticNo)
+        cosmetics = ashley.getValue("cosmetics")
+        if cosmeticNo in cosmetics[cosmeticIndex]:
+            renpy.show("ash laugh")
+            a(f"You cheeky fucker, you already have '{cosmeticName}'!")
+            renpy.show("ash blink")
         else:
-            return "points"
+            cosmetics[cosmeticIndex].append(cosmeticNo)
+            ashley.setValue("cosmetics", cosmetics)
+            renpy.play("audio/itemget.mp3")
+            nar(f"You unlocked the '{cosmeticName}' cosmetic! Visit the unlockables menu to equip it!")
+    def writeToFile(filename, text):
+        with open(config.gamedir + "/" + filename) as rf:
+            if text not in rf.read():
+                with open(config.gamedir + "/" + filename, "a") as af:
+                    af.write(text + "\n")
+        return
+        # contingencies for time of day whether tutorial is completed or not
+    def readFile(filename):
+        itemList = open(config.gamedir + "/" + filename).readlines()
+        for index, item in enumerate(itemList):
+            itemList[index] = item.replace("\n", "")
+        return itemList
+    def addQuizTopic(topicToAdd):
+        global ashley
+        if not topicToAdd in ashley.getValue("quizTopics"):
+            ashley.setValue("quizTopics", ashley.getValue("quizTopics").append(topicToAdd))
+        else:
+            a("But, you already know about that.")
     def inputQuestion(question, correctAnswer):
         global points
         a(f"{question}")
@@ -401,7 +452,7 @@ init python:
             a("Correct! You get a point.")
         else:
             a("Incorrect. You don't get a point.")
-        a(f"You have {points} {correctNoun()}.")
+        a(f"You have {points} {getCorrectNoun()}.")
     def menuQuestion(question, correctAnswer, options):
         global points
         a(f"{question}", interact=False)
@@ -411,36 +462,13 @@ init python:
             a("Correct! You get a point.")
         else:
             a("Incorrect. You don't get a point.")
-        a(f"You have {points} {correctNoun()}.")
-    # write to a file            
-    def writeToFile(filename, text):
-        with open(config.gamedir + "/" + filename, "r") as rf:
-            if text not in rf.read():
-                with open(config.gamedir + "/" + filename, "a") as af:
-                    af.write(text + "\n")
-        return
-    # declaring all the variables for use in the game, startup defaults etc
-    def initGame():
-        global ashley
-        global wilburtext
-        global chosenTrack
-        global tutorialGameCompleted
-        global tutorialConvoCompleted
-        global outfitchanged
-        global quizdict
-        global wardrobe
-        ashley = CharacterManager()
-        chosenTrack = "Soft Boy"
-        wilburtext = False
-        tutorialGameCompleted = False
-        tutorialConvoCompleted = False
-        outfitchanged = False
-        quizdict = {}
-        getAshBasics()
-        setBG()
-        initJams()
-        initWardrobe()
-    # contingencies for time of day whether tutorial is completed or not
+        a(f"You have {points} {getCorrectNoun()}.")   
+    def menuFormat(options):
+        formattedOptions = []
+        for option in options:
+            formattedOptions.append((option, option))
+        return formattedOptions
+    # sets time for bg from time of day/ tutorial status    
     def setBG():
         global ashley
         global timeOfDay
@@ -448,7 +476,7 @@ init python:
             timeOfDay = "day"
         else:
             getTimeOfDay()
-    # get frequently used basics from the JSON file
+    # getting variables from other functions
     def getAshBasics():
         global ashley
         global hairBack
@@ -473,7 +501,58 @@ init python:
         tutorialCompleted = ashley.getValue("tutorialCompleted")
         name = ashley.getValue("name")
         relationship = ashley.getValue("relationship")
-    # get Lat/Lon for use with sunrise/sunset API
+    def getCorrectNoun():
+        global points
+        if points == 1:
+            return "point"
+        else:
+            return "points"
+    def getCosmeticName(cosmeticType, cosmeticNo):
+        global cosmeticsAll
+        dictName = cosmeticType + "All"
+        return cosmeticsAll[dictName][cosmeticNo]
+    def getTrackDetails(chosenTrack):
+        global allSongs
+        global albumName
+        global artistName
+        global trackNo
+        global currentTrack
+        currentTrack = chosenTrack
+        albumName = None
+        artistName = None
+        trackNo = None
+        # find album name, track number
+        for key, value in allSongs.items():
+            for album, songs in value.items():
+                if currentTrack in songs:
+                    artistName = key
+                    albumName = album
+                    trackNo = songs.index(currentTrack) + 1
+                
+        # error catching (incase i add new tracks and forget to add to the dictionary)
+        if artistName is None:
+            albumName = "Unknown"
+            trackNo = "N/A"
+            artistName = "Unknown"
+    def getRandomSong(songsPlayed):
+        chosenTrack = random.choice(readFile("tunes.txt"))
+        try:
+            if chosenTrack == songsPlayed[-1]:
+                a(f"Oops! I was going to play {songsPlayed[-1]}, but you just heard that one!")
+                getRandomSong(songsPlayed)
+        except IndexError:
+            pass
+        return chosenTrack
+    def getPreviousSong(songsPlayed):
+        if len(songsPlayed) < 2:
+            a("No other songs played yet! Come back once you've heard some jams.")
+        return songsPlayed[-1]
+    def getSpecificSong():
+        specificSong = renpy.display_menu(menuFormat(readFile("heardSongs.txt")))
+        return specificSong
+
+
+    # API functions
     def getLocation():
         try:
             ipRequest = requests.get('https://ipwho.is')
@@ -485,7 +564,6 @@ init python:
         except:
             print("IP could not be retrieved! Are you using a VPN?")
             return (53.3676, 3.1626)
-    # get sunrise/sunset times for use with getTimeOfDay
     def getTimeBounds():
         lat, lon = getLocation()
         queryParameters = {
@@ -506,7 +584,6 @@ init python:
             noon = "12:00:00 PM"
 
         return (sunrise, sunset, noon)
-    # use current time and sunrise/sunset times to determine time of day
     def getTimeOfDay():
         global timeOfDay
         currentTime = datetime.now().strftime("%H:%M:%S")
@@ -528,13 +605,31 @@ init python:
             timeOfDay = "afternoon"
         else:
             timeOfDay = "night"
-    
+    # declaring all the variables for use in the game, startup defaults etc, calling all init functions
+    def bootGame():
+        global ashley
+        global wilburText
+        global tutorialGameCompleted
+        global tutorialConvoCompleted
+        global outfitchanged
+        global songsPlayed
+        ashley = CharacterManager()
+        wilburText = False
+        tutorialGameCompleted = False
+        tutorialConvoCompleted = False
+        outfitchanged = False
+        songsPlayed = []
+        getAshBasics()
+        setBG()
+        initJams()
+        initWardrobe()
+        initUnoReverse()
 # what the game does on bootup
 label start:
     # this is the intro- also serves as initial loading progress.
     stop music fadeout 1.0 
     python:
-        initGame()
+        bootGame()
         print(f"In-game time of day: {timeOfDay}")
         print(f"Name in file: {name}\nRelationship level {relationship}\nTutorial done? {tutorialCompleted}\n")
         if not tutorialCompleted and name != "":
@@ -544,7 +639,7 @@ label start:
     scene bg room
     show ash blink
     with fade
-    $ jams()
+    $ jamSelector("random")
     # DEBUGGING
     #a "Approaching hyperspeed!"
     #jump popquiz
@@ -572,7 +667,7 @@ label meet_ashley:
     show ash blink
     a "I could use your help with something..."
     a "Before we start... what do you want to be referred to as?"
-    $ setPlayerName()
+    $ namePlayer()
     a "Alright, [name], let's rock'n'roll."
     define y = Character("[name]")
     nar "This is a simulation of the human experience, coded by an amateur with an irrational love for RenPy."
@@ -580,7 +675,7 @@ label meet_ashley:
     a "With that said, shall we begin?"
     stop music fadeout 1.0
     jump init_tutorial
-# only shows each time the game boots the tutorial
+# only shows each time the player sees the tutorial
 label init_tutorial:
     scene bg room
     show ash open
@@ -641,28 +736,12 @@ label tutorial:
         show ash close
         a "Let's see...."
         show ash open
-        $ noun = correctNoun()
+        $ noun = getCorrectNoun()
         show ash blink
         a "You have reached [points] [noun]. Congratulations!"
         a "For humoring me on this remarkably dull game, I'll give you a reward."
-        # Ashley gives the player a reward- the 'MonoMono' outfit.
+        # Ashley gives the player a reward- the 'MonoMono Pin'.
         $ zeldaRiff("accessory", "01")
-        # python:
-        #     cosmetics = ashley.getValue("cosmetics")
-        #     if "01" in cosmetics[5]:
-        #         # 01 is only unlocked from the tutorial and it's only playable once. It shouldn't already be there
-        #         renpy.say(a, "Wait... that's not right.")
-        #         renpy.say(a, "You already have this one.")
-        #         renpy.say(a, "That shouldn't have happened.")
-        #         renpy.show("ash laugh")
-        #         renpy.say(a, "You're not doing anything you shouldn't, are you?")
-        #         renpy.show("ash")
-        #         renpy.say(a, "Ahaha. I'm kidding.")
-        #     else:
-        #         unlocked[5].append("01")
-        #         ashley.setValue("cosmetics", cosmetics)
-        #         renpy.play("audio/itemget.mp3")
-        #         renpy.say(nar, "You have unlocked the 'MonoMono Pin' accesory. Visit the unlockables menu to equip it!")
         $ tutorialGameCompleted = True
         a "Now, let's get back to the rest of the tutorial."
         jump tutorial
@@ -718,7 +797,6 @@ label tutorial:
                 a "Okay. I'll leave it for now."
         a "You're almost done. Back into the fray!"
         jump tutorial
-
 # normal game start provided tutorial is completed
 label launch:
     # this is where the player will be taken on launch after the tutorial is complete
@@ -752,7 +830,6 @@ label launch:
         renpy.say(a, f"{random.choice(greetings)}")
 
         renpy.jump("random_events")
-
 # decides what extra events will be played before the player gets control
 label random_events:
     # when the game is launched, before you get to interact with Ashley, you might have a random event.
@@ -771,7 +848,6 @@ label random_events:
         #        "It's been alright.":
         #        "Not so good.":
     jump interact
-
 # main interaction menu with Ashley, where you choose what to do
 label interact:
     # this is where the player can interact with Ashley
@@ -782,14 +858,13 @@ label interact:
         "Let's play a game.":
             jump gayme
         "Let's chat.":
-            jump pick_convo
+            jump conversation
         "Where am I up to?":
             # move this to unlockables as menu
             a "Looking for an outfit change? Variety is the spice of life, after all."
             jump unlockables
-
 # chat section of Ashley interaction
-label pick_convo:
+label conversation:
     # this is where the player can pick a conversation topic
     
     menu:
@@ -811,32 +886,46 @@ label pick_convo:
             # Ashley chooses at random
     # this is where Ashley tells the player what song is playing and more information about it
     label convo_song:
-        python:
-            a(f"The current song playing is {chosenTrack}, by {artistName}.")
-            if wilburtext == False:
-                wilburtext = True 
-                ashley.setValue("wilburTextHeard", True)
+        python:  
+            a(f"The current song playing is {currentTrack}, by {artistName}.")
+            if not wilburText and artistName == "Wilbur Soot":
+                wilburText = True
                 a("The person who coded this really loves Wilbur Soot's music... Ahaha.")
                 a("Can't say I blame her... He's quite something. Don't you agree?")
-                if ashley.getValue("wilburTextHeard"): 
+                if "wilbur" in ashley.getValue("quizTopics"): 
                     renpy.show("ash laugh")
                     a("But you've already heard this before, haven't you?")
                     renpy.show("ash blink")
                     a("In another session, I mean.")
                 else:    
-                    renpy.show("ash laugh")
+                    addQuizTopic("wilbur")
+                    renpy.show("ash laugh") 
                     a("What am I saying, of course you do.")
                     renpy.show("ash blink")
             else:
                 a("I'm glad you like it.")
         menu:
             "Can I hear some more?":
-                a "Of course you can. Give me a moment."
-                $ jams()
-                a "Better?"
+                a "Of course you can. Did you have anything specific in mind?"
+                $ randomSong = False
+                menu:
+                    "Random song, please!":
+                        a "Invoking RNGesus..."
+                        $ jamSelector("random")
+                        $ randomSong = True
+                        
+                    "Can I have the previous song?":
+                        a "Let's see..."
+                        $ jamSelector("previous")
+                    "Actually, I'd like something specific.":
+                        a "Alright, let's see what you've heard."
+                        $ jamSelector("specific")
+                    "Never mind, this song is fine.":
+                        a "No worries. I'll leave it as it is."
+                a "Anything else?"
                 label song_pick_loop:
                     menu:
-                        "Another! Let's keep this train rolling.":
+                        "Another! Let's keep this train rolling." if randomSong:
                             python:
                                 responses = ["And so it shall be.",
                                             "Anything for you...",
@@ -844,20 +933,20 @@ label pick_convo:
                                             f"Sure thing, {name}."]
                                 retort = random.choice(responses)
                                 a("[retort]")
-                                jams()
+                                jamSelector("random")
                             jump song_pick_loop
                         "Based. I'll stick with this one.":
                             a "Have fun~"
-                            jump pick_convo
+                            jump conversation
                         "Which song is this again?":
                             jump tellmemore
 
             "Alright cool. Love it.":
                 a "My pleasure. Come back anytime if you want to hear something new~"
-                jump pick_convo
+                jump conversation
             "Tell me more about this song.":
                 label tellmemore:
-                    a "This is Enjoyer Of Things' piano cover of [chosenTrack], track [trackNo] from [albumName], by [artistName]."
+                    a "This is Enjoyer Of Things' piano cover of [currentTrack], track [trackNo] from [albumName], by [artistName]."
                     menu:
                         a "Would you like to hear more?"
                         "Of course.":
@@ -890,10 +979,10 @@ label pick_convo:
     
     # this is where Ashley picks a conversation topic for you
     label convo_ashchoice:
-    python:
-        import random
-        convotopics = ["anecdote", "question", "poem", "gayme"]
-        renpy.jump("convo_" + random.choice(convotopics))
+        python:
+            import random
+            convotopics = ["anecdote", "question", "poem", "gayme"]
+            renpy.jump("convo_" + random.choice(convotopics))
 
             #a "I'm afraid I don't know much about it. I just know it's good."
             #a "I'm sure you can find out more about it online, though."
@@ -909,40 +998,25 @@ label pick_convo:
                 renpy.jump("question")
         label uno_reverse:
             # this is where Ashley asks the player a question (surprise!)
-            python:
-                questionlist = ["What's your favourite colour?", "What's your favourite food?", "What's your favourite dessert/sweets?", "What's your favourite animal?", "What's your favourite thing to do?", "What's your favourite book genre?", "What's your favourite film genre?", "What's your favourite song genre?"]
-                colours = ["Red", "Green", "Blue", "Orange", "Brown", "Purple"]
-                foods = ["Pizza", "Pasta", "Burger", "Steak", "Soup", "Sandwich"]
-                desserts = ["Chocolate", "Ice Cream", "Cake", "Donuts", "Candy", "Lollipop"]
-                animals = ["Dog", "Cat", "Bird", "Fish", "Turtle", "Rabbit"]
-                things = ["Reading", "Drawing", "Talking to people", "Playing Games", "Watching TV", "Listening to Music"]
-                genres = ["Horror", "Comedy", "Romance", "Action", "Sci-Fi", "Fantasy"]
-                listception = [colours, foods, desserts, animals, things, genres]
-                coloursresponse = ["I love red. It's one of my favourite colours. Especially crimson.", "Green is a good colour. It reminds me of nature. Or at least, my notion of it.", "Blue is nice... I can see it through my window every day, and I can see it when I look through myself.", "Orange reminds me of the sunset... What a pretty favourite colour.", "A lot of things are brown... Tree trunks, mud. It's very earthy. It suits you.", "Ah, purple... reminds me of the end of a rainbow. I like it."]
-                foodsresponse = ["Pizza is a good food.", "Pasta is a good food.", "Ahhh... I wish I could try a burger... They sound so good!", "Steak is a good food.", "Soup is a good food.", "Sandwich is a good food."]
-                dessertsresponse = ["Chocolate is a good dessert.", "Ice Cream is a good dessert.", "Cake is a good dessert.", "Donuts are a good dessert.", "Candy is a good dessert.", "Lollipops are a good dessert."]
-                animalsresponse = ["Dogs are good animals.", "Cats are good animals.", "Birds are good animals.", "Fish are good animals.", "Turtles are good animals.", "Rabbits are good animals."]
-                thingsresponse = ["Reading is a good thing to do.", "Drawing is a good thing to do.", "Talking to people is a good thing to do.", "Playing Games is a good thing to do.", "Watching TV is a good thing to do.", "Listening to Music is a good thing to do."]
-                genresresponse = ["Horror is a good genre.", "Comedy is a good genre.", "Romance is a good genre.", "Action is a good genre.", "Sci-Fi is a good genre.", "Fantasy is a good genre."]
-                electricboogaloo = [coloursresponse, foodsresponse, dessertsresponse, animalsresponse, thingsresponse, genresresponse]
-
+            
+               
 
                 # change this to smth in json when i can be bothered
-                whichquestion = random.choice(questionlist)
-                questionlist -= whichquestion
+                #whichquestion = random.choice(questionlist)
+                #questionlist -= whichquestion
 
                 # finds the correct option-choices / Ashley-response list corresponding to the question asked
-                correctindex = questionlist.index(whichquestion)
-                optionlist = listception[correctindex]
-                responselist = electricboogaloo[correctindex]
+                #correctindex = questionlist.index(whichquestion)
+                #optionlist = listception[correctindex]
+                #responselist = electricboogaloo[correctindex]
 
                 # loops through each item in optionlist- currentoption is object
-                for index, currentoption in enumerate(optionlist):
-                    i = str(index)
-                    exec(f"option{i} = currentoption")
-                for index, currentresponse in enumerate(responselist):
-                    i = str(index)
-                    exec(f"response{i} = currentresponse")
+                #for index, currentoption in enumerate(optionlist):
+                #    i = str(index)
+                #    exec(f"option{i} = currentoption")
+                #for index, currentresponse in enumerate(responselist):
+                #    i = str(index)
+                #    exec(f"response{i} = currentresponse")
 
             a "Surprise! I'm going to ask you a question instead."
             $ global ashley
@@ -1028,7 +1102,6 @@ label pick_convo:
                     a "I'm 5'7, which is pretty average."
                 "See original questions":
                     jump question
-
 # unlockables menu from the interaction menu
 label unlockables:
     # this is where the player can see their unlocked content
@@ -1068,7 +1141,6 @@ label unlockables:
     # have a You Choose! option where she picks an unlocked outfit at random
     # show a menu only showing unlocked outfits, and "default" using a for index, availableOutfits in cosmetics:
 
-# 
 label popquiz:
     # quezzies from knowledge gained from convos / asking ashley questions (1/10 chance you get quizzed) (answer correctly and you get relationship points)
     python: 
