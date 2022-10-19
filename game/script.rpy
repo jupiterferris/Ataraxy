@@ -9,7 +9,7 @@ define nar = Character(what_italic=True)
 # time- add to greeting messages on boot (been a while, good morning etc)
 # use seasonal music/skins- check on start to use diff text file
 # pick from a menu option of games- hangman, dice game, sudoku, card games/21? jump to python subroutine- you can choose from unlocked games?
-# unlockables from critera, relationship points, and certain events
+# unlockables from criteria, relationship points, and certain events
 # text-based adventure game? - choose your own adventure
 # add an option for random outfit on startup?
 # special item/ easter egg/ relationship points for 3 points in tutorial game?
@@ -439,10 +439,14 @@ init python:
         return itemList
     def addQuizTopic(topicToAdd):
         global ashley
-        if not topicToAdd in ashley.getValue("quizTopics"):
-            ashley.setValue("quizTopics", ashley.getValue("quizTopics").append(topicToAdd))
+        quizTopics = ashley.getValue("quizTopics")
+        if not topicToAdd in quizTopics:
+            quizTopics.append(topicToAdd)
+            ashley.setValue("quizTopics", quizTopics)
         else:
+            renpy.show("ash laugh")
             a("But, you already know about that.")
+            renpy.show("ash blink")
     def inputQuestion(question, correctAnswer):
         global points
         a(f"{question}")
@@ -888,7 +892,7 @@ label conversation:
     label convo_song:
         python:  
             a(f"The current song playing is {currentTrack}, by {artistName}.")
-            if not wilburText and artistName == "Wilbur Soot":
+            if not wilburText and (artistName == "Wilbur Soot" or artistName == "Lovejoy"):
                 wilburText = True
                 a("The person who coded this really loves Wilbur Soot's music... Ahaha.")
                 a("Can't say I blame her... He's quite something. Don't you agree?")
