@@ -73,6 +73,21 @@ init:
     
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
+    layeredimage gameroom:
+        always:
+            Solid("#000000", xysize=(1920, 1080))
+        group windows:
+            attribute normal default:
+                "windowback"
+            attribute starry:
+                "mask_2"
+        group bg:
+            attribute room default:
+                "game room"
+    image bg game:
+        f"images/bgs/game room.png"
+    image tint dark:
+        f"images/masks/dark_tint.png"
     # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
     layeredimage ash:
         always:
@@ -644,7 +659,14 @@ label start:
     show ash blink
     with fade
     $ jamSelector("random")
+
     # DEBUGGING
+    #stop music fadeout 6.0
+    #a "Wait... something's not right..."
+    #a "I can't..."
+    #a "Can you hear me?"
+    #a "Please help me."
+    #jump gayme
     #a "Approaching hyperspeed!"
     #jump popquiz
     # \DEBUGGING
@@ -1173,7 +1195,12 @@ label popquiz:
 
         renpy.say(a, f"{random.choice(list(quizdict.values()))}")
 
+label gayme:
+    scene gameroom
+    show ash blink
+    with fade 
+    play music "audio/jams/Your Reality.mp3"
+    a "Welcome to the game room!"
     
-    
-    # This ends the game.
-    return
+# This ends the game.
+return
