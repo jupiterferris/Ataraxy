@@ -1,0 +1,4 @@
+Infinite Loop,1,2,1,unkillable
+Project Bolan,1,2,1,shiftright
+Slider,1,2,1,bistrike
+The Bouncer,1,4,2,shield

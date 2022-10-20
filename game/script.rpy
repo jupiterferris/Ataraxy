@@ -189,6 +189,16 @@ init python:
             dump = json.dumps(self.json)
             with open(self.filename, "w+") as f:
                 f.write(dump)
+    class Card:
+        def __init__(self, name, power, cost, health):
+            self.name = name
+            self.power = power
+            self.cost = cost
+            self.health = health
+        def __str__(self):
+            cardDetails = [self.name, self.power, self.cost, self.health]
+            return str(cardDetails)
+        
     # setup all main functions with permanent data i.e all collectibles
     def initJams():
         global allSongs
@@ -358,6 +368,17 @@ init python:
                 "00" : "Thinly Veiled",
             }
         }
+    def initCards():
+        cardList = readFile("cardList.txt")
+        for card in cardList:
+            cardStats = card.split(",")
+            if len(cardStats) != 5:
+                print("Error: Card list is not formatted correctly.")
+                continue
+            card = Card(cardStats[0], cardStats[1], cardStats[2], cardStats[3])
+            print(card)
+            print(card.name)
+        
     # situational functions used as a specific part of a label
     def namePlayer():
         global ashley
@@ -643,6 +664,7 @@ init python:
         initJams()
         initWardrobe()
         initUnoReverse()
+        initCards()
 # what the game does on bootup
 label start:
     # this is the intro- also serves as initial loading progress.
