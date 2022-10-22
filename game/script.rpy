@@ -181,22 +181,23 @@ init python:
             except:
                 self.json = {}
         # Gets stored value from JSON
-        def getValue(self, keymies):
-            return self.json.get(keymies)
+        def getValue(self, key):
+            return self.json.get(key)
         # Sets value to JSON
-        def setValue(self, keymies, value):
-            self.json[keymies] = value
+        def setValue(self, key, value):
+            self.json[key] = value
             dump = json.dumps(self.json)
             with open(self.filename, "w+") as f:
                 f.write(dump)
     class Card:
-        def __init__(self, name, power, cost, health):
+        def __init__(self, name, power, health, cost, ability):
             self.name = name
             self.power = power
-            self.cost = cost
             self.health = health
+            self.cost = cost
+            self.ability = ability
         def __str__(self):
-            cardDetails = [self.name, self.power, self.cost, self.health]
+            cardDetails = [self.name, self.power, self.health, self.cost]
             return str(cardDetails)
         
     # setup all main functions with permanent data i.e all collectibles
