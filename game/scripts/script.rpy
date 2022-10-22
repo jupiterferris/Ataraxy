@@ -71,6 +71,11 @@ init:
     image ash_laugh:
         f"ash_eyes_mid_{eyes}"
     
+    image card:
+        "images/cards/Project Bolan.png"
+    image card2:
+        "images/cards/Project Bolan 2.png"
+
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
     layeredimage gameroom:
@@ -157,6 +162,8 @@ label start:
         elif name == "":
             renpy.jump("meet_ashley")
 
+    jump gayme
+
     scene bg room
     show ash blink
     with fade
@@ -195,7 +202,6 @@ label random_events:
 label interact:
     # this is where the player can interact with Ashley
     # you can play a game, chat, or go to the unlockables menu
-
     menu:
         a "So what do you want to do?"
         "Let's play a game.":
@@ -280,8 +286,10 @@ label conversation:
                             jump song_pick_loop
                         "Based. I'll stick with this one.":
                             a "Have fun~"
+                            $ randomSong = False
                             jump conversation
                         "Which song is this again?":
+                            $ randomSong = False
                             jump tellmemore
 
             "Alright cool. Love it.":
@@ -326,9 +334,6 @@ label conversation:
             import random
             convotopics = ["anecdote", "question", "poem", "gayme"]
             renpy.jump("convo_" + random.choice(convotopics))
-
-            #a "I'm afraid I don't know much about it. I just know it's good."
-            #a "I'm sure you can find out more about it online, though."
     label convo_question:
         # this is where the player asks Ashley a question- or Ashley asks the player a question
         # the question you ask is chosen, but the question Ashley asks is randomised
@@ -468,7 +473,7 @@ label unlockables:
         "What can you quiz me on?":
             python:
                 unlocked = ashley.getValue("unlockedQuizTopics")
-                if unlocked == 0:
+                if len(unlocked) == 0:
                     renpy.say(a, "You haven't unlocked any quiz topics yet! You're safe for now.")
                     renpy.jump("unlockables")
                 else:
@@ -519,6 +524,9 @@ label gayme:
     with fade 
     play music "audio/jams/Your Reality.mp3"
     a "Welcome to the game room!"
+    show card at top
+    show card2
+    a "Err, that might be a bit small!"
     
 # This ends the game.
 return
