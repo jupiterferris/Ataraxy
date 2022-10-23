@@ -71,16 +71,18 @@ init:
     image ash_laugh:
         f"ash_eyes_mid_{eyes}"
     
-    image card:
-        "images/cards/Project Bolan.png"
-    image card2:
-        "images/cards/Project Bolan 2.png"
+    image card_front:
+        f"images/cards/{Card.name}"
+
+    layeredimage card:
+        always: 
+            "card_front"
 
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
-    layeredimage gameroom:
+    layeredimage bg gameroom:
         always:
-            Solid("#000000", xysize=(1920, 1080))
+            "bg game"
         group windows:
             attribute normal default:
                 "windowback"
@@ -519,14 +521,13 @@ label popquiz:
 
 label gayme:
     stop music fadeout 1.0
-    scene gameroom
+    scene bg gameroom
     show ash blink
     with fade 
     play music "audio/jams/Your Reality.mp3"
     a "Welcome to the game room!"
     show card at top
-    show card2
-    a "Err, that might be a bit small!"
+    a "Now, how the fuck do I add text to this card?"
     
 # This ends the game.
 return
