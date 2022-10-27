@@ -25,123 +25,6 @@ define nar = Character(what_italic=True)
 #########################
 
 # IMAGES REFRESH EVERY SECOND! DO NOT USE FUNCTIONS IN IMAGE DECLARATION OR IT WILL LAG HARDER THAN A 2000S PC RUNNING MINECRAFT
-init:
-    image ash_hair_back:
-        f"ash_hair_back_{hairBack}"
-    image ash_body:
-        f"ash_body_{body}"
-    image ash_nails:
-        f"ash_nails_{nails}"
-    image ash_hair_front:
-        f"ash_hair_front_{hairFront}"
-    image ash_accessory:
-        f"ash_accessory_{accessory}"
-    image ash_eyebrows:
-        f"ash_eyebrows_{eyebrows}"
-    image ash_blink:
-        f"ash_eyes_{eyes}"
-        pause 8.0
-        f"ash_eyes_mid_{eyes}"
-        pause 0.1
-        f"ash_eyes_close"
-        pause 0.5
-        f"ash_eyes_mid_{eyes}"
-        pause 0.1
-        repeat
-    image ash_wink:
-        f"ash_eyes_wink_right_mid_{eyes}"
-        pause 0.1
-        f"ash_eyes_wink_right_close_{eyes}"
-        pause 0.5
-        f"ash_eyes_wink_right_mid_{eyes}"
-        pause 0.1
-        f"ash_eyes_{eyes}"
-    image ash_close:
-        f"ash_eyes_{eyes}"
-        pause 0.1
-        f"ash_eyes_mid_{eyes}"
-        pause 0.1
-        f"ash_eyes_close"
-    image ash_open:
-        f"ash_eyes_close"
-        pause 0.5
-        f"ash_eyes_mid_{eyes}"
-        pause 0.1
-        f"ash_eyes_{eyes}"
-    image ash_laugh:
-        f"ash_eyes_mid_{eyes}"
-
-    screen cardtest():
-        add Image(f"images/cards/{card.name}.png")
-        hbox:
-            align(0.0125, 0.2222)
-            spacing 100
-            text f"{card.health}"
-            text f"{card.strength}"
-        hbox:
-            align(0.09, 0.05)
-            text f"{card.cost}"
-    screen table():
-        frame:
-            background Solid("#b0000069")
-            align(0.5, 0.2)
-            grid 4 2:
-                spacing 10
-                for x in range(4):
-                    image "images/cards/emptyslot.png"
-                for x in range(4):
-                    imagebutton idle "images/cards/emptyslot.png" hover "images/cards/emptyslothover.png" action Return(x)
-
-    image bg room:
-        f"images/bgs/bg {timeOfDay}.png"
-    layeredimage bg gameroom:
-        always:
-            "bg game"
-        group windows:
-            attribute normal default:
-                "windowback"
-            attribute starry:
-                "mask_2"
-        group bg:
-            attribute room default:
-                "game room"
-    image bg game:
-        f"images/bgs/game room.png"
-    image tint dark:
-        f"images/masks/dark_tint.png"
-    # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
-    layeredimage ash:
-        always:
-            "ash_hair_back"
-        group torso:
-            attribute body default:
-                "ash_body"
-        group hands:
-            attribute nails default:
-                "ash_nails"
-        group head:
-            attribute face default:
-                "ash_face"
-        group eyes:
-            attribute blink default:
-                "ash_blink"
-            attribute wink:
-                "ash_wink"
-            attribute close:
-                "ash_close"
-            attribute open:
-                "ash_open"
-            attribute laugh:
-                "ash_laugh"
-        group hairFront:
-            attribute front default:
-                "ash_hair_front"
-        group hairTop:
-            attribute accessory:
-                "ash_accessory"
-        group eyebrows:
-            attribute eyebrows default:
-                "ash_eyebrows"  
 
 init python:
     # declaring all the variables for use in the game, startup defaults etc, calling all init functions
@@ -542,6 +425,7 @@ label gayme:
     a "Welcome to the game room!"
     show screen table
     show screen cardtest
+    show screen deck
     a "Would you look at that!"
     
 # This ends the game.
