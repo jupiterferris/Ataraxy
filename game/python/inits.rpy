@@ -169,8 +169,9 @@ init python:
             }
         }
     def initCards():
-        cardList = readFile("cardList.txt")
-        for card in cardList:
+        global card
+        cardFile = readFile("cardFile.txt")
+        for card in cardFile:
             cardStats = card.split(",")
             if len(cardStats) != 5:
                 print("Error: Card list is not formatted correctly.")

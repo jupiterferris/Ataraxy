@@ -70,14 +70,27 @@ init:
         f"ash_eyes_{eyes}"
     image ash_laugh:
         f"ash_eyes_mid_{eyes}"
-    
-    image card_front:
-        f"images/cards/{Card.name}"
 
-    layeredimage card:
-        always: 
-            "card_front"
-
+    screen cardtest():
+        add Image(f"images/cards/{card.name}.png")
+        hbox:
+            xalign 0.0125
+            yalign 0.2222
+            spacing 100
+            text f"{card.health}"
+            text f"{card.strength}"
+        hbox:
+            xalign 0.09
+            yalign 0.05
+            text f"{card.cost}"
+    screen table():
+        window:
+            xalign 0.5
+            yalign 0.15
+        window:
+            xalign 0.5
+            yalign 0.5
+            
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
     layeredimage bg gameroom:
@@ -526,8 +539,9 @@ label gayme:
     with fade 
     play music "audio/jams/Your Reality.mp3"
     a "Welcome to the game room!"
-    show card at top
-    a "Now, how the fuck do I add text to this card?"
+    show screen table
+    show screen cardtest
+    a "Would you look at that!"
     
 # This ends the game.
 return
