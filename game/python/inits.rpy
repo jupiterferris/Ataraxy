@@ -170,6 +170,7 @@ init python:
         }
     def initCards():
         global card
+        cards = []
         cardFile = readFile("cardFile.txt")
         for card in cardFile:
             cardStats = card.split(",")
@@ -177,5 +178,6 @@ init python:
                 print("Error: Card list is not formatted correctly.")
                 continue
             card = Card(cardStats[0], cardStats[1], cardStats[2], cardStats[3], cardStats[4])
+            cards.append(card)
             print(card)
             print(card.name)

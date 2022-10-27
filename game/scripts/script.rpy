@@ -74,23 +74,24 @@ init:
     screen cardtest():
         add Image(f"images/cards/{card.name}.png")
         hbox:
-            xalign 0.0125
-            yalign 0.2222
+            align(0.0125, 0.2222)
             spacing 100
             text f"{card.health}"
             text f"{card.strength}"
         hbox:
-            xalign 0.09
-            yalign 0.05
+            align(0.09, 0.05)
             text f"{card.cost}"
     screen table():
-        window:
-            xalign 0.5
-            yalign 0.15
-        window:
-            xalign 0.5
-            yalign 0.5
-            
+        frame:
+            background Solid("#b0000069")
+            align(0.5, 0.2)
+            grid 4 2:
+                spacing 10
+                for x in range(4):
+                    image "images/cards/emptyslot.png"
+                for x in range(4):
+                    imagebutton idle "images/cards/emptyslot.png" hover "images/cards/emptyslothover.png" action Return(x)
+
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
     layeredimage bg gameroom:
