@@ -422,11 +422,12 @@ label gayme:
     show ash blink
     with fade 
     play music "audio/jams/Your Reality.mp3"
-    a "Welcome to the game room!"
+    a "You've found your way to the game room."
+    a "Welcome."
     show screen table
     show screen cardtest
     show screen deck
-    a "Would you look at that!"
+    a "Another challenger. It has been a while."
     
 # This ends the game.
 return

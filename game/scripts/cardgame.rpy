@@ -16,6 +16,7 @@ init:
             grid 2 1:
                 spacing 10
                 imagebutton idle "images/cards/back.png" action Return()
+                # tf2 coconut
                 imagebutton idle "images/cards/Zerg.png" action Return()
     screen table():
         frame:
