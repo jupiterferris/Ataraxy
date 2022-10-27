@@ -16,7 +16,7 @@ init:
             grid 2 1:
                 spacing 10
                 imagebutton idle "images/cards/back.png" action Return()
-                imagebutton idle "images/cards/Project Bolan.png" action Return()
+                imagebutton idle "images/cards/Zerg.png" action Return()
     screen table():
         frame:
             background Solid("#b0000069")
