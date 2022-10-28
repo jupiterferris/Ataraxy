@@ -53,7 +53,7 @@ init python:
             renpy.show("ash laugh")
             a("You lucky thing, that's my creator's favourite song!")
             addQuizTopic("ATP")
-            renpy.show("ash")
+            renpy.show("ash blink")
         elif chosenTrack == "Soft Boy":
             a("Fun fact- this is actually the main menu song!")
             addQuizTopic("SoftBoy")

@@ -170,6 +170,7 @@ init python:
         }
     def initCards():
         global card
+        global cards
         cards = []
         cardFile = readFile("cardFile.txt")
         for card in cardFile:
@@ -181,3 +182,5 @@ init python:
             cards.append(card)
             print(card)
             print(card.name)
+        print(cards)
+        print(cards[0].name)

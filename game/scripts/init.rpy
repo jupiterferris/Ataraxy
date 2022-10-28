@@ -46,7 +46,7 @@ init:
 
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
-
+    
     # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
     layeredimage ash:
         always:

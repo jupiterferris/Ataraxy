@@ -1,23 +1,33 @@
 init:
-    screen cardtest():
-        add Image(f"images/cards/{card.name}.png")
-        hbox:
-            align(0.0125, 0.2222)
-            spacing 100
-            text f"{card.health}"
-            text f"{card.strength}"
-        hbox:
-            align(0.09, 0.05)
-            text f"{card.cost}"
-    screen deck():
+    transform pos_1_1:
+        xalign 0.3 yalign 0.0
+        linear 1.0 yalign 0.12
+    transform pos_1_2:
+        xalign 0.3 yalign 0.0
+        linear 1.0 yalign 0.5
+
+    transform cardtrans:
+        Fixed(
+        f"images/cards/{card.name}.png",
+        Text(f"{card.health}", align=(0.16, 0.9)),
+        Text(f"{card.strength}", align=(0.82, 0.9)),
+        Text(f"{card.cost}", align=(0.88, 0.215)),
+        fit_first=True
+        )
+    image cardtest:
+        contains cardtrans
+
+    image Project Bolan:
+        "images/cards/Project Bolan.png"
+    screen duck():
         frame:
             background Solid("#b0000069")
             align(0.99, 0.9)
             grid 2 1:
                 spacing 10
-                imagebutton idle "images/cards/back.png" action Return()
-                # tf2 coconut
-                imagebutton idle "images/cards/Zerg.png" action Return()
+                imagebutton idle "images/cards/back.png" hover "images/cards/backhover.png" action Return()
+                imagebutton idle "images/cards/zergback.png" hover "images/cards/zergbackhover.png" action Return()
+                
     screen table():
         frame:
             background Solid("#b0000069")
@@ -28,6 +38,12 @@ init:
                     image "images/cards/emptyslot.png"
                 for x in range(4):
                     imagebutton idle "images/cards/emptyslot.png" hover "images/cards/emptyslothover.png" action Return(x)
+    #screen hand():
+    #    frame:
+    #        background Solid("#b0000069")
+    #        align(0.5, 0.9)
+    #        hbox:
+
     layeredimage bg gameroom:
         always:
             "bg game"

@@ -4,7 +4,6 @@
 # declaring the RenPy speaking characters ("you" is added in meet_ashley)
 define a = Character("Ashley")
 define nar = Character(what_italic=True)
-
 ########## TO DO ##########
 # time- add to greeting messages on boot (been a while, good morning etc)
 # use seasonal music/skins- check on start to use diff text file
@@ -49,6 +48,15 @@ init python:
         initCards()
 
 # what the game does on bootup
+label splashscreen:
+    show text "Loading." with dissolve
+    pause 0.5
+    show text "Loading.." with dissolve
+    pause 0.5
+    show text "Loading..." with dissolve
+    pause 0.5
+    hide text with dissolve
+    return
 label start:
     # this is the intro- also serves as initial loading progress.
     stop music fadeout 1.0 
@@ -61,7 +69,7 @@ label start:
         elif name == "":
             renpy.jump("meet_ashley")
 
-    jump gayme
+    #jump gayme
 
     scene bg room
     show ash blink
@@ -354,7 +362,6 @@ label unlockables:
     # this is where the player can see their unlocked content
     $ global ashley
     $ initWardrobe()
-    a "Welcome to the unlockables menu!"
     menu:
         a "What would you like to see?"
         "Wardrobe change!":
@@ -422,12 +429,17 @@ label gayme:
     show ash blink
     with fade 
     play music "audio/jams/Your Reality.mp3"
-    a "You've found your way to the game room."
-    a "Welcome."
-    show screen table
-    show screen cardtest
-    show screen deck
     a "Another challenger. It has been a while."
+    a "So you've found your way to the game room."
+    a "Welcome."
+    a "Shall we begin?"
+    window hide dissolve
+    show screen table 
+    show screen duck
+    show cardtest at pos_1_1 onlayer screens
+    show Project Bolan at pos_1_2 onlayer screens
+    python:
+        ui.interact()
     
 # This ends the game.
 return
