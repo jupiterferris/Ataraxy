@@ -58,35 +58,21 @@ label splashscreen:
     pause 0.5
     hide text with dissolve
     return
+# initial loading progress and scene, calls bootGame 
 label start:
-    # this is the intro- also serves as initial loading progress.
     stop music fadeout 1.0 
     $ bootGame()
-    $ print(f"Name: {name}\nRelationship: {relationship}\nQuiz Topics: {quizTopics(', ')}")
+    $ print(f"Name: {name}\nRelationship: {relationship}\nQuiz Topics: {', '.join(ashley.getValue('quizTopics'))}")
     # if the player has already completed the tutorial, skip the intro 
     if not tutorialCompleted and name != "":
-        renpy.jump("init_tutorial")
+        jump init_tutorial
     elif name == "":
-        renpy.jump("meet_ashley")
-
-    #jump gayme
-
+        jump meet_ashley
     scene bg room
     show ash blink
     with fade
     $ jamSelector("random")
-    $ greeting = greetingSelector()
-    a "[greeting]"
-    # DEBUGGING
-    #stop music fadeout 6.0
-    #a "Wait... something's not right..."
-    #a "I can't..."
-    #a "Can you hear me?"
-    #a "Please help me."
-    #jump gayme
-    #a "Approaching hyperspeed!"
-    #jump popquiz
-    # \DEBUGGING
+    $ a(f"{greetingSelector()}")
     call random_events
     jump interact
 # decides what extra events will be played before the player gets control
@@ -128,7 +114,7 @@ label conversation:
         "Tell me a story!":
             jump convo_anecdote
             # Ashley either picks a random topic or a topic based on the player's relationship with her- story changes depending on answers?
-        "Tell me about yourself":
+        "Tell me about yourself.":
             jump convo_question
             # Ashley tells you random information about herself- 1/10 chance she asks you a question
         "Recite something!":
@@ -372,8 +358,7 @@ label unlockables:
             if ashley.getValue("quizTopics") == []:
                 a "You haven't unlocked any quiz topics yet! You're safe for now."
             else:
-                a "You've unlocked the following quiz topics:"
-                $ a(f"{', '.join(ashley.getValue('quizTopics'))}")
+                $ a(f"You've unlocked the following quiz topics: {', '.join(ashley.getValue('quizTopics'))}")
             jump unlockables
         "Pictures, please!":
             if ashley.getValue("pictures") == []:

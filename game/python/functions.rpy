@@ -98,7 +98,7 @@ init python:
     def anyCosmetics():
         global ashley
         for cosmeticType in ashley.getValue("cosmetics"):
-            if len(cosmeticType) > 0:
+            if len(cosmeticType) > 1:
                 return False
         return True
     # useful, commonly used functions
