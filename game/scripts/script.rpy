@@ -16,6 +16,7 @@ define nar = Character(what_italic=True)
 # day structure like animal crossing- morning only activities etc, forces to play at different times etc
 # music player- can pick from any seen tracks
 # can only play 1 game a day etc
+# joke randomiser for shits and giggles
 ##### Execution Flow #####
 # 1. "Start" label
 # 2. Branch to meet Ashley -> tutorial if first time, or to "launch" if not
@@ -61,13 +62,12 @@ label start:
     # this is the intro- also serves as initial loading progress.
     stop music fadeout 1.0 
     $ bootGame()
-
-    # if the player has already completed the tutorial, skip the intro
-    python:
-        if not tutorialCompleted and name != "":
-            renpy.jump("init_tutorial")
-        elif name == "":
-            renpy.jump("meet_ashley")
+    $ print(f"Name: {name}\nRelationship: {relationship}\nQuiz Topics: {quizTopics(', ')}")
+    # if the player has already completed the tutorial, skip the intro 
+    if not tutorialCompleted and name != "":
+        renpy.jump("init_tutorial")
+    elif name == "":
+        renpy.jump("meet_ashley")
 
     #jump gayme
 
@@ -360,36 +360,28 @@ label conversation:
 # unlockables menu from the interaction menu
 label unlockables:
     # this is where the player can see their unlocked content
-    $ global ashley
-    $ initWardrobe()
     menu:
         a "What would you like to see?"
         "Wardrobe change!":
-            python:
-                initWardrobe()
-                unlocked = ashley.getValue("cosmetics")
-                if unlocked == 0:
-                    renpy.say(a, "You haven't unlocked any outfits yet!")
-                    renpy.jump("unlockables")
-                else:
-                    renpy.say(a, "You've unlocked the following outfits:")
-                    for outfit in unlocked:
-                        renpy.say(a, f"{outfit}")
-                    renpy.jump("unlockables")
+            if not anyCosmetics():
+                a "You haven't unlocked any outfits yet!"
+            else:
+                a "Nope. Cba. Check back later when I give a shit."
+            jump unlockables
         "What can you quiz me on?":
-            python:
-                unlocked = ashley.getValue("unlockedQuizTopics")
-                if len(unlocked) == 0:
-                    renpy.say(a, "You haven't unlocked any quiz topics yet! You're safe for now.")
-                    renpy.jump("unlockables")
-                else:
-                    renpy.say(a, "You've unlocked the following quiz topics:")
-                    for topic in unlocked:
-                        topicList = topicList.append(topic)
-                    renpy.say(a, f"{', '.join(topicList)}")
-                renpy.jump("unlockables")
+            if ashley.getValue("quizTopics") == []:
+                a "You haven't unlocked any quiz topics yet! You're safe for now."
+            else:
+                a "You've unlocked the following quiz topics:"
+                $ a(f"{', '.join(ashley.getValue('quizTopics'))}")
+            jump unlockables
         "Pictures, please!":
-            jump gallery
+            if ashley.getValue("pictures") == []:
+                a "You haven't unlocked any pictures yet! Get to know me better!"
+            else:
+                a "You've unlocked the following pictures:"
+                $ menuFormat(ashley.getValue("pictures"))
+            jump unlockables
         "All done!":
             jump interact
     # have a You Choose! option where she picks an unlocked outfit at random

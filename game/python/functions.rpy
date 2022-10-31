@@ -95,7 +95,12 @@ init python:
                         "I'm here whenever you need me... I hope you know that."]
         greeting = random.choice(greetings)
         return greeting
-
+    def anyCosmetics():
+        global ashley
+        for cosmeticType in ashley.getValue("cosmetics"):
+            if len(cosmeticType) > 0:
+                return False
+        return True
     # useful, commonly used functions
     def zeldaRiff(cosmeticType, cosmeticNo):
         global ashley
@@ -155,10 +160,10 @@ init python:
             a("Incorrect. You don't get a point.")
         a(f"You have {points} {getCorrectNoun()}.")   
     def menuFormat(options):
-        formattedOptions = []
         for option in options:
             formattedOptions.append((option, option))
         return formattedOptions
+
     # sets time for bg from time of day/ tutorial status    
     def setBG():
         global ashley
@@ -241,4 +246,3 @@ init python:
     def getSpecificSong():
         specificSong = renpy.display_menu(menuFormat(readFile("heardSongs.txt")))
         return specificSong
-

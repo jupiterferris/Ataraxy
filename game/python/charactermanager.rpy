@@ -40,6 +40,10 @@ init python:
             cosmetics = self.json.get("cosmetics")
             if cosmetics is None:
                 self.setValue("cosmetics", [["00"], ["00"], ["00"], ["00"], ["00"], ["00"], ["00"]])
+            
+            pictures = self.json.get("pictures")
+            if pictures is None:
+                self.setValue("pictures", [])
         # Opens the JSON file
         def open(self):
             try:
