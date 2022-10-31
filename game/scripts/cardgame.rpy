@@ -5,6 +5,24 @@ init:
     transform pos_1_2:
         xalign 0.3 yalign 0.0
         linear 1.0 yalign 0.5
+    transform pos_2_1:
+        xalign 0.43 yalign 0.0
+        linear 1.0 yalign 0.12
+    transform pos_2_2:
+        xalign 0.43 yalign 0.0
+        linear 1.0 yalign 0.5
+    transform pos_3_1:
+        xalign 0.57 yalign 0.0
+        linear 1.0 yalign 0.12
+    transform pos_3_2:
+        xalign 0.57 yalign 0.0
+        linear 1.0 yalign 0.5
+    transform pos_4_1:
+        xalign 0.7 yalign 0.0
+        linear 1.0 yalign 0.12
+    transform pos_4_2:
+        xalign 0.7 yalign 0.0
+        linear 1.0 yalign 0.5
 
     transform cardtrans:
         Fixed(
@@ -19,6 +37,9 @@ init:
 
     image Project Bolan:
         "images/cards/Project Bolan.png"
+    image Zerg:
+        "images/cards/Zerg.png"
+    
     screen duck():
         frame:
             background Solid("#b0000069")

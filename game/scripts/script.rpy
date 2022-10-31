@@ -364,11 +364,11 @@ label unlockables:
 
 label popquiz:
     # quezzies from knowledge gained from convos / asking ashley questions (1/10 chance you get quizzed) (answer correctly and you get relationship points)
-    $ a("{random.choice(quizOpener())}")
+    $ a(f"{random.choice(quizOpener())}")
     if ashley.getValue("quizTopics") == []:
         a "Actually, I don't think you've learned anything from me yet. Come back later!"
         jump question
-        $ a("[random.choice(list(quizdict.values.keys()))]")
+        $ a(f"{random.choice(list(quizdict.values.keys()))}")
 
 label gayme:
     stop music fadeout 1.0
@@ -385,6 +385,9 @@ label gayme:
     show screen duck
     show cardtest at pos_1_1 onlayer screens
     show Project Bolan at pos_1_2 onlayer screens
+    show Zerg at pos_2_2 onlayer screens
+    show cardtest at pos_3_2 onlayer screens
+    show cardtest at pos_4_2 onlayer screens
     $ ui.interact()
     
 # This ends the game.
