@@ -23,8 +23,8 @@ init python:
         }
     def initQuiz():
         global ashley
-        quizTopics = ashley.getValue("quizTopics")
-        if len(quizTopics) == 0:
+        global ashQuestions
+        if len(ashley.getValue("quizTopics")) == 0:
             return True
         ashQuestions = {
             "surname" : {
@@ -59,7 +59,6 @@ init python:
             }
         }
         # random chance of getting a "Do you remember how you unlocked..." question
-
     def initUnoReverse():
         global playerQuestions
         playerQuestions = {
