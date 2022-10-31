@@ -127,25 +127,24 @@ label conversation:
             jump convo_ashchoice
             # Ashley chooses at random
     # this is where Ashley tells the player what song is playing and more information about it
-    label convo_song:
-        python:  
-            a(f"The current song playing is {currentTrack}, by {artistName}.")
-            if not wilburText and (artistName == "Wilbur Soot" or artistName == "Lovejoy"):
-                wilburText = True
-                a("The person who coded this really loves Wilbur Soot's music... Ahaha.")
-                a("Can't say I blame her... He's quite something. Don't you agree?")
-                if "wilbur" in ashley.getValue("quizTopics"): 
-                    renpy.show("ash laugh")
-                    a("But you've already heard this before, haven't you?")
-                    renpy.show("ash blink")
-                    a("In another session, I mean.")
-                else:    
-                    addQuizTopic("wilbur")
-                    renpy.show("ash laugh") 
-                    a("What am I saying, of course you do.")
-                    renpy.show("ash blink")
-            else:
-                a("I'm glad you like it.")
+    label convo_song: 
+        a "The current song playing is [currentTrack], by [artistName]."
+        if not wilburText and (artistName == "Wilbur Soot" or artistName == "Lovejoy"):
+            $ wilburText = True
+            a "The person who coded this really loves Wilbur Soot's music... Ahaha."
+            a "Can't say I blame her... He's quite something. Don't you agree?"
+            if "wilbur" in ashley.getValue("quizTopics"): 
+                show ash laugh
+                a "But you've already heard this before, haven't you?"
+                show ash blink
+                a "In another session, I mean."
+            else:    
+                $ addQuizTopic("wilbur")
+                show ash laugh
+                a "What am I saying, of course you do."
+                show ash blink
+        else:
+            a "I'm glad you like it."
         menu:
             "Can I hear some more?":
                 a "Of course you can. Did you have anything specific in mind?"
@@ -168,14 +167,8 @@ label conversation:
                 label song_pick_loop:
                     menu:
                         "Another! Let's keep this train rolling." if randomSong:
-                            python:
-                                responses = ["And so it shall be.",
-                                            "Anything for you...",
-                                            "I don't think so. Haha, just kidding!",
-                                            f"Sure thing, {name}."]
-                                retort = random.choice(responses)
-                                a("[retort]")
-                                jamSelector("random")
+                                $ a(f"{randomResponse(affirmative)}")
+                                $ jamSelector("random")
                             jump song_pick_loop
                         "Based. I'll stick with this one.":
                             a "Have fun~"
