@@ -99,8 +99,8 @@ init python:
         global ashley
         for cosmeticType in ashley.getValue("cosmetics"):
             if len(cosmeticType) > 1:
-                return False
-        return True
+                return True
+        return False
     # useful, commonly used functions
     def zeldaRiff(cosmeticType, cosmeticNo):
         global ashley

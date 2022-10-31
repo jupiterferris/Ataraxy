@@ -101,7 +101,7 @@ label interact:
             jump gayme
         "Let's chat.":
             jump conversation
-        "Where am I up to?":
+        "What've I got?":
             # move this to unlockables as menu
             a "Looking for an outfit change? Variety is the spice of life, after all."
             jump unlockables
