@@ -22,10 +22,7 @@ init python:
             }
         }
     def initQuiz():
-        global ashley
         global ashQuestions
-        if len(ashley.getValue("quizTopics")) == 0:
-            return True
         ashQuestions = {
             "surname" : {
                 "What is my last name?" : "Rosemarry"

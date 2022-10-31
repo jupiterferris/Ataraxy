@@ -17,6 +17,7 @@ define nar = Character(what_italic=True)
 # music player- can pick from any seen tracks
 # can only play 1 game a day etc
 # joke randomiser for shits and giggles
+# add luma piano cover to music player
 ##### Execution Flow #####
 # 1. "Start" label
 # 2. Branch to meet Ashley -> tutorial if first time, or to "launch" if not
@@ -168,8 +169,8 @@ label conversation:
                 label song_pick_loop:
                     menu:
                         "Another! Let's keep this train rolling." if randomSong:
-                                $ a(f"{randomResponse(affirmative)}")
-                                $ jamSelector("random")
+                            $ a(f"{randomResponse(affirmative)}")
+                            $ jamSelector("random")
                             jump song_pick_loop
                         "Based. I'll stick with this one.":
                             a "Have fun~"
@@ -348,7 +349,13 @@ label unlockables:
                 a "You haven't unlocked any pictures yet! Get to know me better!"
             else:
                 a "You've unlocked the following pictures:"
-                $ menuFormat(ashley.getValue("pictures"))
+                $ pictureChoice = renpy.display_menu(menuFormat(ashley.getValue("pictures")))
+                window hide dissolve
+                show screen chosenPicture with dissolve
+                $ ui.interact()
+                hide screen chosenPicture with dissolve
+                window show dissolve
+                # show picture like poem mechanic from ddlc
             jump unlockables
         "All done!":
             jump interact
@@ -357,29 +364,11 @@ label unlockables:
 
 label popquiz:
     # quezzies from knowledge gained from convos / asking ashley questions (1/10 chance you get quizzed) (answer correctly and you get relationship points)
-    python: 
-        # have an empty list, with if statements appending to the list.
-        global ashley
-        import json
-        import random
-        #quezzietopics = ashley.json.keys()
-        quizopener = [
-            "I hope you've been paying attention!", 
-            "Time to test your knowledge!", 
-            "Let's see how well you know me!", 
-            "Let's see how much you've been paying attention!", 
-            "Let's see how much you've learned!", 
-            "Pop quiz!", 
-            "Knowledge check!",
-            "Think fast!"
-        ]
-        a(f"{random.choice(quizopener)}")
-
-        if initQuiz():
-            renpy.say (a, "Actually, I don't think you've learned anything from me yet. Come back later!")
-            renpy.jump("question")
-
-        renpy.say(a, f"{random.choice(list(quizdict.values()))}")
+    $ a("{random.choice(quizOpener())}")
+    if ashley.getValue("quizTopics") == []:
+        a "Actually, I don't think you've learned anything from me yet. Come back later!"
+        jump question
+        $ a("[random.choice(list(quizdict.values.keys()))]")
 
 label gayme:
     stop music fadeout 1.0

@@ -44,6 +44,8 @@ init:
     image ash_laugh:
         f"ash_eyes_mid_{eyes}"
 
+    screen chosenPicture():
+        imagebutton idle "images/gallery/[pictureChoice].png" hover "images/gallery/[pictureChoice].png" action Return() at truecenter
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
     

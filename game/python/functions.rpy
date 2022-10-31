@@ -101,6 +101,17 @@ init python:
             if len(cosmeticType) > 1:
                 return True
         return False
+    def quizOpener():
+        openers = [
+            "I hope you've been paying attention!", 
+            "Time to test your knowledge!", 
+            "Let's see how well you know me!", 
+            "Let's see how much you've been paying attention!", 
+            "Let's see how much you've learned!", 
+            "Pop quiz!", 
+            "Knowledge check!",
+            "Think fast!"]
+        return random.choice(openers)
     # useful, commonly used functions
     def zeldaRiff(cosmeticType, cosmeticNo):
         global ashley
@@ -160,6 +171,7 @@ init python:
             a("Incorrect. You don't get a point.")
         a(f"You have {points} {getCorrectNoun()}.")   
     def menuFormat(options):
+        formattedOptions = []
         for option in options:
             formattedOptions.append((option, option))
         return formattedOptions
