@@ -196,19 +196,18 @@ label conversation:
                             a "They have also released a few covers of songs by other artists, such as Crywank's Privately Owned Spiral Galaxy and Knee Deep At ATP by Los Campesinos!" 
                             show ash laugh
                             a "I hope that was enough information for you. If you want to know more, you can always ask my creator."
-                            show ash blink
-                            python: 
-                                if not "grapes" in ashley.getValue("quizTopics"):
-                                    addQuizTopic("grapes")
-                                    writeToFile("tunes.txt", "Grapes\n")
-                                    a("As a thank you for listening to my rambling, I've unlocked a secret track for you.")
-                                    a("It's a lesser-known song by James Marriott that was made collaboratively with Ash Kabosu- Lovejoy's bass guitarist.")
-                                    a("Enjoy~")
-                                else: 
-                                    a("I was going to give you a secret track as thanks, but it appears you've already unlocked it.")
-                                    renpy.show("ash laugh")
-                                    a("Did you hope I would give you another one? Haha, sorry. You only get the one.")         
-                                    renpy.show("ash blink")       
+                            show ash blink 
+                            if not "grapes" in ashley.getValue("quizTopics"):
+                                $ addQuizTopic("grapes")
+                                $ writeToFile("tunes.txt", "Grapes\n")
+                                a "As a thank you for listening to my rambling, I've unlocked a secret track for you."
+                                a "It's a lesser-known song by James Marriott that was made collaboratively with Ash Kabosu- Lovejoy's bass guitarist."
+                                a "Enjoy~"
+                            else: 
+                                a "I was going to give you a secret track as thanks, but it appears you've already unlocked it."
+                                show ash laugh
+                                a "Did you hope I would give you another one? Haha, sorry. You only get the one."       
+                                show ash blink       
                             jump song_pick_loop
                         "No thanks.":
                             a "As you wish."
