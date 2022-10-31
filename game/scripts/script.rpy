@@ -385,8 +385,7 @@ label gayme:
     show screen duck
     show cardtest at pos_1_1 onlayer screens
     show Project Bolan at pos_1_2 onlayer screens
-    python:
-        ui.interact()
+    $ ui.interact()
     
 # This ends the game.
 return
