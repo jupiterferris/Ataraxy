@@ -44,6 +44,7 @@ init python:
         getAshBasics()
         setBG()
         initJams()
+        initQuiz()
         initWardrobe()
         initUnoReverse()
         initCards()
@@ -215,10 +216,8 @@ label conversation:
     
     # this is where Ashley picks a conversation topic for you
     label convo_ashchoice:
-        python:
-            import random
-            convotopics = ["anecdote", "question", "poem", "gayme"]
-            renpy.jump("convo_" + random.choice(convotopics))
+            $ convotopics = ["anecdote", "question", "poem", "gayme"]
+            $ renpy.jump("convo_" + random.choice(convotopics))
     label convo_question:
         # this is where the player asks Ashley a question- or Ashley asks the player a question
         # the question you ask is chosen, but the question Ashley asks is randomised
@@ -230,7 +229,7 @@ label conversation:
             else:
                 renpy.jump("question")
         label uno_reverse:
-            # this is where Ashley asks the player a question (surprise!)
+            # this is where Ashley asks the player a question about the player (surprise!)
             
                
 
@@ -299,14 +298,6 @@ label conversation:
                 "What's your favourite colour?":
                     $ addQuizTopic("colour")
                     a "If you couldn't tell, I'm rather fond of red and black... Something about it is just so slick!"
-                    jump question
-                "What's your favourite food?":
-                    $ addQuizTopic("food")
-                    a "Burgers. I can't exactly eat, per se... But I just know it sounds good."
-                    jump question
-                "What's your favourite dessert/sweets?":
-                    $ addQuizTopic("dessert")
-                    a "I'm not sure I have a favourite, because I can't really eat... But I do like chocolate."
                     jump question
                 "What's your favourite animal?":
                     $ addQuizTopic("animal")
@@ -383,8 +374,6 @@ label popquiz:
             "Think fast!"
         ]
         a(f"{random.choice(quizopener)}")
-
-        initQuiz()
 
         if initQuiz():
             renpy.say (a, "Actually, I don't think you've learned anything from me yet. Come back later!")

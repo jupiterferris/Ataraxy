@@ -22,43 +22,44 @@ init python:
             }
         }
     def initQuiz():
-        # change "quizTopics" to the question strings
         global ashley
-        global quizdict
         quizTopics = ashley.getValue("quizTopics")
         if len(quizTopics) == 0:
             return True
-        topics = ("surname", "ATP", "SoftBoy", "grapes", "colour", "food", "dessert", "animal", "thing", "genre", "tall")
-        answers = ("Rosemarry", "Knee Deep At ATP", "Soft Boy", "Grapes", "Red", "")
-        #for topics in quizTopics:
-        #    quizdict[topics] = 
-        if "surname" in quizTopics:
-            quizdict["surname"] = "What's my last name?"
-        if "ATP" in quizTopics:
-            quizdict["ATP"] = "Do you remember my creator's favourite song?"
-        if "SoftBoy" in quizTopics:
-            quizdict["SoftBoy"] = "Do you know the name of the main menu song?"
-        if "wilburTextHeard" in quizTopics:
-            quizdict["wilburTextHeard"] = "What is the name of Wilbur Soot's band?"
-        if "grapes" in quizTopics:
-            quizdict["grapes"] = "Do you remember how you unlocked 'Grapes'?"
-        if "colour" in quizTopics:
-            quizdict["colour"] = "What's my favourite colour?"
-        if "food" in quizTopics:
-            quizdict["food"] = "What's my favourite food?"
-        if "dessert" in quizTopics:
-            quizdict["dessert"] = "What's my favourite dessert/sweets?"
-        if "animal" in quizTopics:
-            quizdict["animal"] = "What's my favourite animal?"
-        if "thing" in quizTopics:
-            quizdict["thing"] = "What's my favourite thing to do?"
-        if "genre" in quizTopics:
-            quizdict["genre"] = "What's my favourite genre?"
-        if "tall" in quizTopics:
-            quizdict["tall"] = "How tall am I?"
-        if len(ashley.getValue("cosmetics")) > 1:
-            #make this say outfit name eventually
-            quizdict["outfit"] = f"Do you remember when you unlocked the {random.choice(ashley.getValue('cosmetics'))} outfit?"
+        ashQuestions = {
+            "surname" : {
+                "What is my last name?" : "Rosemarry"
+            },
+            "ATP" : {
+                "Do you remember my creator's favourite song?" : "Knee Deep At ATP"
+            },
+            "SoftBoy" : {
+                "Do you know the name of the main menu song?" : "Soft Boy"
+            },
+            "wilburTextHeard" : {
+                "What is the name of Wilbur Soot's band?" : "Lovejoy"
+            },
+            "colour" : {
+                "What is my favourite colour?" : "Red"
+            },
+            "animal" : {
+                "What is my favourite animal?" : "Ferrets"
+            },
+            "thing" : {
+                "What is my favourite thing to do?" : "Talk to people/ play games"
+            },
+            "song" : {
+                "What is my favourite song?" : "Rose's Fountain"
+            },
+            "genre" : {
+                "What is my favourite genre?" : "Horror/Fantasy"
+            },
+            "tall" : {
+                "How tall am I?" : "5'7"
+            }
+        }
+        # random chance of getting a "Do you remember how you unlocked..." question
+
     def initUnoReverse():
         global playerQuestions
         playerQuestions = {
