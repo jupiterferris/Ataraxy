@@ -148,7 +148,7 @@ label conversation:
         else:
             a "I'm glad you like it."
         menu:
-            "Can I hear some more?":
+            "Can I hear something else?":
                 a "Of course you can. Did you have anything specific in mind?"
                 $ randomSong = False
                 menu:
@@ -222,75 +222,15 @@ label conversation:
     label convo_question:
         # this is where the player asks Ashley a question- or Ashley asks the player a question
         # the question you ask is chosen, but the question Ashley asks is randomised
-        python:
-            import random
-            unoreverse = random.randint(1,5)
-            if unoreverse == 1:
-                renpy.jump("uno_reverse")
-            else:
-                renpy.jump("question")
+        $ reverseChance = random.randint(1,5)
+        if reverseChance == 1 and unoReverse() is not None:
+            jump uno_reverse
+        else:
+            jump question
         label uno_reverse:
             # this is where Ashley asks the player a question about the player (surprise!)
-            
-               
-
-                # change this to smth in json when i can be bothered
-                #whichquestion = random.choice(questionlist)
-                #questionlist -= whichquestion
-
-                # finds the correct option-choices / Ashley-response list corresponding to the question asked
-                #correctindex = questionlist.index(whichquestion)
-                #optionlist = listception[correctindex]
-                #responselist = electricboogaloo[correctindex]
-
-                # loops through each item in optionlist- currentoption is object
-                #for index, currentoption in enumerate(optionlist):
-                #    i = str(index)
-                #    exec(f"option{i} = currentoption")
-                #for index, currentresponse in enumerate(responselist):
-                #    i = str(index)
-                #    exec(f"response{i} = currentresponse")
-
             a "Surprise! I'm going to ask you a question instead."
-            $ global ashley
-            $ unlocked = ashley.getValue("cosmetics")
-            menu:
-                a "[whichquestion]"
-                "[option0]":
-                    a "[response0]"
-                    python:
-                        if whichquestion == questionlist[0]:
-                            relationship = ashley.getValue("relationship")
-                            relationship += 5
-                "[option1]":
-                    a "[response1]"
-                    python:
-                        if whichquestion == questionlist[0]:
-                            zeldaRiff("William Eyebrows", "02")
-                "[option2]":
-                    a "[response2]"
-                    python:
-                        if whichquestion == questionlist[0]:
-                            zeldaRiff("Depressed & Pronouns", "03")
-                "[option3]":
-                    a "[response3]"
-                    python:
-                        if whichquestion == questionlist[0]:
-                            zeldaRiff("Sweet Tangerine", "04")
-                "[option4]":
-                    a "[response4]"
-                    python:
-                        if whichquestion == questionlist[0]:
-                            zeldaRiff("Bodacious Babe", "05")
-                "[option5]":
-                    a "[response5]"
-                    python:
-                        if whichquestion == questionlist[0]:
-                            zeldaRiff("Sumsar", "06")
-                "I don't have a favourite.":
-                    a "That's alright. I know I'm your favourite, though. Ahaha."
-
-            jump random_events
+            $ unoReverse()
         label question:
             # this is where the player can ask Ashley a question
             $ global ashley

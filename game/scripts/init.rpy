@@ -77,7 +77,7 @@ init:
             attribute front default:
                 "ash_hair_front"
         group hairTop:
-            attribute accessory:
+            attribute accessory default:
                 "ash_accessory"
         group eyebrows:
             attribute eyebrows default:

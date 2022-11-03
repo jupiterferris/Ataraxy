@@ -112,6 +112,21 @@ init python:
             "Knowledge check!",
             "Think fast!"]
         return random.choice(openers)
+    def unoReverse():
+        global questionsForPlayer
+        global ashley
+        askedTopics = ashley.getValue("askedTopics")
+        for topic in askedTopics:
+            try: 
+                questionsForPlayer.pop(topic)
+            except KeyError:
+                continue
+        if questionsForPlayer is empty:
+            return None
+        chosenTopic = random.choice(questionsForPlayer)
+        #indexOfTopic = findDictIndex(questionsForPlayer, chosenTopic)
+        ashley.setValue("askedTopics", askedTopics.append(chosenTopic))
+        return chosenTopic
     # useful, commonly used functions
     def zeldaRiff(cosmeticType, cosmeticNo):
         global ashley
@@ -185,6 +200,10 @@ init python:
                     "Are you sure about that?",
                     "Sorry, no can do."]
         return random.choice(typeOfResponse)
+    def findDictIndex(dict, item):
+        keysList = list(dict.keys())
+        dictIndex = keysList.index(item)
+        return dictIndex
     # sets time for bg from time of day/ tutorial status    
     def setBG():
         global ashley

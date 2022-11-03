@@ -44,6 +44,14 @@ init python:
             pictures = self.json.get("pictures")
             if pictures is None:
                 self.setValue("pictures", [])
+            
+            ashe = self.json.get("ashe")
+            if ashe is None:
+                self.setValue("ashe", 0)
+
+            askedTopics = self.json.get("askedTopics")
+            if askedTopics is None:
+                self.setValue("askedTopics", [])
         # Opens the JSON file
         def open(self):
             try:
