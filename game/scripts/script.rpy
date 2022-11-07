@@ -53,11 +53,11 @@ init python:
 # what the game does on bootup
 label splashscreen:
     show text "Loading." with dissolve
-    pause 0.25
+    $ renpy.pause(delay = 0.2, hard = True)
     show text "Loading.." with dissolve
-    pause 0.25
+    $ renpy.pause(delay = 0.2, hard = True)
     show text "Loading..." with dissolve
-    pause 0.25
+    $ renpy.pause(delay = 0.2, hard = True)
     hide text with dissolve
     return
 # initial loading progress and scene, calls bootGame 
