@@ -45,11 +45,11 @@ init python:
         print(f"Noon today: {noonTime}")
         # [midnight] | morning | [sunrise] | day | [noon] | afternoon | [sunset] | night | [midnight]
         if currentTime > midnightTime and currentTime < sunriseTime:
-            timeOfDay = "morning"
+            timeOfDay = "Morning"
         elif currentTime > sunriseTime and currentTime < noonTime:
-            timeOfDay = "day"
+            timeOfDay = "Day"
         elif currentTime > noonTime and currentTime < sunsetTime:
-            timeOfDay = "afternoon"
+            timeOfDay = "Afternoon"
         else:
-            timeOfDay = "night"
+            timeOfDay = "Night"
     

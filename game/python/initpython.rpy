@@ -6,8 +6,9 @@ init python:
             "Wilbur Soot" : {
                 "The E-Girl Trilogy" : ("I'm In Love With An E-Girl", "Internet Ruined Me", "Your New Boyfriend"),
                 "Your City Gave Me Asthma" : ("Jubilee Line", "Saline Solution", "Your Sister Was Right", "Losing Face", "Since I Saw Vienna", "La Jolla", "I'm Sorry Boris"),
-                "Maybe I Was Boring" : ("Maybe I Was Boring", "For Memories", "White Wine In A Wetherspoons"),
-                "unlisted" : ("Soft Boy", "The Nice Guy Ballad")
+                "Maybe I Was Boring" : ("Maybe I Was Boring", "For Memories", "White Wine In A Wetherspoons", "It's All Futile! It's All Pointless! Alternative"),
+                "The Nice Guy Ballad" : ("The Nice Guy Ballad", "Karen, Please Come Back I Miss The Kids", "I Am Very Smart"),
+                "Singles" : ("Soft Boy", "Soft Boy Alternative")
             },
             "Lovejoy" : {
                 "Are You Alright?" : ("Taunt", "One Day", "Sex Sells", "Cause For Concern"),
@@ -15,15 +16,15 @@ init python:
                 "covers" : ("Knee Deep At ATP", "Privately Owned Spiral Galaxy")
             },
             "James Marriott" : { 
-                "secret" : ("Grapes")
+                "Bitter Tongues" : ("Grapes")
             },
             "a very talented team" : {
                 "misc songs" : ("Rose's Fountain", "Lily Flower")
             }
         }
     def initQuiz():
-        global ashQuestions
-        ashQuestions = {
+        global quizQuestions
+        quizQuestions = {
             "surname" : {
                 "What is my last name?" : "Rosemarry"
             },

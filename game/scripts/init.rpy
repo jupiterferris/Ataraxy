@@ -48,6 +48,11 @@ init:
         imagebutton idle "images/gallery/[pictureChoice].png" hover "images/gallery/[pictureChoice].png" action Return() at truecenter
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
+    screen dayTime:
+        $ modal = False 
+        add "gui/time/timebg.png" xpos 0 ypos 0
+        add f"gui/time/{timeOfDay}.png" xpos 5 ypos 0
+        text(f"{timeOfDay}") xpos 80 ypos 15
     
     # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
     layeredimage ash:

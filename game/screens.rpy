@@ -240,35 +240,35 @@ style choice_button_text is default:
 ## The quick menu is displayed in-game to provide easy access to the out-of-game
 ## menus.
 
-screen quick_menu():
+# screen quick_menu():
 
-    ## Ensure this appears on top of other screens.
-    zorder 100
+#     ## Ensure this appears on top of other screens.
+#     zorder 100
 
-    if quick_menu:
+#     if quick_menu:
 
-        hbox:
-            style_prefix "quick"
+#         hbox:
+#             style_prefix "quick"
 
-            xalign 0.5
-            yalign 1.0
+#             xalign 0.5
+#             yalign 1.0
 
-            textbutton _("Back") action Rollback()
-            textbutton _("History") action ShowMenu('history')
-            textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("Auto") action Preference("auto-forward", "toggle")
-            #textbutton _("Save") action ShowMenu('save')
-            #textbutton _("Q.Save") action QuickSave()
-            #textbutton _("Q.Load") action QuickLoad()
-            textbutton _("Prefs") action ShowMenu('preferences')
+#             textbutton _("Back") action Rollback()
+#             textbutton _("History") action ShowMenu('history')
+#             textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
+#             textbutton _("Auto") action Preference("auto-forward", "toggle")
+#             textbutton _("Save") action ShowMenu('save')
+#             textbutton _("Q.Save") action QuickSave()
+#             textbutton _("Q.Load") action QuickLoad()
+#             textbutton _("Prefs") action ShowMenu('preferences')
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
 ## the player has not explicitly hidden the interface.
-init python:
-    config.overlay_screens.append("quick_menu")
+#init python:
+#    config.overlay_screens.append("quick_menu")
 
-default quick_menu = True
+#default quick_menu = False
 
 style quick_button is default
 style quick_button_text is button_text
@@ -305,7 +305,9 @@ screen navigation():
 
         else:
 
-            textbutton _("History") action ShowMenu("history")
+            textbutton _("Inventory") action ShowMenu('inventory')
+
+            #textbutton _("History") action ShowMenu("history")
 
             #textbutton _("Save") action ShowMenu("save")
 
@@ -323,10 +325,10 @@ screen navigation():
 
         textbutton _("About") action ShowMenu("about")
 
-        if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
+        # if renpy.variant("pc") or (renpy.variant("web") and not renpy.variant("mobile")):
 
-            ## Help isn't necessary or relevant to mobile devices.
-            textbutton _("Help") action ShowMenu("help")
+        #     ## Help isn't necessary or relevant to mobile devices.
+        #     textbutton _("Help") action ShowMenu("help")
 
         if renpy.variant("pc"):
 
@@ -731,19 +733,19 @@ screen preferences():
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
 
-                vbox:
-                    style_prefix "radio"
-                    label _("Rollback Side")
-                    textbutton _("Disable") action Preference("rollback side", "disable")
-                    textbutton _("Left") action Preference("rollback side", "left")
-                    textbutton _("Right") action Preference("rollback side", "right")
+                # vbox:
+                #     style_prefix "radio"
+                #     label _("Rollback Side")
+                #     textbutton _("Disable") action Preference("rollback side", "disable")
+                #     textbutton _("Left") action Preference("rollback side", "left")
+                #     textbutton _("Right") action Preference("rollback side", "right")
 
-                vbox:
-                    style_prefix "check"
-                    label _("Skip")
-                    textbutton _("Unseen Text") action Preference("skip", "toggle")
-                    textbutton _("After Choices") action Preference("after choices", "toggle")
-                    textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
+                # vbox:
+                #     style_prefix "check"
+                #     label _("Skip")
+                #     textbutton _("Unseen Text") action Preference("skip", "toggle")
+                #     textbutton _("After Choices") action Preference("after choices", "toggle")
+                #     textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
@@ -1431,8 +1433,8 @@ screen quick_menu():
             xalign 0.5
             yalign 1.0
 
-            textbutton _("Back") action Rollback()
-            textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
+            #textbutton _("Back") action Rollback()
+            #textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
             textbutton _("Auto") action Preference("auto-forward", "toggle")
             textbutton _("Menu") action ShowMenu()
 

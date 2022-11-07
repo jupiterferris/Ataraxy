@@ -53,11 +53,11 @@ init python:
 # what the game does on bootup
 label splashscreen:
     show text "Loading." with dissolve
-    pause 0.5
+    pause 0.25
     show text "Loading.." with dissolve
-    pause 0.5
+    pause 0.25
     show text "Loading..." with dissolve
-    pause 0.5
+    pause 0.25
     hide text with dissolve
     return
 # initial loading progress and scene, calls bootGame 
@@ -70,9 +70,11 @@ label start:
         jump init_tutorial
     elif name == "":
         jump meet_ashley
+    $ timeOfDay = "Day"
     scene bg room
     show ash blink
     with fade
+    show screen dayTime
     $ jamSelector("random")
     $ a(f"{greetingSelector()}")
     call random_events
@@ -276,7 +278,8 @@ label unlockables:
             if not anyCosmetics():
                 a "You haven't unlocked any outfits yet!"
             else:
-                a "Nope. Cba. Check back later when I give a shit."
+                a "Nope. Cba. Check back later when I care."
+                # have a menu of all the outfits you've unlocked- menuFormat list of keys in wardrobe cosmetics
             jump unlockables
         "What can you quiz me on?":
             if ashley.getValue("quizTopics") == []:

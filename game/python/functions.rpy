@@ -22,7 +22,7 @@ init python:
             a("I love men.")
             renpy.show("ash")
         elif lowerName == "pipster":
-            a("Fuck, this is painful, isn't it?")
+            a("gosh, this is painful, isn't it?")
             renpy.show("ash laugh")
             a("It's okay, it might work this time!")
             renpy.show("ash blink")
@@ -136,7 +136,7 @@ init python:
         cosmetics = ashley.getValue("cosmetics")
         if cosmeticNo in cosmetics[cosmeticIndex]:
             renpy.show("ash laugh")
-            a(f"You cheeky fucker, you already have '{cosmeticName}'!")
+            a(f"You cheeky hecker, you already have '{cosmeticName}'!")
             renpy.show("ash blink")
         else:
             cosmetics[cosmeticIndex].append(cosmeticNo)
@@ -175,16 +175,25 @@ init python:
         else:
             a("Incorrect. You don't get a point.")
         a(f"You have {points} {getCorrectNoun()}.")
-    def menuQuestion(question, correctAnswer, options):
-        global points
+    def menuQuestion(question, correctAnswer, options, pointsEnabled):
         a(f"{question}", interact=False)
         answer = renpy.display_menu(options)
-        if answer == correctAnswer:
-            points += 1
-            a("Correct! You get a point.")
+        if pointsEnabled:
+            global points
+            if answer == correctAnswer:
+                points += 1
+                a("Correct! You get a point.")
+            else:
+                a("Incorrect. You don't get a point.")
+            a(f"You have {points} {getCorrectNoun()}.")
+            return
         else:
-            a("Incorrect. You don't get a point.")
-        a(f"You have {points} {getCorrectNoun()}.")   
+            if answer == correctAnswer:
+                a("Correct!")
+                return True
+            else:
+                a("Incorrect.")
+                return False
     def menuFormat(options):
         formattedOptions = []
         for option in options:
@@ -201,15 +210,22 @@ init python:
                     "Sorry, no can do."]
         return random.choice(typeOfResponse)
     def findDictIndex(dict, item):
-        keysList = list(dict.keys())
-        dictIndex = keysList.index(item)
-        return dictIndex
+        try:
+            keysList = list(dict.keys())
+            if item not in keysList:
+                valsList = list(dict.values())
+                dictIndex = valsList.index(item)
+            else:
+                dictIndex = keysList.index(item)
+            return dictIndex
+        except:
+            print("Item not in dictionary! :(")
     # sets time for bg from time of day/ tutorial status    
     def setBG():
         global ashley
         global timeOfDay
         if ashley.getValue("name") == "" or ashley.getValue("tutorialCompleted") == False:
-            timeOfDay = "day"
+            timeOfDay = "Day"
         else:
             getTimeOfDay()
     # getting variables from other functions
