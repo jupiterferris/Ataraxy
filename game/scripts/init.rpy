@@ -1,4 +1,14 @@
 init:
+    python:
+        config.keymap['rollback'] = []
+        config.keymap['rollforward'] = []
+        config.keymap['help'] = []
+        config.keymap['skip'] = []
+        config.keymap['toggle_skip'] = []
+        config.keymap['fast_skip'] = []
+        config.keymap['game_menu'] = []
+        config.keymap['quit'] = ['K_ESCAPE']
+
     image ash_hair_back:
         f"ash_hair_back_{hairBack}"
     image ash_body:
