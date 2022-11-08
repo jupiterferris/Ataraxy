@@ -70,7 +70,6 @@ label start:
         jump init_tutorial
     elif name == "":
         jump meet_ashley
-    $ timeOfDay = "Day"
     scene bg room
     show ash blink
     with fade
