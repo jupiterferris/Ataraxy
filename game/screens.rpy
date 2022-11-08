@@ -304,6 +304,14 @@ screen navigation():
             imagebutton idle "gui/pixelsprite.png" hover "gui/pixelspritehover.png" action Start()
             
             text "Click Ashley to start!"
+            viewport id "funnyquote":
+                draggable False
+                #scrollbars "vertical"
+                xmaximum 350
+                ymaximum 600
+                vbox:
+                    $ quote = random.choice(readFile("quotes.txt"))
+                    text f"\n{quote}"
             #textbutton _("Start") action Start()
 
         #else:

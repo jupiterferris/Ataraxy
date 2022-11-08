@@ -1,4 +1,4 @@
-init -1 python:
+init -5 python:
     import json
     import os
     import random

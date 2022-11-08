@@ -71,10 +71,12 @@ label start:
     elif name == "":
         jump meet_ashley
     scene bg room
+    show screen dayTime
+    
     show ash blink
     with fade
-    show screen dayTime
     $ jamSelector("random")
+    show screen currentlyPlaying
     $ a(f"{greetingSelector()}")
     call random_events
     jump interact
@@ -170,7 +172,7 @@ label conversation:
                 label song_pick_loop:
                     menu:
                         "Another! Let's keep this train rolling." if randomSong:
-                            $ a(f"{randomResponse(affirmative)}")
+                            $ a(f"{randomResponse(True)}")
                             $ jamSelector("random")
                             jump song_pick_loop
                         "Based. I'll stick with this one.":
@@ -186,7 +188,11 @@ label conversation:
                 jump conversation
             "Tell me more about this song.":
                 label tellmemore:
-                    a "This is Enjoyer Of Things' piano cover of [currentTrack], track [trackNo] from [albumName], by [artistName]."
+                    if albumName == "misc songs":
+                        a "This song is called [currentTrack]."
+                        a "It's from a miscellaneous album, so I don't know much about it. Sorry!"
+                        jump song_pick_loop
+                    a "This is Enjoyer Of Things' piano cover of [currentTrack], track [trackNo] from [albumName] by [artistName]."
                     menu:
                         a "Would you like to hear more?"
                         "Of course.":

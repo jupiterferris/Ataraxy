@@ -63,6 +63,15 @@ init:
         add "gui/time/timebg.png" xpos 0 ypos 0
         add f"gui/time/{timeOfDay}.png" xpos 5 ypos 0
         text(f"{timeOfDay}") xpos 80 ypos 15
+    screen currentlyPlaying:
+        $ modal = False 
+        add "gui/playing.png" xpos 0 ypos 80
+        python:
+            current = currentTrack.replace("Alternative", "")
+            if len(current) > 28:
+                current = current[:28] + "..."
+
+        text("{image=note.png}[current]") xpos 0 ypos 80 size 18
     
     # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
     layeredimage ash:
