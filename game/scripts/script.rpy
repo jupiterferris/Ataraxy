@@ -340,6 +340,10 @@ label gayme:
     show cardtest at pos_3_2 onlayer screens
     show cardtest at pos_4_2 onlayer screens
     $ ui.interact()
-    
+
+label quit:
+    #$ ashley.setValue("relationship", ashley.getValue("relationship") - 1)
+    #a "I see. I suppose you have better things to do."
+    $ ashley.setValue("lastPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 # This ends the game.
 return
