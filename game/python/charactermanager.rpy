@@ -31,10 +31,14 @@ init python:
             if quizTopics is None:
                 self.setValue("quizTopics", [])
 
+            firstPlayed = self.json.get("firstPlayed")
+            if lastPlayed is None:
+                self.setValue("firstPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+
             # Last time the player logged on
             lastPlayed = self.json.get("lastPlayed")
             if lastPlayed is None:
-                self.setValue("lastPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+                self.setValue("lastPlayed", "")
 
             # Cosmetics unlocked for Ashley, given in lists of order (hairBack, body, nails, eyes, hairFront, accessory, eyebrows)
             cosmetics = self.json.get("cosmetics")
