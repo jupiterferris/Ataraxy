@@ -88,9 +88,11 @@ label random_events:
     if event == 1:
         a "I'm sorry, I'm not feeling well today. I'll be back next time."
         show ash close
-        jump quit
+        pause 2.5
+        $ bluescreen()
     elif event > 90:
         a "Let me ask you something..."
+        # random question i.e how's your day been?
         #    menu:
         #        a "How's your day been?"
         #        "Great!":
@@ -240,7 +242,7 @@ label conversation:
             $ unoReverse()
         label question:
             # this is where the player can ask Ashley a question
-            $ global ashley
+            $ displayQuestionMenu()
             menu:
                 a "What would you like to know?"
                 "What's your favourite colour?":

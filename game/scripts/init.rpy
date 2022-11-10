@@ -1,13 +1,6 @@
 init:
-    python:
-        config.keymap['rollback'] = []
-        config.keymap['rollforward'] = []
-        config.keymap['help'] = []
-        config.keymap['skip'] = []
-        config.keymap['toggle_skip'] = []
-        config.keymap['fast_skip'] = []
-        config.keymap['game_menu'] = []
-        config.keymap['quit'] = ['K_ESCAPE']
+    $ removeKeybinds(['rollback', 'rollforward', 'help', 'skip', 'toggle_skip', 'fast_skip', 'game_menu'])
+    $ rebindKeybinds([['quit', 'K_ESCAPE']])
 
     image ash_hair_back:
         f"ash_hair_back_{hairBack}"
@@ -67,10 +60,9 @@ init:
         $ modal = False 
         add "gui/playing.png" xpos 0 ypos 80
         python:
-            current = currentTrack.replace("Alternative", "")
+            current = currentTrack.replace("Alternative", "") + " - " + artistName
             if len(current) > 28:
                 current = current[:28] + "..."
-
         text("{image=note.png}[current]") xpos 0 ypos 80 size 18
     
     # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
