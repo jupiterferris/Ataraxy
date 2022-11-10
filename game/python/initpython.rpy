@@ -16,7 +16,7 @@ init python:
                 "covers" : ("Knee Deep At ATP", "Privately Owned Spiral Galaxy")
             },
             "James Marriott" : { 
-                "Bitter Tongues" : ("Grapes")
+                "Bitter Tongues" : ("Where Has Everyone Gone", "Gold", "Car Lights", "Sleeping On Trains", "Grapes")
             },
             "a very talented team" : {
                 "misc songs" : ("Rose's Fountain", "Lily Flower")
@@ -58,8 +58,8 @@ init python:
         }
         # random chance of getting a "Do you remember how you unlocked..." question
     def initUnoReverse():
-        global questionsForPlayer
-        questionsForPlayer = {
+        global aboutPlayer
+        aboutPlayer = {
             "What's your favourite colour?" : {
                 "Red" : ("I love red. It's one of my favourite colours. Especially crimson."),
                 "Purple" : ("Ah, purple... reminds me of the end of a rainbow. I like it.", "4|02"),
