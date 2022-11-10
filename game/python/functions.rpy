@@ -29,7 +29,7 @@ init python:
     def jamSelector(selectionMethod):
         global songsPlayed
         renpy.music.stop(fadeout=3.0)
-        numOfJams = len(readFile("tunes.txt"))
+        numOfJams = len(readFile("unlockedSongs.txt"))
         numOfHeard = len(readFile("heardSongs.txt"))
         if selectionMethod == "previous":
             chosenTrack = getPreviousSong(songsPlayed)
@@ -113,21 +113,20 @@ init python:
             "Think fast!"]
         return random.choice(openers)
     def unoReverse():
-        global questionsForPlayer
+        global aboutPlayer
         global ashley
         askedTopics = ashley.getValue("askedTopics")
         for topic in askedTopics:
             try: 
-                questionsForPlayer.pop(topic)
+                aboutPlayer.pop(topic)
             except KeyError:
                 continue
-        if questionsForPlayer is empty:
+        if aboutPlayer is empty:
             return None
-        chosenTopic = random.choice(questionsForPlayer)
-        #indexOfTopic = findDictIndex(questionsForPlayer, chosenTopic)
+        chosenTopic = random.choice(aboutPlayer)
+        #indexOfTopic = findDictIndex(aboutPlayer, chosenTopic)
         ashley.setValue("askedTopics", askedTopics.append(chosenTopic))
         return chosenTopic
-
 
     # useful, commonly used functions
     def zeldaRiff(cosmeticType, cosmeticNo):
@@ -201,7 +200,9 @@ init python:
         for option in options:
             formattedOptions.append((option, option))
         return formattedOptions
-    #def displayQuestionMenu(dict):
+    def displayTieredMenu(dict):
+        keysList = list(dict.keys)
+        
     def randomResponse(typeOfResponse):
         if typeOfResponse == True: 
             responses = ["And so it shall be.",
@@ -292,7 +293,7 @@ init python:
             trackNo = "N/A"
             artistName = "Unknown"
     def getRandomSong(songsPlayed):
-        chosenTrack = random.choice(readFile("tunes.txt"))
+        chosenTrack = random.choice(readFile("unlockedSongs.txt"))
         try:
             if chosenTrack == songsPlayed[-1]:
                 a(f"Oops! I was going to play {songsPlayed[-1]}, but you just heard that one!")

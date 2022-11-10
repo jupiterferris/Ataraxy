@@ -87,6 +87,7 @@ label random_events:
     a "Event value = [event]"
     if event == 1:
         a "I'm sorry, I'm not feeling well today. I'll be back next time."
+        a "I hope you've saved everything..."
         show ash close
         pause 2.5
         $ bluescreen()
@@ -210,7 +211,7 @@ label conversation:
                             show ash blink 
                             if not "grapes" in ashley.getValue("quizTopics"):
                                 $ addQuizTopic("grapes")
-                                $ writeToFile("tunes.txt", "Grapes\n")
+                                $ writeToFile("unlockedSongs.txt", "Grapes\n")
                                 a "As a thank you for listening to my rambling, I've unlocked a secret track for you."
                                 a "It's a lesser-known song by James Marriott that was made collaboratively with Ash Kabosu- Lovejoy's bass guitarist."
                                 a "Enjoy~"
