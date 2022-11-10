@@ -129,16 +129,17 @@ init python:
                 "03" : "William Eyebrows",
                 "04" : "Depression & Pronouns",
                 "05" : "Sweet Tangerine",
-                "06" : "Bodacious Babe",
+                "06" : "Bodacious Babe"
             },
             "accessoryAll" : {
                 "00" : "None",
                 "01" : "MonoMono Pin",
                 "02" : "Oh Lardy",
                 "03" : "Thorny Rose",
+                "04" : "Cyberlife"
             },
             "eyebrowsAll" : {
-                "00" : "Thinly Veiled",
+                "00" : "Thinly Veiled"
             }
         }
     def initCards():
