@@ -3,15 +3,15 @@ init python:
     def namePlayer():
         global ashley
         global name
-        name = renpy.input(_("Enter your name."))
-        name = name.strip() or __("Babes")
-        lowerName = name.lower()
-        nameContingencies(lowerName)
+        nameInput = renpy.input(_("Enter your name."))
+        playerName = nameInput.strip() or __("Babes")
+        name = nameContingencies(playerName)
         ashley.setValue("name", name)
-    def nameContingencies(lowerName):
+    def nameContingencies(playerName):
+        lowerName = playerName.lower()
         if lowerName == "daddy":
-            name = "Master Hardwick"
-        elif lowerName == "raffi" or name.lower() == "raf" or name.lower() == "gearloe":
+            return "Master Hardwick"
+        elif lowerName == "raffi" or lowerName == "raf" or lowerName == "gearloe":
             a("Well, well, well... I knew this day would come.")
             a("Finally, a worthy adversary. Our battle will be legendary!")
             renpy.show("ash laugh")
@@ -26,6 +26,7 @@ init python:
             renpy.show("ash laugh")
             a("It's okay, it might work this time!")
             renpy.show("ash blink")
+        return playerName
     def jamSelector(selectionMethod):
         global songsPlayed
         renpy.music.stop(fadeout=3.0)
@@ -201,6 +202,7 @@ init python:
             formattedOptions.append((option, option))
         return formattedOptions
     def displayTieredMenu(dict):
+        #theoretical limit = 8 options
         keysList = list(dict.keys)
         
     def randomResponse(typeOfResponse):

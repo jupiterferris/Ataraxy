@@ -78,7 +78,7 @@ label tutorial:
         show ash blink
         $ inputQuestion("What's my name?", "Ashley")
         a "Let's try another one."
-        $ menuQuestion("What's my favorite color?", "r", [("Red", "r"), ("Blue", "b"), ("Green", "g"), ("Yellow", "y")])
+        $ menuQuestion("What's my favorite color?", "r", [("Red", "r"), ("Blue", "b"), ("Green", "g"), ("Yellow", "y")], True)
         a "One last question."
         a "How many fingers am I holding up?"
         show ash laugh

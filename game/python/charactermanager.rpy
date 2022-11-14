@@ -32,7 +32,7 @@ init python:
                 self.setValue("quizTopics", [])
 
             firstPlayed = self.json.get("firstPlayed")
-            if lastPlayed is None:
+            if firstPlayed is None:
                 self.setValue("firstPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
             # Last time the player logged on
