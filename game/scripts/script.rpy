@@ -343,7 +343,8 @@ label gayme:
 
 label quit:
     #$ ashley.setValue("relationship", ashley.getValue("relationship") - 1)
-    a "I see. I suppose you have better things to do."
-    $ ashley.setValue("lastPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+    if not main_menu:
+        a "I see. I suppose you have better things to do."
+        $ ashley.setValue("lastPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 # This ends the game.
 return
