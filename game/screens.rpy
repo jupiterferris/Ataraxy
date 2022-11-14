@@ -290,7 +290,8 @@ style quick_button_text:
 ## to other menus, and to start the game.
 
 screen navigation():
-
+    if main_menu:
+        imagebutton idle "menu/ashlean closed.png" hover "menu/ashlean open.png" action Start() focus_mask True 
     vbox:
         style_prefix "navigation"
 
@@ -302,7 +303,7 @@ screen navigation():
         if main_menu:
 
             imagebutton idle "gui/pixelsprite.png" hover "gui/pixelspritehover.png" action Start()
-            
+
             text "Click Ashley to start!"
             viewport id "funnyquote":
                 draggable False
