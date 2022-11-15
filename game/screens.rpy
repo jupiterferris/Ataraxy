@@ -1180,6 +1180,8 @@ screen confirm(message, yes_action, no_action):
 
                 textbutton _("Yes") action yes_action
                 textbutton _("No") action no_action
+                if message == _("Are you sure you want to quit?"):
+                    textbutton _("Menu") action MainMenu()
 
     ## Right-click and escape answer "no".
     key "game_menu" action no_action
