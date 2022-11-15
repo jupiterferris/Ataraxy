@@ -8,9 +8,9 @@ label meet_ashley:
     play music "audio/jams/Lily Flower.mp3"
     show ash blink
     $ writeToFile("heardSongs.txt", "Lily Flower\n")
-    a "Hello. I'm Ashley. I'm a virtual girlfriend."
+    a "Hello. I'm Ashley. I'm a virtual companion."
     show ash wink
-    a "{i}Your{/i} virtual girlfriend."
+    a "{i}Your{/i} virtual companion."
     show ash blink
     a "Neat, huh?"
     a "Technology truly is wonderful..."
