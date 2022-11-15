@@ -206,16 +206,24 @@ init python:
         keysList = list(dict.keys)
         
     def randomResponse(typeOfResponse):
+        global ashley
         if typeOfResponse == True: 
             responses = ["And so it shall be.",
-                            "Anything for you...",
-                            "I don't think so. Haha, just kidding!",
-                            f"Sure thing, {name}."]
+                        "Anything for you...",
+                        "I don't think so. Haha, just kidding!",
+                        f"Sure thing, {ashley.getValue('name')}."]
         elif typeOfResponse == False:
             responses = ["Sorry, I don't think I can do that.",
                         "I'm afraid I can't do that right now.",
                         "Are you sure about that?",
                         "Sorry, no can do."]
+        elif typeOfResponse.lower() == "quit":
+            responses = ["I see. I suppose you have better things to do.",
+                        "Leaving so soon?",
+                        "I'll miss you.",
+                        "Come back soon."]
+        else:
+            return "Invalid type of response!"
         return random.choice(responses)
     def findDictIndex(dict, item):
         try:
