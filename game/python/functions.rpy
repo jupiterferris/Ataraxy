@@ -214,7 +214,7 @@ init python:
         a(f"You have {points} {getCorrectNoun()}.")
     def menuQuestion(question, correctAnswer, options, pointsEnabled):
         a(f"{question}", interact=False)
-        answer = renpy.display_menu(options)
+        answer = choiceMenu(options)
         if pointsEnabled:
             global points
             if answer == correctAnswer:
@@ -259,9 +259,13 @@ init python:
         return formattedOptions
     def addTraversal(formattedOptions):
         if len(formattedOptions) > 1:
+            maxIndex = len(formattedOptions)
             for menu in formattedOptions:
-                menu.append(("Next", "Next"))
-                menu.append(("Previous", "Previous"))
+                currentIndex = formattedOptions.index(menu) + 1
+                nextIndex = currentIndex + 1
+                prevIndex = currentIndex - 1
+                menu.append((f"Next - {nextIndex}/{maxIndex}", "Next"))
+                menu.append((f"Previous - {prevIndex}/{maxIndex}", "Previous"))
             formattedOptions[-1].pop(-2)
             formattedOptions[0].pop(-1)
             print(formattedOptions)

@@ -162,7 +162,6 @@ label conversation:
                         a "Invoking RNGesus..."
                         $ jamSelector("random")
                         $ randomSong = True
-                        
                     "Can I have the previous song?":
                         a "Let's see..."
                         $ jamSelector("previous")
