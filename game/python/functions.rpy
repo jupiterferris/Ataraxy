@@ -27,6 +27,7 @@ init python:
             a("It's okay, it might work this time!")
             renpy.show("ash blink")
         return playerName
+    
     def jamSelector(selectionMethod):
         global songsPlayed
         renpy.music.stop(fadeout=3.0)
@@ -58,6 +59,7 @@ init python:
         elif chosenTrack == "Soft Boy":
             a("Fun fact- this is actually the main menu song!")
             addQuizTopic("SoftBoy")
+    
     def wardrobe():
         global ashley
         # order hairBack, body, nails, eyes, hairFront, accessory, eyebrows
@@ -145,6 +147,48 @@ init python:
             ashley.setValue("cosmetics", cosmetics)
             renpy.play("audio/itemget.mp3")
             nar(f"You unlocked the '{cosmeticName}' cosmetic! Visit the unlockables menu to equip it!")
+    def addQuizTopic(topicToAdd):
+        global ashley
+        quizTopics = ashley.getValue("quizTopics")
+        if not topicToAdd in quizTopics:
+            quizTopics.append(topicToAdd)
+            ashley.setValue("quizTopics", quizTopics)
+        else:
+            renpy.show("ash laugh")
+            a("But, you already know about that.")
+            renpy.show("ash blink")
+    def randomResponse(typeOfResponse):
+        global ashley
+        if typeOfResponse == True: 
+            responses = ["And so it shall be.",
+                        "Anything for you...",
+                        "I don't think so. Haha, just kidding!",
+                        f"Sure thing, {ashley.getValue('name')}."]
+        elif typeOfResponse == False:
+            responses = ["Sorry, I don't think I can do that.",
+                        "I'm afraid I can't do that right now.",
+                        "Are you sure about that?",
+                        "Sorry, no can do."]
+        elif typeOfResponse.lower() == "quit":
+            responses = ["I see. I suppose you have better things to do.",
+                        "Leaving so soon?",
+                        "I'll miss you.",
+                        "Come back soon."]
+        else:
+            return "Invalid type of response!"
+        return random.choice(responses)
+    def findDictIndex(dict, item):
+        try:
+            keysList = list(dict.keys())
+            if item not in keysList:
+                valsList = list(dict.values())
+                dictIndex = valsList.index(item)
+            else:
+                dictIndex = keysList.index(item)
+            return dictIndex
+        except:
+            print("Item not in dictionary! :(")
+
     def writeToFile(filename, text):
         with open(config.gamedir + "/files/" + filename) as rf:
             if text not in rf.read():
@@ -157,16 +201,7 @@ init python:
         for index, item in enumerate(itemList):
             itemList[index] = item.replace("\n", "")
         return itemList
-    def addQuizTopic(topicToAdd):
-        global ashley
-        quizTopics = ashley.getValue("quizTopics")
-        if not topicToAdd in quizTopics:
-            quizTopics.append(topicToAdd)
-            ashley.setValue("quizTopics", quizTopics)
-        else:
-            renpy.show("ash laugh")
-            a("But, you already know about that.")
-            renpy.show("ash blink")
+    
     def inputQuestion(question, correctAnswer):
         global points
         a(f"{question}")
@@ -249,37 +284,6 @@ init python:
         traverseMenu(choices, index)
         return answer
         
-    def randomResponse(typeOfResponse):
-        global ashley
-        if typeOfResponse == True: 
-            responses = ["And so it shall be.",
-                        "Anything for you...",
-                        "I don't think so. Haha, just kidding!",
-                        f"Sure thing, {ashley.getValue('name')}."]
-        elif typeOfResponse == False:
-            responses = ["Sorry, I don't think I can do that.",
-                        "I'm afraid I can't do that right now.",
-                        "Are you sure about that?",
-                        "Sorry, no can do."]
-        elif typeOfResponse.lower() == "quit":
-            responses = ["I see. I suppose you have better things to do.",
-                        "Leaving so soon?",
-                        "I'll miss you.",
-                        "Come back soon."]
-        else:
-            return "Invalid type of response!"
-        return random.choice(responses)
-    def findDictIndex(dict, item):
-        try:
-            keysList = list(dict.keys())
-            if item not in keysList:
-                valsList = list(dict.values())
-                dictIndex = valsList.index(item)
-            else:
-                dictIndex = keysList.index(item)
-            return dictIndex
-        except:
-            print("Item not in dictionary! :(")
     # sets time for bg from time of day/ tutorial status    
     def setBG():
         global ashley
