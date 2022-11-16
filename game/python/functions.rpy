@@ -196,14 +196,58 @@ init python:
             else:
                 a("Incorrect.")
                 return False
-    def menuFormat(options):
+    
+    def separateOptions(options):
+        separatedOptions = []
+        #theoretical limit = 8 options (6 + "Next"/"Prev")
+        print(len(options))
+        maxOptions = 6
+        if len(options) > maxOptions:
+            print(ceil(len(options)/maxOptions))
+            requiredMenus = ceil(len(options)/maxOptions)
+            for menuNumber in range(requiredMenus):
+                separatedOptions.append(options[:maxOptions])
+                del options[:maxOptions]
+        else:
+            separatedOptions.append(options)
+        print("Separated: "+str(separatedOptions))
+        return separatedOptions
+    def formatOptions(separatedOptions):
         formattedOptions = []
-        for option in options:
-            formattedOptions.append((option, option))
+        # gets correct [(),()] format for Ren'Py menu
+        for outer in separatedOptions:
+            innerOptions = []
+            for inner in outer:
+                innerOptions.append((inner, inner))
+            formattedOptions.append(innerOptions)
+        print("Formatted: "+str(formattedOptions))
         return formattedOptions
-    def displayTieredMenu(dict):
-        #theoretical limit = 8 options
-        keysList = list(dict.keys)
+    def addTraversal(formattedOptions):
+        if len(formattedOptions) > 1:
+            for menu in formattedOptions:
+                menu.append(("Next", "Next"))
+                menu.append(("Previous", "Previous"))
+            formattedOptions[-1].pop(-2)
+            formattedOptions[0].pop(-1)
+            print(formattedOptions)
+        return formattedOptions
+    def menuFormat(options):
+        return(addTraversal(formatOptions(separateOptions(options))))
+    def choiceMenu(options):
+        choices = menuFormat(options)
+        index = 0
+        answer = traverseMenu(choices, index)
+        return answer
+    def traverseMenu(choices, index):
+        answer = renpy.display_menu(choices[index])
+        if answer == "Next":
+            index += 1
+        elif answer == "Previous":
+            index -= 1
+        else:
+            return answer
+        traverseMenu(choices, index)
+        return answer
         
     def randomResponse(typeOfResponse):
         global ashley
@@ -316,7 +360,7 @@ init python:
             a("No other songs played yet! Come back once you've heard some jams.")
         return songsPlayed[-1]
     def getSpecificSong():
-        specificSong = renpy.display_menu(menuFormat(readFile("heardSongs.txt")))
+        specificSong = choiceMenu(readFile("heardSongs.txt"))
         return specificSong
     # functions designed to override native Ren'Py functions/ config related functions
     def removeKeybinds(keybinds):

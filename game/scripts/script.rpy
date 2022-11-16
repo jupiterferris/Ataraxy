@@ -300,7 +300,7 @@ label unlockables:
                 a "You haven't unlocked any pictures yet! Get to know me better!"
             else:
                 a "You've unlocked the following pictures:"
-                $ pictureChoice = renpy.display_menu(menuFormat(ashley.getValue("pictures")))
+                $ pictureChoice = choiceMenu(ashley.getValue("pictures"))
                 window hide dissolve
                 show screen chosenPicture with dissolve
                 $ ui.interact()
