@@ -190,39 +190,40 @@ label conversation:
                 jump conversation
             "Tell me more about this song.":
                 label tellmemore:
-                    if albumName == "misc songs":
-                        a "This song is called [currentTrack]."
-                        a "It's from a miscellaneous album, so I don't know much about it. Sorry!"
+                    if artistName != "Wilbur Soot" and artistName != "Lovejoy" and artistName != "James Marriott": 
+                        a "This song is called [currentTrack], by [artistName]."
+                        a "It's not one of the main tracks, so I don't know much about it. Sorry!"
                         jump song_pick_loop
                     a "This is Enjoyer Of Things' piano cover of [currentTrack], track [trackNo] from [albumName] by [artistName]."
-                    menu:
-                        a "Would you like to hear more?"
-                        "Of course.":
-                            a "I'm glad you're interested. It's nice when other people take interest in the things you love."
-                            a "Enjoyer Of Things is a YouTuber who predominantly makes piano covers of songs by Wilbur Soot and his band, Lovejoy."
-                            a "Wilbur himself is a Twitch streamer- he's quite famous for his Minecraft videos on Youtube."
-                            a "He has a side hobby as a musician, where he released several albums and EPs, such as Your City Gave Me Asthma, Maybe I Was Boring, and The E-Girl Trilogy."
-                            a "More recently, he started a band with Ash Kabosu, Joe Goldsmith, and Mark Boardmen, called Lovejoy."
-                            a "So far, they have released two albums, Are You Alright? and Pebblebrain, and are working on a third."
-                            a "They have also released a few covers of songs by other artists, such as Crywank's Privately Owned Spiral Galaxy and Knee Deep At ATP by Los Campesinos!" 
-                            show ash laugh
-                            a "I hope that was enough information for you. If you want to know more, you can always ask my creator."
-                            show ash blink 
-                            if not "grapes" in ashley.getValue("quizTopics"):
-                                $ addQuizTopic("grapes")
-                                $ writeToFile("unlockedSongs.txt", "Grapes\n")
-                                a "As a thank you for listening to my rambling, I've unlocked a secret track for you."
-                                a "It's a lesser-known song by James Marriott that was made collaboratively with Ash Kabosu- Lovejoy's bass guitarist."
-                                a "Enjoy~"
-                            else: 
-                                a "I was going to give you a secret track as thanks, but it appears you've already unlocked it."
+                    if artistName == "Wilbur Soot" or artistName = "Lovejoy":
+                        menu:
+                            a "Would you like to hear more?"
+                            "Of course.":
+                                a "I'm glad you're interested. It's nice when other people take interest in the things you love."
+                                a "Enjoyer Of Things is a YouTuber who predominantly makes piano covers of songs by Wilbur Soot and his band, Lovejoy."
+                                a "Wilbur himself is a Twitch streamer- he's quite famous for his Minecraft videos on Youtube."
+                                a "He has a side hobby as a musician, where he released several albums and EPs, such as Your City Gave Me Asthma, Maybe I Was Boring, and The E-Girl Trilogy."
+                                a "More recently, he started a band with Ash Kabosu, Joe Goldsmith, and Mark Boardmen, called Lovejoy."
+                                a "So far, they have released two albums, Are You Alright? and Pebblebrain, and are working on a third."
+                                a "They have also released a few covers of songs by other artists, such as Crywank's Privately Owned Spiral Galaxy and Knee Deep At ATP by Los Campesinos!" 
                                 show ash laugh
-                                a "Did you hope I would give you another one? Haha, sorry. You only get the one."       
-                                show ash blink       
-                            jump song_pick_loop
-                        "No thanks.":
-                            a "As you wish."
-                            jump song_pick_loop
+                                a "I hope that was enough information for you. If you want to know more, you can always ask my creator."
+                                show ash blink 
+                                if not "grapes" in ashley.getValue("quizTopics"):
+                                    $ addQuizTopic("grapes")
+                                    $ writeToFile("unlockedSongs.txt", "Grapes\n")
+                                    a "As a thank you for listening to my rambling, I've unlocked a secret track for you."
+                                    a "It's a lesser-known song by James Marriott that was made collaboratively with Ash Kabosu- Lovejoy's bass guitarist."
+                                    a "Enjoy~"
+                                else: 
+                                    a "I was going to give you a secret track as thanks, but it appears you've already unlocked it."
+                                    show ash laugh
+                                    a "Did you hope I would give you another one? Haha, sorry. You only get the one."       
+                                    show ash blink       
+                                jump song_pick_loop
+                            "No thanks.":
+                                a "As you wish."
+                                jump song_pick_loop
     
     # this is where Ashley picks a conversation topic for you
     label convo_ashchoice:
@@ -299,7 +300,7 @@ label unlockables:
                 a "You haven't unlocked any pictures yet! Get to know me better!"
             else:
                 a "You've unlocked the following pictures:"
-                $ pictureChoice = choiceMenu(ashley.getValue("pictures"))
+                $ pictureChoice = choiceMenu("Choose a picture to display.", ashley.getValue("pictures"))
                 window hide dissolve
                 show screen chosenPicture with dissolve
                 $ ui.interact()

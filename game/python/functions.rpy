@@ -214,7 +214,7 @@ init python:
         a(f"You have {points} {getCorrectNoun()}.")
     def menuQuestion(question, correctAnswer, options, pointsEnabled):
         a(f"{question}", interact=False)
-        answer = choiceMenu(options)
+        answer = choiceMenu("Choose your answer.", options)
         if pointsEnabled:
             global points
             if answer == correctAnswer:
@@ -272,12 +272,13 @@ init python:
         return formattedOptions
     def menuFormat(options):
         return(addTraversal(formatOptions(separateOptions(options))))
-    def choiceMenu(options):
+    def choiceMenu(message, options):
         choices = menuFormat(options)
         index = 0
-        answer = traverseMenu(choices, index)
+        answer = traverseMenu(message, choices, index)
         return answer
-    def traverseMenu(choices, index):
+    def traverseMenu(message, choices, index):
+        nar(f"{message}", interact=False)
         answer = renpy.display_menu(choices[index])
         if answer == "Next":
             index += 1
@@ -342,12 +343,13 @@ init python:
         artistName = None
         trackNo = None
         # find album name, track number
-        for key, value in allSongs.items():
+        for artist, value in allSongs.items():
             for album, songs in value.items():
                 if currentTrack in songs:
-                    artistName = key
+                    artistName = artist
                     albumName = album
                     trackNo = songs.index(currentTrack) + 1
+                    break
                 
         # error catching (incase i add new tracks and forget to add to the dictionary)
         if artistName is None:
@@ -368,7 +370,7 @@ init python:
             a("No other songs played yet! Come back once you've heard some jams.")
         return songsPlayed[-1]
     def getSpecificSong():
-        specificSong = choiceMenu(readFile("heardSongs.txt"))
+        specificSong = choiceMenu("Choose a song you've heard before to play!", readFile("heardSongs.txt"))
         return specificSong
     # functions designed to override native Ren'Py functions/ config related functions
     def removeKeybinds(keybinds):

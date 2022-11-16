@@ -18,9 +18,12 @@ init python:
             "James Marriott" : { 
                 "Bitter Tongues" : ("Where Has Everyone Gone", "Gold", "Car Lights", "Sleeping On Trains", "Grapes")
             },
-            "a very talented team" : {
-                "misc songs" : ("Rose's Fountain", "Lily Flower")
-            }
+            "Aivi & Surasshu" : {
+                "misc songs" : ("Rose's Fountain")
+            },
+            "Technoboys Pulcraft Green-Fund" : {
+                "misc songs" : ("Lily Flower")
+            },
         }
     def initQuiz():
         global quizQuestions
