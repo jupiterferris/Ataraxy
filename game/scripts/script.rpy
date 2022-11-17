@@ -136,6 +136,7 @@ label conversation:
             # Ashley chooses at random
     # this is where Ashley tells the player what song is playing and more information about it
     label convo_song: 
+        $ randomSong = False
         a "The current song playing is [currentTrack], by [artistName]."
         if not wilburText and (artistName == "Wilbur Soot" or artistName == "Lovejoy"):
             $ wilburText = True
@@ -156,7 +157,6 @@ label conversation:
         menu:
             "Can I hear something else?":
                 a "Of course you can. Did you have anything specific in mind?"
-                $ randomSong = False
                 menu:
                     "Random song, please!":
                         a "Invoking RNGesus..."

@@ -31,16 +31,15 @@ init python:
     def jamSelector(selectionMethod):
         global songsPlayed
         renpy.music.stop(fadeout=3.0)
-        numUnlocked = len(readFile("unlockedSongs.txt"))
+        numUnlocked = len(readFile("randomiserSongs.txt"))
         numHeard = len(readFile("heardSongs.txt"))
-        files = listFiles("audio/jams/")
-        print(files)
-        print(len(files))
+        print(listFiles("audio/jams"))
+        available = countFiles("audio/jams")
         if selectionMethod == "previous":
             chosenTrack = getPreviousSong(songsPlayed)
-            songsPlayed = songsPlayed[:-1]
+            songsPlayed = songsPlayed[:-2]
         elif selectionMethod == "specific":
-            a(f"Number of songs heard: {numHeard}/{len(files)}")
+            a(f"Number of songs heard: {numHeard}/{available}")
             chosenTrack = getSpecificSong()
         else:
             a(f"Number of songs available: {numUnlocked}")
@@ -191,21 +190,18 @@ init python:
             return dictIndex
         except:
             print("Item not in dictionary! :(")
-    #def fileCount(folder, allowedExtensions=None):
-    #count = 0
-    #for base, dirs, files in os.walk(folder):
-    #    for file in files:
-    #        if allowedExtensions and file.endswith(allowedExtensions) or not allowedExtensions:
-    #            count += 1
-    #return count
+    
     def listFiles(dir=""):
         import re
-        fileList = renpy.list_files()
-        deez = []
-        for file in fileList:
+        allFiles = renpy.list_files()
+        fileList = []
+        for file in allFiles:
             if re.match(dir,file):
-                deez.append(file[(len(dir)):])
-        return deez
+                fileList.append(file[(len(dir)):])
+        return fileList
+    def countFiles(dir=""):
+        return len(listFiles(dir))
+    
     def writeToFile(filename, text):
         with open(config.gamedir + "/files/" + filename) as rf:
             if text not in rf.read():
@@ -262,7 +258,6 @@ init python:
                 del options[:maxOptions]
         else:
             separatedOptions.append(options)
-        print("Separated: "+str(separatedOptions))
         return separatedOptions
     def formatOptions(separatedOptions):
         formattedOptions = []
@@ -272,7 +267,6 @@ init python:
             for inner in outer:
                 innerOptions.append((inner, inner))
             formattedOptions.append(innerOptions)
-        print("Formatted: "+str(formattedOptions))
         return formattedOptions
     def addTraversal(formattedOptions):
         if len(formattedOptions) > 1:
@@ -297,13 +291,12 @@ init python:
     def traverseMenu(message, choices, index):
         nar(f"{message}", interact=False)
         answer = renpy.display_menu(choices[index])
-        if answer == "Next":
-            index += 1
-        elif answer == "Previous":
-            index -= 1
-        else:
-            return answer
-        traverseMenu(message, choices, index)
+        if answer == "Next" or answer == "Previous":
+            if answer == "Next":
+                index += 1
+            elif answer == "Previous":
+                index -= 1
+            return traverseMenu(message, choices, index)
         return answer
         
     # sets time for bg from time of day/ tutorial status    
@@ -350,23 +343,22 @@ init python:
         dictName = cosmeticType + "All"
         return cosmeticsAll[dictName][cosmeticNo]
     def getTrackDetails(chosenTrack):
-        global allSongs
         global albumName
         global artistName
         global trackNo
         global currentTrack
         currentTrack = chosenTrack
+        trackInfo = allTrackInfo()
         albumName = None
         artistName = None
         trackNo = None
         # find album name, track number
-        for artist, value in allSongs.items():
-            for album, songs in value.items():
+        for artist, works in trackInfo.items():
+            for album, songs in works.items():
                 if currentTrack in songs:
                     artistName = artist
                     albumName = album
                     trackNo = songs.index(currentTrack) + 1
-                    break
                 
         # error catching (incase i add new tracks and forget to add to the dictionary)
         if artistName is None:
@@ -374,7 +366,7 @@ init python:
             trackNo = "N/A"
             artistName = "Unknown"
     def getRandomSong(songsPlayed):
-        chosenTrack = random.choice(readFile("unlockedSongs.txt"))
+        chosenTrack = random.choice(readFile("randomiserSongs.txt"))
         try:
             if chosenTrack == songsPlayed[-1]:
                 a(f"Oops! I was going to play {songsPlayed[-1]}, but you just heard that one!")

@@ -1,8 +1,7 @@
 init python:         
     # setup all main functions with permanent data i.e all collectibles
-    def initJams():
-        global allSongs
-        allSongs = {
+    def allTrackInfo():
+        trackInfo = {
             "Wilbur Soot" : {
                 "The E-Girl Trilogy" : ("I'm In Love With An E-Girl", "Internet Ruined Me", "Your New Boyfriend"),
                 "Your City Gave Me Asthma" : ("Jubilee Line", "Saline Solution", "Your Sister Was Right", "Losing Face", "Since I Saw Vienna", "La Jolla", "I'm Sorry Boris"),
@@ -25,6 +24,7 @@ init python:
                 "Kakegurui OST" : ("Lily Flower")
             },
         }
+        return trackInfo
     def initQuiz():
         global quizQuestions
         quizQuestions = {
