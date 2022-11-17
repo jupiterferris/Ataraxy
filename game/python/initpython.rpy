@@ -19,10 +19,10 @@ init python:
                 "Bitter Tongues" : ("Where Has Everyone Gone", "Gold", "Car Lights", "Sleeping On Trains", "Grapes")
             },
             "Aivi & Surasshu" : {
-                "misc songs" : ("Rose's Fountain")
+                "Steven Universe OST" : ("Rose's Fountain")
             },
             "Technoboys Pulcraft Green-Fund" : {
-                "misc songs" : ("Lily Flower")
+                "Kakegurui OST" : ("Lily Flower")
             },
         }
     def initQuiz():

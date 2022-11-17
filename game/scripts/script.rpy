@@ -195,7 +195,7 @@ label conversation:
                         a "It's not one of the main tracks, so I don't know much about it. Sorry!"
                         jump song_pick_loop
                     a "This is Enjoyer Of Things' piano cover of [currentTrack], track [trackNo] from [albumName] by [artistName]."
-                    if artistName == "Wilbur Soot" or artistName = "Lovejoy":
+                    if artistName == "Wilbur Soot" or artistName == "Lovejoy":
                         menu:
                             a "Would you like to hear more?"
                             "Of course.":

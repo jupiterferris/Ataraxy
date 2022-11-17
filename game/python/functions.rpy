@@ -31,16 +31,19 @@ init python:
     def jamSelector(selectionMethod):
         global songsPlayed
         renpy.music.stop(fadeout=3.0)
-        numOfJams = len(readFile("unlockedSongs.txt"))
-        numOfHeard = len(readFile("heardSongs.txt"))
+        numUnlocked = len(readFile("unlockedSongs.txt"))
+        numHeard = len(readFile("heardSongs.txt"))
+        files = listFiles("audio/jams/")
+        print(files)
+        print(len(files))
         if selectionMethod == "previous":
             chosenTrack = getPreviousSong(songsPlayed)
             songsPlayed = songsPlayed[:-1]
         elif selectionMethod == "specific":
-            a(f"Number of songs heard: {numOfHeard}/{numOfJams}")
+            a(f"Number of songs heard: {numHeard}/{len(files)}")
             chosenTrack = getSpecificSong()
         else:
-            a(f"Number of songs available: {numOfJams}")
+            a(f"Number of songs available: {numUnlocked}")
             chosenTrack = getRandomSong(songsPlayed)
         a(f"Track chosen: {chosenTrack}")
         renpy.music.play(f"audio/jams/{chosenTrack}.mp3")
@@ -188,7 +191,21 @@ init python:
             return dictIndex
         except:
             print("Item not in dictionary! :(")
-
+    #def fileCount(folder, allowedExtensions=None):
+    #count = 0
+    #for base, dirs, files in os.walk(folder):
+    #    for file in files:
+    #        if allowedExtensions and file.endswith(allowedExtensions) or not allowedExtensions:
+    #            count += 1
+    #return count
+    def listFiles(dir=""):
+        import re
+        fileList = renpy.list_files()
+        deez = []
+        for file in fileList:
+            if re.match(dir,file):
+                deez.append(file[(len(dir)):])
+        return deez
     def writeToFile(filename, text):
         with open(config.gamedir + "/files/" + filename) as rf:
             if text not in rf.read():
@@ -286,7 +303,7 @@ init python:
             index -= 1
         else:
             return answer
-        traverseMenu(choices, index)
+        traverseMenu(message, choices, index)
         return answer
         
     # sets time for bg from time of day/ tutorial status    
