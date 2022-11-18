@@ -31,19 +31,18 @@ init python:
     def jamSelector(selectionMethod):
         global songsPlayed
         renpy.music.stop(fadeout=3.0)
-        numUnlocked = len(readFile("randomiserSongs.txt"))
-        numHeard = len(readFile("heardSongs.txt"))
-        print(listFiles("audio/jams"))
+        heardSongs = readFile("heardSongs.txt")
+        randomiserSongs = readFile("randomiserSongs.txt")
         available = countFiles("audio/jams")
         if selectionMethod == "previous":
             chosenTrack = getPreviousSong(songsPlayed)
-            songsPlayed = songsPlayed[:-2]
+            songsPlayed = songsPlayed[:-1]
         elif selectionMethod == "specific":
-            a(f"Number of songs heard: {numHeard}/{available}")
-            chosenTrack = getSpecificSong()
+            a(f"Number of songs heard: {len(heardSongs)}/{available}")
+            chosenTrack = getSpecificSong(heardSongs)
         else:
-            a(f"Number of songs available: {numUnlocked}")
-            chosenTrack = getRandomSong(songsPlayed)
+            a(f"Number of random songs available: {len(randomiserSongs)}")
+            chosenTrack = getRandomSong(randomiserSongs, songsPlayed)
         a(f"Track chosen: {chosenTrack}")
         renpy.music.play(f"audio/jams/{chosenTrack}.mp3")
         writeToFile("heardSongs.txt", chosenTrack)
@@ -365,22 +364,21 @@ init python:
             albumName = "Unknown"
             trackNo = "N/A"
             artistName = "Unknown"
-    def getRandomSong(songsPlayed):
-        chosenTrack = random.choice(readFile("randomiserSongs.txt"))
+    def getRandomSong(songs, songsPlayed):
+        chosenTrack = random.choice(songs)
         try:
             if chosenTrack == songsPlayed[-1]:
                 a(f"Oops! I was going to play {songsPlayed[-1]}, but you just heard that one!")
-                getRandomSong(songsPlayed)
+                return getRandomSong(songs, songsPlayed)
         except IndexError:
             pass
         return chosenTrack
     def getPreviousSong(songsPlayed):
         if len(songsPlayed) < 2:
             a("No other songs played yet! Come back once you've heard some jams.")
-        return songsPlayed[-1]
-    def getSpecificSong():
-        specificSong = choiceMenu("Choose a song you've heard before to play!", readFile("heardSongs.txt"))
-        return specificSong
+        return songsPlayed[-2]
+    def getSpecificSong(songs):
+        return choiceMenu("Choose a song to play!", songs)
     # functions designed to override native Ren'Py functions/ config related functions
     def removeKeybinds(keybinds):
         keybindsToRemove = keybinds
