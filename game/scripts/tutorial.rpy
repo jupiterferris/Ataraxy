@@ -1,3 +1,6 @@
+$ tutorialGameCompleted = False
+$ tutorialConvoCompleted = False
+$ outfitchanged = False
 # the precursor to the tutorial, only shown at the very beginning of the game. This is where the player inputs their name
 label meet_ashley:
     scene bg room

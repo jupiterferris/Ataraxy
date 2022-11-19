@@ -32,23 +32,12 @@ init python:
     def bootGame():
         global ashley
         global wilburText
-        global tutorialGameCompleted
-        global tutorialConvoCompleted
-        global outfitchanged
         global songsPlayed
         ashley = CharacterManager()
         wilburText = False
-        tutorialGameCompleted = False
-        tutorialConvoCompleted = False
-        outfitchanged = False
         songsPlayed = []
         getAshBasics()
         setBG()
-        initJams()
-        initQuiz()
-        initWardrobe()
-        initUnoReverse()
-        initCards()
 
 # what the game does on bootup
 label splashscreen:
@@ -77,7 +66,8 @@ label start:
     with fade
     $ jamSelector("random")
     show screen currentlyPlaying
-    $ a(f"{greetingSelector()}")
+    $ print(cosmeticsAll)
+    $ a(f"{randomResponse('greeting')}")
     call random_events
     jump interact
 # decides what extra events will be played before the player gets control
@@ -284,9 +274,9 @@ label unlockables:
         a "What would you like to see?"
         "Wardrobe change!":
             if not anyCosmetics():
-                a "You haven't unlocked any outfits yet!"
+                a "You haven't unlocked any outfits yet, silly! There's nothing to change!"
             else:
-                a "Nope. Cba. Check back later when I care."
+                $ chooseOutfit()
                 # have a menu of all the outfits you've unlocked- menuFormat list of keys in wardrobe cosmetics
             jump unlockables
         "What can you quiz me on?":
@@ -315,7 +305,7 @@ label unlockables:
 
 label popquiz:
     # quezzies from knowledge gained from convos / asking ashley questions (1/10 chance you get quizzed) (answer correctly and you get relationship points)
-    $ a(f"{random.choice(quizOpener())}")
+    $ a(f"{randomResponse('quizopener')}")
     if ashley.getValue("quizTopics") == []:
         a "Actually, I don't think you've learned anything from me yet. Come back later!"
         jump question

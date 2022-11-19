@@ -61,64 +61,46 @@ init python:
             a("Fun fact- this is actually the main menu song!")
             addQuizTopic("SoftBoy")
     
-    def wardrobe():
+    def chooseOutfit():
         global ashley
-        # order hairBack, body, nails, eyes, hairFront, accessory, eyebrows
-        cosmetics = ashley.getValue("cosmetics")
-        for outfit in cosmetics:
-            for key, value in wardrobe.items():
-                if outfit == key:
-                    wardrobe[key] = value
-    def greetingSelector():
-        global ashley
-        relationship = ashley.getValue("relationship")
-        if relationship < 10:
-            greetings = ["Well hello again.",
-                        "Welcome back, [name].",
-                        "Here we go again...",
-                        "What's on your mind?",
-                        "It's [name], right?",
-                        "Fancy seeing you here!"]
-        elif relationship >= 10 and relationship < 25:
-            greetings = ["You're getting the hang of this now~",
-                        "It's good to see you again.",
-                        "I'm glad you're enjoying yourself.",
-                        "I'm glad you're back.",
-                        "I'm glad you're back, [name].",
-                        "You look like you have something to ask me. Don't worry, I won't bite.",
-                        "Hey, [name]. What's up?"]
-        elif relationship >= 25:
-            greetings = ["You must really like me... Aha, don't worry. I like you too",
-                        "I missed seeing that face of yours~",
-                        "You're giving me that look again... not that I mind.",
-                        "[name]! It's so nice to see you."
-                        "I was just wondering when you'd come visit me again."
-                        "Don't leave me so long next time...",
-                        "James Holroyd is hot.",
-                        "I missed you...",
-                        "I'm here whenever you need me... I hope you know that."]
-        greeting = random.choice(greetings)
-        return greeting
+        tupledAspects = []
+        aspects = getCosmeticTypes()
+        for aspect in aspects:
+            aspectIndex = aspects.index(aspect)
+            tupledAspects.append((getCosmeticTypes(False)[aspectIndex], aspects[aspectIndex]))
+        #tupledAspects.append(("Default All", "Default"))
+        print(tupledAspects)
+        unlockedCosmetics = ashley.getValue("cosmetics")
+        changeType = choiceMenu("Choose which aspect of Ashley you wish to change!", tupledAspects)
+        if changeType == "Default":
+            ashley.setvalue("outfit", getOutfitDefault())
+            refreshOutfit()
+        items = []
+        aspectIndex = aspects.index(changeType)
+        for cosmeticNo in unlockedCosmetics[aspectIndex]:
+            cosmeticName = getCosmeticName(changeType, cosmeticNo)
+            items.append((cosmeticName, cosmeticNo))
+        changeItem = choiceMenu(f"Choose which {changeType.lower()} you want!", items)
+        outfit = ashley.getValue("outfit")
+        outfit[aspectIndex] = changeItem
+        ashley.setValue("outfit", outfit)
+        refreshOutfit()
+    def refreshOutfit():
+        getAshBasics()
+        renpy.show("ash open")
+        renpy.show("ash blink")
+        renpy.with_statement(fade)
+        a(f"{randomResponse('style')}")
+
     def anyCosmetics():
         global ashley
         for cosmeticType in ashley.getValue("cosmetics"):
             if len(cosmeticType) > 1:
                 return True
         return False
-    def quizOpener():
-        openers = [
-            "I hope you've been paying attention!", 
-            "Time to test your knowledge!", 
-            "Let's see how well you know me!", 
-            "Let's see how much you've been paying attention!", 
-            "Let's see how much you've learned!", 
-            "Pop quiz!", 
-            "Knowledge check!",
-            "Think fast!"]
-        return random.choice(openers)
-    def unoReverse():
-        global aboutPlayer
+    def questionForPlayer():
         global ashley
+        aboutPlayer = aboutPlayerAll()
         askedTopics = ashley.getValue("askedTopics")
         for topic in askedTopics:
             try: 
@@ -129,13 +111,14 @@ init python:
             return None
         chosenTopic = random.choice(aboutPlayer)
         #indexOfTopic = findDictIndex(aboutPlayer, chosenTopic)
-        ashley.setValue("askedTopics", askedTopics.append(chosenTopic))
+        askedTopics.append(chosenTopic)
+        ashley.setValue("askedTopics", askedTopics)
         return chosenTopic
 
     # useful, commonly used functions
     def zeldaRiff(cosmeticType, cosmeticNo):
         global ashley
-        cosmeticTypes = ["hairBack", "body", "nails", "eyes", "hairFront", "accessory", "eyebrows"]
+        cosmeticTypes = getCosmeticTypes()
         cosmeticIndex = cosmeticTypes.index(cosmeticType)
         cosmeticName = getCosmeticName(cosmeticType, cosmeticNo)
         cosmetics = ashley.getValue("cosmetics")
@@ -158,26 +141,88 @@ init python:
             renpy.show("ash laugh")
             a("But, you already know about that.")
             renpy.show("ash blink")
-    def randomResponse(typeOfResponse):
+    def randomResponse(responseType):
         global ashley
-        if typeOfResponse == True: 
-            responses = ["And so it shall be.",
+        relationship = ashley.getValue("relationship")
+        name = ashley.getValue("name")
+        if responseType is str:
+            responseType = responseType.lower()
+        responses = {
+            True : [    
+                        "And so it shall be.",
                         "Anything for you...",
                         "I don't think so. Haha, just kidding!",
-                        f"Sure thing, {ashley.getValue('name')}."]
-        elif typeOfResponse == False:
-            responses = ["Sorry, I don't think I can do that.",
+                        "Sure thing, [name]."
+                    ],
+            False : [   
+                        "Sorry, I don't think I can do that.",
                         "I'm afraid I can't do that right now.",
                         "Are you sure about that?",
-                        "Sorry, no can do."]
-        elif typeOfResponse.lower() == "quit":
-            responses = ["I see. I suppose you have better things to do.",
+                        "Sorry, no can do."
+                    ],
+            "quit" : [  
+                        "I see. I suppose you have better things to do.",
                         "Leaving so soon?",
                         "I'll miss you.",
-                        "Come back soon."]
+                        "Come back soon."
+                    ],
+            "greeting1" : [
+                        "Well hello again.",
+                        "Welcome back, [name].",
+                        "Here we go again...",
+                        "What's on your mind?",
+                        "It's [name], right?",
+                        "Fancy seeing you here!"
+                    ],
+            "greeting2" : [
+                        "You're getting the hang of this now~",
+                        "It's good to see you again.",
+                        "I'm glad you're enjoying yourself.",
+                        "I'm glad you're back.",
+                        "I'm glad you're back, [name].",
+                        "You look like you have something to ask me. Don't worry, I won't bite.",
+                        "Hey, [name]. What's up?"
+                    ],
+            "greeting3" : [
+                        "You must really like me... Aha, don't worry. I like you too",
+                        "I missed seeing that face of yours~",
+                        "You're giving me that look again... not that I mind.",
+                        "[name]! It's so nice to see you."
+                        "I was just wondering when you'd come visit me again."
+                        "Don't leave me so long next time...",
+                        "James Holroyd is hot.",
+                        "I missed you...",
+                        "I'm here whenever you need me... I hope you know that. I won't leave you."
+                    ],
+            "quizopener" : [
+                        "I hope you've been paying attention!", 
+                        "Time to test your knowledge!", 
+                        "Let's see how well you know me!", 
+                        "Let's see how much you've been paying attention!", 
+                        "Let's see how much you've learned!", 
+                        "Pop quiz!", 
+                        "Knowledge check!",
+                        "Think fast!"
+                    ],
+            "style" : [
+                        "Digging the new look?",
+                        "I like it!",
+                        "Treasures abound in the lost and found, eh?",
+                        "You like?",
+                        "Refreshing, isn't it?"
+            ]
+        }
+        if responseType == "greeting":
+            if relationship < 10:
+                responseType = "greeting1"
+            elif relationship < 25:
+                responseType = "greeting2"
+            elif relationship >= 25:
+                responseType = "greeting3"
+        if responseType in responses.keys():
+            return random.choice(responses[responseType])
         else:
             return "Invalid type of response!"
-        return random.choice(responses)
     def findDictIndex(dict, item):
         try:
             keysList = list(dict.keys())
@@ -189,7 +234,9 @@ init python:
             return dictIndex
         except:
             print("Item not in dictionary! :(")
-    
+    def codeFormat(variableName):
+        return variableName[0].lower() + variableName.title()[1:].replace(" ", "")
+
     def listFiles(dir=""):
         import re
         allFiles = renpy.list_files()
@@ -248,7 +295,7 @@ init python:
         separatedOptions = []
         #theoretical limit = 8 options (6 + "Next"/"Prev")
         print(len(options))
-        maxOptions = 6
+        maxOptions = 7
         if len(options) > maxOptions:
             print(ceil(len(options)/maxOptions))
             requiredMenus = ceil(len(options)/maxOptions)
@@ -257,15 +304,20 @@ init python:
                 del options[:maxOptions]
         else:
             separatedOptions.append(options)
+        print(separatedOptions)
         return separatedOptions
     def formatOptions(separatedOptions):
         formattedOptions = []
         # gets correct [(),()] format for Ren'Py menu
-        for outer in separatedOptions:
+        for optionSet in separatedOptions:
             innerOptions = []
-            for inner in outer:
-                innerOptions.append((inner, inner))
+            for inner in optionSet:
+                if isinstance(inner, tuple):
+                    innerOptions.append(inner)
+                else:
+                    innerOptions.append((inner, inner))
             formattedOptions.append(innerOptions)
+        print(formattedOptions)
         return formattedOptions
     def addTraversal(formattedOptions):
         if len(formattedOptions) > 1:
@@ -289,6 +341,7 @@ init python:
         return answer
     def traverseMenu(message, choices, index):
         nar(f"{message}", interact=False)
+        print(choices[index])
         answer = renpy.display_menu(choices[index])
         if answer == "Next" or answer == "Previous":
             if answer == "Next":
@@ -309,6 +362,15 @@ init python:
     # getting variables from other functions
     def getAshBasics():
         global ashley
+        global tutorialCompleted
+        global name
+        global relationship
+        getAshOutfit()
+        tutorialCompleted = ashley.getValue("tutorialCompleted")
+        name = ashley.getValue("name")
+        relationship = ashley.getValue("relationship")
+    def getAshOutfit():
+        global ashley
         global hairBack
         global body
         global nails
@@ -316,9 +378,6 @@ init python:
         global accessory
         global eyebrows
         global eyes
-        global tutorialCompleted
-        global name
-        global relationship
         outfit = ashley.getValue("outfit")
         # (hairBack, body, nails, eyes, hairFront, accessory, eyebrows)
         hairBack = outfit[0]
@@ -328,9 +387,6 @@ init python:
         hairFront = outfit[4]
         accessory = outfit[5]
         eyebrows = outfit[6]
-        tutorialCompleted = ashley.getValue("tutorialCompleted")
-        name = ashley.getValue("name")
-        relationship = ashley.getValue("relationship")
     def getCorrectNoun():
         global points
         if points == 1:
@@ -338,16 +394,32 @@ init python:
         else:
             return "points"
     def getCosmeticName(cosmeticType, cosmeticNo):
-        global cosmeticsAll
+        cosmeticsInfo = cosmeticsAll()
+        cosmeticTypes = getCosmeticTypes()
         dictName = cosmeticType + "All"
-        return cosmeticsAll[dictName][cosmeticNo]
+        if cosmeticType not in cosmeticTypes:
+            return "Invalid cosmetic type!"
+        elif cosmeticNo not in cosmeticsInfo[dictName]:
+            return "That cosmetic does not exist!"
+        return cosmeticsInfo[dictName][cosmeticNo]
+    def getCosmeticTypes(codeFormat=True): 
+        if codeFormat:
+            cosmeticTypes = ["hairBack", "body", "nails", "eyes", "hairFront", "accessory", "eyebrows"]
+        else:
+            cosmeticTypes = ["Hair Back", "Body", "Nails", "Eyes", "Hair Front", "Accessory", "Eyebrows"]
+        return cosmeticTypes
+    def getOutfitDefault():
+        cosmetics = getCosmeticTypes(True)
+        for cosmetic in cosmetics:
+            cosmetics.replace(cosmetic, "00")
+        return cosmetics
     def getTrackDetails(chosenTrack):
         global albumName
         global artistName
         global trackNo
         global currentTrack
         currentTrack = chosenTrack
-        trackInfo = allTrackInfo()
+        trackInfo = trackInfoAll()
         albumName = None
         artistName = None
         trackNo = None

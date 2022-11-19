@@ -1,6 +1,6 @@
 init python:         
     # setup all main functions with permanent data i.e all collectibles
-    def allTrackInfo():
+    def trackInfoAll():
         trackInfo = {
             "Wilbur Soot" : {
                 "The E-Girl Trilogy" : ("I'm In Love With An E-Girl", "Internet Ruined Me", "Your New Boyfriend"),
@@ -25,8 +25,7 @@ init python:
             },
         }
         return trackInfo
-    def initQuiz():
-        global quizQuestions
+    def quizAll():
         quizQuestions = {
             "surname" : {
                 "What is my last name?" : "Rosemarry"
@@ -59,10 +58,10 @@ init python:
                 "How tall am I?" : "5'7"
             }
         }
+        return quizQuestions
         # random chance of getting a "Do you remember how you unlocked..." question
-    def initUnoReverse():
-        global aboutPlayer
-        aboutPlayer = {
+    def aboutPlayerAll():
+        aboutPlayerQuestions = {
             "What's your favourite colour?" : {
                 "Red" : ("I love red. It's one of my favourite colours. Especially crimson."),
                 "Purple" : ("Ah, purple... reminds me of the end of a rainbow. I like it.", "4|02"),
@@ -103,9 +102,9 @@ init python:
                 "Mystery" : ("Do you ever find yourself guessing the ending of a mystery before it's revealed? I do. I'm not always right, though.")
             }
         }
-    def initWardrobe():
-        global cosmeticsAll
-        cosmeticsAll = {
+        return aboutPlayerQuestions
+    def cosmeticsAll():
+        cosmeticsInfo = {
             "hairBackAll" : {
                 "00" : "Black Bob",
                 "01" : "Miss Aiko"
@@ -145,9 +144,8 @@ init python:
                 "00" : "Thinly Veiled"
             }
         }
-    def initCards():
-        global card
-        global cards
+        return cosmeticsInfo
+    def cardsAll():
         cards = []
         cardFile = readFile("cardFile.txt")
         for card in cardFile:
@@ -161,3 +159,4 @@ init python:
             print(card.name)
         print(cards)
         print(cards[0].name)
+        return cards

@@ -1,4 +1,5 @@
 init:
+    $ getAshBasics
     $ removeKeybinds(['rollback', 'rollforward', 'help', 'skip', 'toggle_skip', 'fast_skip', 'game_menu'])
     $ rebindKeybinds([['quit', 'K_ESCAPE']])
 
@@ -60,9 +61,9 @@ init:
         $ modal = False 
         add "gui/playing.png" xpos 0 ypos 80
         python:
-            current = currentTrack.replace("Alternative", "") + " - " + artistName
-            if len(current) > 28:
-                current = current[:28] + "..."
+            current = currentTrack.replace("Alternative", "Alt.") + " - " + artistName
+            if len(current) > 27:
+                current = current[:27] + "..."
         text("{image=note.png}[current]") xpos 0 ypos 80 size 18
     
     # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
