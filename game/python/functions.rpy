@@ -11,13 +11,9 @@ init python:
         lowerName = playerName.lower()
         if lowerName == "daddy":
             return "Master Hardwick"
-        elif lowerName == "raffi" or lowerName == "raf" or lowerName == "gearloe":
-            a("Well, well, well... I knew this day would come.")
-            a("Finally, a worthy adversary. Our battle will be legendary!")
-            renpy.show("ash laugh")
-            a("...love you xx :)")
-            renpy.show("ash")
-        elif lowerName == "bibblyboy":
+        elif lowerName == "gown master":
+            a("You better not be here to make me code for you again!")
+        elif lowerName == "bibblyboy" or lowerName == "james":
             renpy.show("ash laugh")
             a("I love men.")
             renpy.show("ash")
