@@ -1,6 +1,4 @@
-$ tutorialGameCompleted = False
-$ tutorialConvoCompleted = False
-$ outfitchanged = False
+
 # the precursor to the tutorial, only shown at the very beginning of the game. This is where the player inputs their name
 label meet_ashley:
     scene intro
@@ -34,6 +32,7 @@ label meet_ashley:
     jump init_tutorial
 # only shows each time the player sees the tutorial
 label init_tutorial:
+    $ outfitchanged = False
     scene cloudback
     show clouds
     show ash open

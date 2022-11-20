@@ -32,6 +32,10 @@ init python:
         global ashley
         global wilburText
         global songsPlayed
+        global tutorialGameCompleted
+        global tutorialConvoCompleted
+        tutorialGameCompleted = False
+        tutorialConvoCompleted = False
         ashley = CharacterManager()
         wilburText = False
         songsPlayed = []
