@@ -1,6 +1,5 @@
 ﻿# cummies :heart_eyes:
 # when you bi
-
 # declaring the RenPy speaking characters ("you" is added in meet_ashley)
 define a = Character("Ashley")
 define nar = Character(what_italic=True)
@@ -68,7 +67,7 @@ label start:
     show screen currentlyPlaying
     $ print(cosmeticsAll)
     $ a(f"{randomResponse('greeting')}")
-    call random_events
+    call random_events from _call_random_events
     jump interact
 # decides what extra events will be played before the player gets control
 label random_events:

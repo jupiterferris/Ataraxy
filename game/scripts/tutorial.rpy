@@ -3,7 +3,8 @@ $ tutorialConvoCompleted = False
 $ outfitchanged = False
 # the precursor to the tutorial, only shown at the very beginning of the game. This is where the player inputs their name
 label meet_ashley:
-    scene bg room
+    scene intro
+    show petals
     show ash close
     with fade
     nar "Performing first time setup..."
@@ -33,7 +34,8 @@ label meet_ashley:
     jump init_tutorial
 # only shows each time the player sees the tutorial
 label init_tutorial:
-    scene bg room
+    scene cloudback
+    show clouds
     show ash open
     with fade
     play music "audio/jams/Rose's Fountain.mp3"

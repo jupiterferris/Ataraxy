@@ -52,6 +52,21 @@ init:
         imagebutton idle "images/gallery/[pictureChoice].png" hover "images/gallery/[pictureChoice].png" action Return() at truecenter
     image bg room:
         f"images/bgs/bg {timeOfDay}.png"
+    image clouds:
+        "images/bgs/tutorial/clouds.png"
+        xalign 0.0
+        linear 40.0 xalign 1.0
+        repeat
+    image petals:
+        "images/bgs/tutorial/sakura.png"
+        xanchor 0
+        yanchor 0
+        xalign 1.0
+        yalign 1.0
+        linear 10.0 xalign 0.0 yalign 0.0
+        repeat
+
+        
     screen dayTime:
         $ modal = False 
         add "gui/time/timebg.png" xpos 0 ypos 0
