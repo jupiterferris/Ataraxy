@@ -69,7 +69,7 @@ label start:
     with fade
     $ jamSelector("random")
     show screen currentlyPlaying
-    $ print(cosmeticsAll)
+    show screen balance
     $ a(f"{randomResponse('greeting')}")
     call random_events from _call_random_events
     jump interact

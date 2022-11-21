@@ -65,8 +65,9 @@ init:
         yalign 1.0
         linear 10.0 xalign 0.0 yalign 0.0
         repeat
-
-        
+    style widgetback:
+        background "gui/rightbox.png"    
+    
     screen dayTime:
         $ modal = False 
         add "gui/time/timebg.png" xpos 0 ypos 0
@@ -80,7 +81,27 @@ init:
             if len(current) > 27:
                 current = current[:27] + "..."
         text("{image=note.png}[current]") xpos 0 ypos 80 size 18
-    
+    screen balance:
+        $ modal = False
+        grid 2 4:
+            align(1.0, 0)
+            for i in range (4):
+                add "gui/fruitbox.png" zoom .2 at right
+                add "gui/fruitname.png" yalign 0.5
+        frame:
+            align(1.0, 0)
+            background "#00000000"
+            grid 2 4:
+                add "starfruit" zoom .2 at right
+                text("Behold, starfruit!") yalign 0.5
+                add "strawberry" zoom .2 at right
+                text("This is a strobbery") yalign 0.5
+                add "cherry" zoom .2 at right
+                text("This is a chewwy") yalign 0.5
+                add "melon" zoom .2 at right
+                text("This is a mewwon") yalign 0.5
+
+        
     # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
     layeredimage ash:
         always:

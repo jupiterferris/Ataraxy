@@ -63,7 +63,9 @@ init python:
         aspects = getCosmeticTypes()
         for aspect in aspects:
             aspectIndex = aspects.index(aspect)
+            print(aspectIndex)
             tupledAspects.append((getCosmeticTypes(False)[aspectIndex], aspects[aspectIndex]))
+        print(aspectIndex)
         #tupledAspects.append(("Default All", "Default"))
         print(tupledAspects)
         unlockedCosmetics = ashley.getValue("cosmetics")
