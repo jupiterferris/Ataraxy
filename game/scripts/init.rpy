@@ -83,23 +83,55 @@ init:
         text("{image=note.png}[current]") xpos 0 ypos 80 size 18
     screen balance:
         $ modal = False
-        grid 2 4:
-            align(1.0, 0)
-            for i in range (4):
-                add "gui/fruitbox.png" zoom .2 at right
-                add "gui/fruitname.png" yalign 0.5
-        frame:
-            align(1.0, 0)
-            background "#00000000"
-            grid 2 4:
-                add "starfruit" zoom .2 at right
-                text("Behold, starfruit!") yalign 0.5
-                add "strawberry" zoom .2 at right
-                text("This is a strobbery") yalign 0.5
-                add "cherry" zoom .2 at right
-                text("This is a chewwy") yalign 0.5
-                add "melon" zoom .2 at right
-                text("This is a mewwon") yalign 0.5
+        #fixed:
+            #vbox:
+            #    align(1.0, 0)
+            #    for i in range (4):
+            #    #add "gui/fruitname.png" yalign 0.5
+            #        add "gui/fruitbox.png" zoom .2 #at right 
+        viewport id "balance":
+            draggable True
+            scrollbars "vertical"
+            xmaximum 185
+            ymaximum 84
+            align (1.0, 0)
+            #
+            frame:
+                background "gui/fruitgui.png" 
+                vbox:
+                    for i in range (4):
+                        text f"{i}"#at right
+                #vbox:
+                #    for i in range (4):
+                #        add "gui/fruitgui.png" zoom .2
+                        
+                        #add "gui/fruitbox.png" zoom .2 at right
+#        grid 2 4:
+#        fixed:
+#            vbox:
+#                align(1.0, 0)
+#                for i in range (4):
+                #add "gui/fruitname.png" yalign 0.5
+#                    add "gui/fruitbox.png" zoom .2 #at right 
+#            vbox:
+#                align(0.8, 0)
+#                for i in range (4):
+#                    add "gui/fruitname.png" yalign 0.5
+
+                
+        # frame:
+        #     align(1.0, 0)
+        #     background "#00000000"
+        #     grid 2 4:
+        #         text("Behold, starfruit!") yalign 0.5
+        #         add "starfruit" zoom .2 at right
+        #         text("This is a strobbery") yalign 0.5
+        #         add "strawberry" zoom .2 at right
+        #         text("This is a chewwy") yalign 0.5
+        #         add "cherry" zoom .2 at right
+        #         text("This is a mewwon") yalign 0.5
+        #         add "melon" zoom .2 at right
+                
 
         
     # in ascending layer order: Hair back, body, nails, face, eyes, hair front, accessory, eyebrows
