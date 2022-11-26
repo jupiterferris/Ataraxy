@@ -111,18 +111,19 @@ init python:
             },
             "bodyAll" : {
                 "00" : "Casual Friday",
-                "01" : "I Like Dogs",
                 "02" : "A Thousand Paper Cranes",
-                "03" : "Sweater Weather"
+                "03" : "Sweater Weather",
+                "11" : "I Like Dogs"
             },
             "nailsAll" : {
                 "00" : "Noire",
-                "01" : "Thirium Blue",
                 "02" : "Laceration",
-                "03" : "Natural"
+                "03" : "Natural",
+                "11" : "Thirium Blue"
             },
             "eyesAll" : {
-                "00" : "Slate Grey"
+                "00" : "Slate Grey",
+                "11" : "Deviant Blue"
             },
             "hairFrontAll" : {
                 "00" : "Sideswept Crimson",
@@ -138,7 +139,7 @@ init python:
                 "01" : "MonoMono Pin",
                 "02" : "Oh Lardy",
                 "03" : "Thorny Rose",
-                "04" : "Cyberlife"
+                "11" : "Cyberlife Seal"
             },
             "eyebrowsAll" : {
                 "00" : "Thinly Veiled"
