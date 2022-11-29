@@ -49,9 +49,9 @@ init python:
             if pictures is None:
                 self.setValue("pictures", [])
             
-            ashe = self.json.get("ashe")
+            ashe = self.json.get("balance")
             if ashe is None:
-                self.setValue("ashe", 0)
+                self.setValue("balance", [])
 
             askedTopics = self.json.get("askedTopics")
             if askedTopics is None:

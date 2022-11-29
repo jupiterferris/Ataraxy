@@ -105,7 +105,7 @@ init python:
                 aboutPlayer.pop(topic)
             except KeyError:
                 continue
-        if aboutPlayer is empty:
+        if len(aboutPlayer) == 0:
             return None
         chosenTopic = random.choice(aboutPlayer)
         #indexOfTopic = findDictIndex(aboutPlayer, chosenTopic)
@@ -367,6 +367,19 @@ init python:
         tutorialCompleted = ashley.getValue("tutorialCompleted")
         name = ashley.getValue("name")
         relationship = ashley.getValue("relationship")
+    def unlockedFruits():
+        global fruits
+        fruits = []
+        balance = ashley.getValue("balance")
+        #for fruit in availableFruits:
+        #    if balance >= fruitPrices[fruit]:
+        #        fruits.append(fruit)
+        for fruitType in balance:
+            fruits.append(fruitType[0])
+        if len(fruits) == 0:
+            return None
+        return fruits
+
     def getAshOutfit():
         global ashley
         global hairBack

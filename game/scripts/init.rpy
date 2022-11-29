@@ -65,6 +65,9 @@ init:
         yalign 1.0
         linear 10.0 xalign 0.0 yalign 0.0
         repeat
+    image fruit:
+        f"{fruit}.png"
+        zoom 0.2
     style widgetback:
         background "gui/rightbox.png"    
     
@@ -90,17 +93,17 @@ init:
             #    #add "gui/fruitname.png" yalign 0.5
             #        add "gui/fruitbox.png" zoom .2 #at right 
         viewport id "balance":
-            draggable True
-            scrollbars "vertical"
-            xmaximum 185
-            ymaximum 84
-            align (1.0, 0)
-            #
-            frame:
-                background "gui/fruitgui.png" 
-                vbox:
-                    for i in range (4):
-                        text f"{i}"#at right
+            if unlockedFruits() is not None:
+                draggable True
+                scrollbars "vertical"
+                xmaximum 185
+                ymaximum 84
+                align (1.0, 0)
+                frame:
+                    background "gui/fruitgui.png" 
+                    vbox:
+                        for fruit in range (4):
+                            text "{image=fruit}[fruit]"#at right
                 #vbox:
                 #    for i in range (4):
                 #        add "gui/fruitgui.png" zoom .2

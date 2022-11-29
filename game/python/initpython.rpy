@@ -107,13 +107,15 @@ init python:
         cosmeticsInfo = {
             "hairBackAll" : {
                 "00" : "Black Bob",
-                "01" : "Miss Aiko"
+                "01" : "Miss Aiko",
+                "12" : "Okay, Everyone!",
             },
             "bodyAll" : {
                 "00" : "Casual Friday",
                 "02" : "A Thousand Paper Cranes",
                 "03" : "Sweater Weather",
-                "11" : "I Like Dogs"
+                "11" : "I Like Dogs",
+                "12" : "Welcome to the Literature Club!",
             },
             "nailsAll" : {
                 "00" : "Noire",
@@ -123,7 +125,8 @@ init python:
             },
             "eyesAll" : {
                 "00" : "Slate Grey",
-                "11" : "Deviant Blue"
+                "11" : "Deviant Blue",
+                "12" : "Piercing Emerald",
             },
             "hairFrontAll" : {
                 "00" : "Sideswept Crimson",
