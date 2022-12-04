@@ -459,7 +459,7 @@ init python:
     def getPreviousSong(songsPlayed):
         if len(songsPlayed) < 2:
             a("No other songs played yet! Come back once you've heard some jams.")
-        return songsPlayed[-2]
+        return songsPlayed[-1]
     def getSpecificSong(songs):
         return choiceMenu("Choose a song to play!", songs)
     # functions designed to override native Ren'Py functions/ config related functions

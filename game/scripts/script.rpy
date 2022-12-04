@@ -17,6 +17,7 @@ define nar = Character(what_italic=True)
 # can only play 1 game a day etc
 # joke randomiser for shits and giggles
 # add luma piano cover to music player
+# add contingency for trying to change outfit when already wearing it
 ##### Execution Flow #####
 # 1. "Start" label
 # 2. Branch to meet Ashley -> tutorial if first time, or to "launch" if not
@@ -204,7 +205,7 @@ label conversation:
                                 show ash blink 
                                 if not "grapes" in ashley.getValue("quizTopics"):
                                     $ addQuizTopic("grapes")
-                                    $ writeToFile("unlockedSongs.txt", "Grapes\n")
+                                    $ writeToFile("randomiserSongs.txt", "Grapes\n")
                                     a "As a thank you for listening to my rambling, I've unlocked a secret track for you."
                                     a "It's a lesser-known song by James Marriott that was made collaboratively with Ash Kabosu- Lovejoy's bass guitarist."
                                     a "Enjoy~"
