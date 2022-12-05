@@ -1,4 +1,4 @@
-init offset = -5
+init offset = -3
 init python:
     # API functions
     def getLocation():
