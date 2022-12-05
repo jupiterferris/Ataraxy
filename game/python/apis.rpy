@@ -1,3 +1,4 @@
+init offset = -5
 init python:
     # API functions
     def getLocation():
@@ -45,9 +46,9 @@ init python:
         print(f"Noon today: {noonTime}")
         # [midnight] | morning | [sunrise] | day | [noon] | afternoon | [sunset] | night | [midnight]
         if currentTime > midnightTime and currentTime < sunriseTime:
-            timeOfDay = "Morning"
+            timeOfDay = "Dawn"
         elif currentTime > sunriseTime and currentTime < noonTime:
-            timeOfDay = "Day"
+            timeOfDay = "Morning"
         elif currentTime > noonTime and currentTime < sunsetTime:
             timeOfDay = "Afternoon"
         else:
