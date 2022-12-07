@@ -1,4 +1,7 @@
-
+default tutorialGameCompleted = False
+default tutorialConvoCompleted = False
+default outfitchanged = False
+default points = 0
 # the precursor to the tutorial, only shown at the very beginning of the game. This is where the player inputs their name
 label meet_ashley:
     scene intro
@@ -32,7 +35,6 @@ label meet_ashley:
     jump init_tutorial
 # only shows each time the player sees the tutorial
 label init_tutorial:
-    $ outfitchanged = False
     scene cloudback
     show clouds
     show ash open
@@ -57,7 +59,7 @@ label tutorial:
         "Where am I up to?":
             python:
                 if tutorialGameCompleted and tutorialConvoCompleted:
-                    a("Welcome back!")
+                    a("Welcome!")
                     nar("You've completed the tutorial. You can now play the game as you wish.")
                     a("I hope you enjoy your time with me.")
                     ashley.setValue("tutorialCompleted", True)
@@ -72,8 +74,6 @@ label tutorial:
                     a("This is where your unlockables will be displayed... Come back when you've exhausted your other options!")
                     renpy.jump("tutorial")
     label tutorial_gayme:
-        # resets point value to 0, good form incase for whatever reason it isn't already 0
-        $ points = 0
         a "I'm going to ask you a question, and you have to answer it."
         a "If you get it right, you get a point."
         a "If you get it wrong, you don't."

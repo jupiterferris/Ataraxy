@@ -98,21 +98,30 @@ init python:
         return False
     def questionForPlayer():
         global ashley
-        aboutPlayer = aboutPlayerAll()
-        askedTopics = ashley.getValue("askedTopics")
-        for topic in askedTopics:
-            try: 
-                aboutPlayer.pop(topic)
-            except KeyError:
-                continue
-        if len(aboutPlayer) == 0:
-            return None
-        chosenTopic = random.choice(aboutPlayer)
-        #indexOfTopic = findDictIndex(aboutPlayer, chosenTopic)
-        askedTopics.append(chosenTopic)
-        ashley.setValue("askedTopics", askedTopics)
-        return chosenTopic
-
+        aboutPlayer = ashley.getValue("aboutPlayer")
+        askedQuestions = ashley.getValue("askedPlayer")
+        allQuestions = removeItems(askedQuestions, aboutPlayerAll())
+        if allQuestions == None:
+            a("Ah... I was going to ask more about you instead, but I've asked you everything I can think of right now!")
+            renpy.call("question")
+            return
+        chosenQuestion = random.choice(allQuestions.keys())
+        askedQuestions.append(chosenQuestion)
+        a(f"{chosenQuestion}")
+        options = allQuestions[chosenQuestion].keys()
+        chosen = choiceMenu(chosenQuestion, options)
+        aboutPlayer.append(chosen)
+        ashley.setValue("aboutPlayer", aboutPlayer)
+        response = allQuestions[chosenQuestion][chosen]
+        a(f"{response}")
+        
+    def questionForAshley():
+        a("hello darkness my old friend")
+    def ramble():
+        file = randomFile("files/anecdotes")
+        anecdote = readFile("anecdotes"+file)
+        for line in anecdote:
+            a(f"{line}")
     # useful, commonly used functions
     def zeldaRiff(cosmeticType, cosmeticNo):
         global ashley
@@ -139,6 +148,7 @@ init python:
             renpy.show("ash laugh")
             a("But, you already know about that.")
             renpy.show("ash blink")
+    
     def randomResponse(responseType):
         global ashley
         relationship = ashley.getValue("relationship")
@@ -200,14 +210,19 @@ init python:
                         "Let's see how much you've learned!", 
                         "Pop quiz!", 
                         "Knowledge check!",
-                        "Think fast!"
+                        "Think fast!",
+                        "No cheating!",
                     ],
             "style" : [
                         "Digging the new look?",
                         "I like it!",
                         "Treasures abound in the lost and found, eh?",
                         "You like?",
-                        "Refreshing, isn't it?"
+                        "Refreshing, isn't it?",
+                        "Looking swanky~",
+                        "I'd hit that!",
+                        "Dapper as always!",
+                        "It'll have to do!",
             ]
         }
         if responseType == "greeting":
@@ -232,9 +247,23 @@ init python:
             return dictIndex
         except:
             print("Item not in dictionary! :(")
+    def removeItems(itemsToRemove, items):
+        if itemsToRemove == None:
+            return items
+        for item in itemsToRemove:
+            try:
+                if isinstance (items, list):
+                    items.remove(item)
+                elif isinstance (items, dict):
+                    items.pop(item)
+            except KeyError:
+                continue
+        if len(items) == 0:
+            return None
+        return items
     def codeFormat(variableName):
         return variableName[0].lower() + variableName.title()[1:].replace(" ", "")
-
+    # root folder is Ataraxy/game - writeToFile and readFile have /files/ preadded to dir
     def listFiles(dir=""):
         import re
         allFiles = renpy.list_files()
@@ -245,7 +274,6 @@ init python:
         return fileList
     def countFiles(dir=""):
         return len(listFiles(dir))
-    
     def writeToFile(filename, text):
         with open(config.gamedir + "/files/" + filename) as rf:
             if text not in rf.read():
@@ -258,7 +286,11 @@ init python:
         for index, item in enumerate(itemList):
             itemList[index] = item.replace("\n", "")
         return itemList
-    
+    def randomFile(dir=""):
+        allFiles = listFiles(dir)
+        chosenFile = random.choice(allFiles)
+        return chosenFile
+
     def inputQuestion(question, correctAnswer):
         global points
         a(f"{question}")
@@ -411,7 +443,7 @@ init python:
         if cosmeticType not in cosmeticTypes:
             return "Invalid cosmetic type!"
         elif cosmeticNo not in cosmeticsInfo[dictName]:
-            return "That cosmetic does not exist!"
+            return "Nonexistant Cosmetic!"
         return cosmeticsInfo[dictName][cosmeticNo]
     def getCosmeticTypes(codeFormat=True): 
         if codeFormat:
@@ -441,7 +473,7 @@ init python:
                     artistName = artist
                     albumName = album
                     trackNo = songs.index(currentTrack) + 1
-                
+                    return 
         # error catching (incase i add new tracks and forget to add to the dictionary)
         if artistName is None:
             albumName = "Unknown"
@@ -462,6 +494,7 @@ init python:
         return songsPlayed[-1]
     def getSpecificSong(songs):
         return choiceMenu("Choose a song to play!", songs)
+  
     # functions designed to override native Ren'Py functions/ config related functions
     def removeKeybinds(keybinds):
         keybindsToRemove = keybinds

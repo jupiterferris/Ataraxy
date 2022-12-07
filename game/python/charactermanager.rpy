@@ -53,9 +53,13 @@ init python:
             if ashe is None:
                 self.setValue("balance", [])
 
-            askedTopics = self.json.get("askedTopics")
-            if askedTopics is None:
-                self.setValue("askedTopics", [])
+            aboutPlayer = self.json.get("aboutPlayer")
+            if aboutPlayer is None:
+                self.setValue("aboutPlayer", [])
+            
+            heardAnecdotes = self.json.get("heardAnecdotes")
+            if heardAnecdotes is None:
+                self.setValue("heardAnecdotes", [])
         # Opens the JSON file
         def open(self):
             try:

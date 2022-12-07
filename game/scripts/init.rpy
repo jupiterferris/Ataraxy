@@ -2,7 +2,7 @@ init:
     $ getAshBasics
     $ removeKeybinds(['rollback', 'rollforward', 'help', 'skip', 'toggle_skip', 'fast_skip', 'game_menu'])
     $ rebindKeybinds([['quit', 'K_ESCAPE']])
-
+    # IMAGES REFRESH EVERY SECOND! DO NOT USE FUNCTIONS IN IMAGE DECLARATION OR IT WILL LAG HARDER THAN A 2000S PC RUNNING MINECRAFT
     image ash_hair_back:
         f"ash_hair_back_{hairBack}"
     image ash_body:

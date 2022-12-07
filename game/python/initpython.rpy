@@ -103,6 +103,25 @@ init python:
             }
         }
         return aboutPlayerQuestions
+    def aboutAshAll():
+        aboutAshQuestions = {
+            "colour" : {
+                "What's your favourite colour?" : "If you couldn't tell, I'm rather fond of red and black... Something about it is just so slick!"
+            },
+            "animal" : { 
+                "What's your favourite animal?" : "Ferrets! They're so cute and fluffy!"
+            },
+            "thing" : {
+                "What's your favourite thing to do?" : "I love to talk to people, and I like to play games- nothing like some horror to get the blood pumping!"
+            },
+            "genre" : {
+                "What's your favourite genre?" : "I'd probably say both horror and fantasy are my favourite genres. I love a good scare, and I love a good story."
+            },
+            "heightp" : {
+                "How tall are you?" : "I'm 5'7. I'm not very tall, but I'm not short either."
+            }
+        }
+        return aboutAshQuestions  
     def cosmeticsAll():
         cosmeticsInfo = {
             "hairBackAll" : {
