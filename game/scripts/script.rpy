@@ -124,9 +124,11 @@ label conversation:
             # this is where Ashley asks the player a question about the player (surprise!)
             a "Surprise! I'm going to ask you a question instead."
             $ question = questionForPlayer()
+            return
         label ask_ashley:
             # this is where the player can ask Ashley a question
             $ question = questionForAshley()
+            return
         label pop_quiz:
             # quezzies from knowledge gained from convos / asking ashley questions (1/10 chance you get quizzed) (answer correctly and you get relationship points)
             $ a(f"{randomResponse('quizopener')}")
@@ -134,6 +136,7 @@ label conversation:
                 a "Actually, I don't think you've learned anything from me yet. Come back later!"
             else:
                 a "Aren't you lucky!"
+            return
     # this is where Ashley tells the player what song is playing and more information about it
     label convo_song: 
         $ randomSong = False

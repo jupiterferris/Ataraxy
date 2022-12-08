@@ -99,22 +99,23 @@ init python:
     def questionForPlayer():
         global ashley
         aboutPlayer = ashley.getValue("aboutPlayer")
-        askedQuestions = ashley.getValue("askedPlayer")
-        allQuestions = removeItems(askedQuestions, aboutPlayerAll())
-        if allQuestions == None:
+        print(aboutPlayer)
+        askedQuestions = []
+        allQuestions = aboutPlayerAll()
+        for question in aboutPlayer:
+            askedQuestions.append(findKeyOfNestedValue(allQuestions, question))
+        print(askedQuestions)
+        availableQuestions = removeItems(allQuestions, askedQuestions)
+        print(availableQuestions)
+        if availableQuestions == None:
             a("Ah... I was going to ask more about you instead, but I've asked you everything I can think of right now!")
             renpy.call("question")
             return
-        chosenQuestion = random.choice(allQuestions.keys())
-        askedQuestions.append(chosenQuestion)
-        a(f"{chosenQuestion}")
-        options = allQuestions[chosenQuestion].keys()
-        chosen = choiceMenu(chosenQuestion, options)
+        chosenQuestion = random.choice(list(availableQuestions.keys()))
+        chosen = choiceMenu(randomResponse("deliberating")+chosenQuestion, allQuestions[chosenQuestion].keys(), False)
         aboutPlayer.append(chosen)
         ashley.setValue("aboutPlayer", aboutPlayer)
-        response = allQuestions[chosenQuestion][chosen]
-        a(f"{response}")
-        
+        a(f"{allQuestions[chosenQuestion][chosen]}")       
     def questionForAshley():
         a("hello darkness my old friend")
     def ramble():
@@ -160,7 +161,11 @@ init python:
                         "And so it shall be.",
                         "Anything for you...",
                         "I don't think so. Haha, just kidding!",
-                        "Sure thing, [name]."
+                        "Sure thing, [name].",
+                        "Okey-kokey!",
+                        "Processing request...",
+                        "I'm on it!",
+                        "I'll see what I can do."
                     ],
             False : [   
                         "Sorry, I don't think I can do that.",
@@ -172,7 +177,15 @@ init python:
                         "I see. I suppose you have better things to do.",
                         "Leaving so soon?",
                         "I'll miss you.",
-                        "Come back soon."
+                        "Come back soon.",
+                        "I'll see you later.",
+                        "We'll meet again.",
+                        "Til next time.",
+                        "See you later, alligator!",
+                        "In a while, crocodile.",
+                        "Making like a tree, are we?",
+                        "Farewell, [name].",
+                        "Peace!",
                     ],
             "greeting1" : [
                         "Well hello again.",
@@ -180,7 +193,8 @@ init python:
                         "Here we go again...",
                         "What's on your mind?",
                         "It's [name], right?",
-                        "Fancy seeing you here!"
+                        "Fancy seeing you here!",
+                        "Hidey ho, neighbourino!"
                     ],
             "greeting2" : [
                         "You're getting the hang of this now~",
@@ -198,7 +212,6 @@ init python:
                         "[name]! It's so nice to see you."
                         "I was just wondering when you'd come visit me again."
                         "Don't leave me so long next time...",
-                        "James Holroyd is hot.",
                         "I missed you...",
                         "I'm here whenever you need me... I hope you know that. I won't leave you."
                     ],
@@ -212,7 +225,19 @@ init python:
                         "Knowledge check!",
                         "Think fast!",
                         "No cheating!",
+                        "Pack up, it's quiz time!"
                     ],
+            "deliberating" : [
+                        "Let's see... ",
+                        "I think I'll go with... "
+                        "Hmm... ",
+                        "I'm thinking... ",
+                        "Ahh... ",
+                        "Uhh... ",
+                        "I'm not sure... ",
+                        "Oh! I know! ",
+                        "Let's see here... "
+            ],
             "style" : [
                         "Digging the new look?",
                         "I like it!",
@@ -222,7 +247,7 @@ init python:
                         "Looking swanky~",
                         "I'd hit that!",
                         "Dapper as always!",
-                        "It'll have to do!",
+                        "It'll have to do!"
             ]
         }
         if responseType == "greeting":
@@ -247,8 +272,14 @@ init python:
             return dictIndex
         except:
             print("Item not in dictionary! :(")
-    def removeItems(itemsToRemove, items):
-        if itemsToRemove == None:
+    def findKeyOfNestedValue(dict, item):
+        for key, value in dict.items():
+            if item in value.keys():
+                return key
+            elif item in value.values():
+                return key
+    def removeItems(items, itemsToRemove):
+        if itemsToRemove == []:
             return items
         for item in itemsToRemove:
             try:
@@ -364,13 +395,16 @@ init python:
         return formattedOptions
     def menuFormat(options):
         return(addTraversal(formatOptions(separateOptions(options))))
-    def choiceMenu(message, options):
+    def choiceMenu(message, options, narrator=True):
         choices = menuFormat(options)
         index = 0
-        answer = traverseMenu(message, choices, index)
+        answer = traverseMenu(message, choices, index, narrator)
         return answer
-    def traverseMenu(message, choices, index):
-        nar(f"{message}", interact=False)
+    def traverseMenu(message, choices, index, narrator):
+        if narrator:
+            nar(f"{message}", interact=False)
+        else:
+            a(f"{message}", interact=False)
         print(choices[index])
         answer = renpy.display_menu(choices[index])
         if answer == "Next" or answer == "Previous":
@@ -378,7 +412,7 @@ init python:
                 index += 1
             elif answer == "Previous":
                 index -= 1
-            return traverseMenu(message, choices, index)
+            return traverseMenu(message, choices, index, narrator)
         return answer
         
     # sets time for bg from time of day/ tutorial status    
@@ -494,7 +528,6 @@ init python:
         return songsPlayed[-1]
     def getSpecificSong(songs):
         return choiceMenu("Choose a song to play!", songs)
-  
     # functions designed to override native Ren'Py functions/ config related functions
     def removeKeybinds(keybinds):
         keybindsToRemove = keybinds
