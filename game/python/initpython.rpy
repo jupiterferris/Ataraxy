@@ -28,7 +28,7 @@ init python:
     def quizAll():
         quizQuestions = {
             "surname" : {
-                "What is my last name?" : "Rosemarry"
+                "What is my last name?" : ("Rosemarry", "You don't have one", "Taylor", "Courtney", "Green")
             },
             "ATP" : {
                 "Do you remember my creator's favourite song?" : "Knee Deep At ATP"
@@ -54,7 +54,7 @@ init python:
             "genre" : {
                 "What is my favourite genre?" : "Horror/Fantasy"
             },
-            "tall" : {
+            "heightp" : {
                 "How tall am I?" : "5'7"
             }
         }
@@ -86,7 +86,7 @@ init python:
                 "Valentine's Day" : ("Valentine's Day is a time of love. It's a time of cards, and flowers, and chocolates. It's so romantic!")
             },
             "What's your favourite thing to do?" : {
-                "Listen to music" : ("Music is a great thing to do. It's a great way to relax, and it's a great way to express yourself."),
+                "Listen to music" : ("I love a good song. I can listen to them all day long. And I do! I listen to different things when you're not around, though."),
                 "Play video games" : ("Video games are great fun. They're a great way to relax, and they're a great way to express yourself."),
                 "Watch TV" : ("TV is a classic. It's a great way to unwind- or binge watch an entire show in one day."),
                 "Read" : ("Reading is a great way to relax. It's a great way to escape, and it's a great way to learn."),

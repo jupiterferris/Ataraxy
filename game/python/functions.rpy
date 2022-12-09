@@ -117,7 +117,21 @@ init python:
         ashley.setValue("aboutPlayer", aboutPlayer)
         a(f"{allQuestions[chosenQuestion][chosen]}")       
     def questionForAshley():
-        a("hello darkness my old friend")
+        global ashley
+        allQuestions = aboutAshAll()
+        availableTopics = removeItems(allQuestions, ashley.getValue("quizTopics"))
+        if availableTopics == []:
+            renpy.call("pop_quiz")
+            return
+        #chosenQuestion = random.choice(list(availableQuestions.values().keys()))
+        chosenQuestion = choiceMenu("Pick a question to ask Ashley!", availableTopics.values().keys())
+        chosenTopic = findKeyOfNestedValue(allQuestions, chosenQuestion)
+        a(f"{availableQuestions[chosenTopic][chosenQuestion]}")
+        addQuizTopic(chosenTopic)
+    def popQuiz():
+        global ashley
+        quizTopics = ashley.getValue("quizTopics")
+        allQuestions = quizAll()
     def ramble():
         file = randomFile("files/anecdotes")
         anecdote = readFile("anecdotes"+file)
