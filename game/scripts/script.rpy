@@ -48,12 +48,12 @@ label start:
     show screen dayTime
     show ash blink
     with fade
+    $ a(f"{randomResponse('greeting')}")
     $ jamSelector("random")
     show screen currentlyPlaying
-    $ a(f"{randomResponse('greeting')}")
     call random_events
     call interact
-    return
+return
 # decides what extra events will be played before the player gets control
 label random_events:
     # when the game is launched, before you get to interact with Ashley, you might have a random event.
@@ -106,11 +106,11 @@ label conversation:
             # Change music/find out what song is playing
         "You choose!":
             call convo_ashchoice
+    return
             # Ashley chooses at random
     label convo_anecdote:
-        $ ramble()
-        a "Thank you for listening to my tale. I know it was a bit long, but I hope you enjoyed it."
-        $ ashley.setValue("relationship", ashley.getValue("relationship") + 5)
+        $ anecdote()
+        a "Alright, that's it for that story! Thank you for listening."
         return
     label convo_question:
         # this is where the player asks Ashley a question- or Ashley asks the player a question
@@ -120,6 +120,7 @@ label conversation:
             call ask_player
         elif reverseChance == 10:
             call ask_ashley
+        return
         label ask_player:
             # this is where Ashley asks the player a question about the player (surprise!)
             a "Surprise! I'm going to ask you a question instead."
@@ -137,7 +138,7 @@ label conversation:
             else:
                 a "Aren't you lucky!"
             return
-    # this is where Ashley tells the player what song is playing and more information about it
+        # this is where Ashley tells the player what song is playing and more information about it
     label convo_song: 
         $ randomSong = False
         a "The current song playing is [currentTrack], by [artistName]."
@@ -186,6 +187,7 @@ label conversation:
                         "Which song is this again?":
                             $ randomSong = False
                             call tellmemore
+                    return
             "Alright cool. Love it.":
                 a "My pleasure. Come back anytime if you want to hear something new~"   
             "Tell me more about this song.":
@@ -222,10 +224,13 @@ label conversation:
                                     show ash blink       
                             "No thanks.":
                                 a "As you wish."
-    # this is where Ashley picks a conversation topic for you
-    label convo_ashchoice:
+                    return
+        return
+        # this is where Ashley picks a conversation topic for you
+        label convo_ashchoice:
             $ convotopics = ["anecdote", "question", "poem"]
             $ renpy.call("convo_" + random.choice(convotopics))
+            return
 
 # unlockables menu from the interaction menu
 label unlockables:
@@ -282,7 +287,7 @@ label gayme:
     show cardtest at pos_3_2 onlayer screens
     show cardtest at pos_4_2 onlayer screens
     $ ui.interact()
-
+    return
 label quit:
     #$ ashley.setValue("relationship", ashley.getValue("relationship") - 1)
     if not main_menu:

@@ -132,9 +132,24 @@ init python:
         global ashley
         quizTopics = ashley.getValue("quizTopics")
         allQuestions = quizAll()
-    def ramble():
+    def anecdote():
+        global ashley
+        heard = ashley.getValue("heardAnecdotes")
         file = randomFile("files/anecdotes")
+        if countFiles("files/anecdotes") == len(heard):
+            a("I've told you all the anecdotes I know!")
+            a("However, I'm sure I can re-tell any favourites you might have forgotten!")
+            anecdote = choiceMenu("Which anecdote would you like to hear again?", heard)
+            ramble(anecdote)
+            return
+        while file in heard:
+            file = randomFile("files/anecdotes")
         anecdote = readFile("anecdotes"+file)
+        ramble(anecdote)
+        heard.append(file)
+        ashley.setValue("heardAnecdotes", heard)
+        ashley.setValue("relationship", ashley.getValue("relationship")+5)
+    def ramble(anecdote):
         for line in anecdote:
             a(f"{line}")
     # useful, commonly used functions
@@ -208,7 +223,9 @@ init python:
                         "What's on your mind?",
                         "It's [name], right?",
                         "Fancy seeing you here!",
-                        "Hidey ho, neighbourino!"
+                        "Hidey ho, neighbourino!",
+                        "Oh, hey! It's you!",
+                        "Hey, [name]!",
                     ],
             "greeting2" : [
                         "You're getting the hang of this now~",
