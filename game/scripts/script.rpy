@@ -9,8 +9,8 @@
 # day structure like animal crossing- morning only activities etc, forces to play at different times etc
 # can only play 1 game a day etc
 # joke randomiser for shits and giggles
-# add luma piano cover to music player
 # add contingency for trying to change outfit when already wearing it
+# replaceListItems function for chooseOutfit- for each item, replace with different item
 ##### Execution Flow #####
 # 1. "Start" label
 # 2. Branch to meet Ashley -> tutorial if first time
