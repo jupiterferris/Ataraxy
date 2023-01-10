@@ -24,6 +24,16 @@ init python:
             renpy.show("ash blink")
         return playerName
     
+    def timeContingencies():
+        global ashley
+        lastLogin_str = ashley.getValue("lastPlayed")
+        lastLogin_obj = datetime.strptime(lastLogin_str, "%d/%m/%Y %H:%M:%S")
+        currentTime_obj = datetime.now().strptime("%d/%m/%Y %H:%M:%S")
+        # use TimeDelta to calculate time elapsed since last login
+        # if time is earlier in the day than last login, then add 1 to the number of days difference
+        #currentTime = timedelta(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        #a(f"{}")
+
     def jamSelector(selectionMethod):
         global songsPlayed
         renpy.music.stop(fadeout=3.0)
