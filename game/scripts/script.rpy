@@ -35,7 +35,7 @@ label start:
     $ ashley = CharacterManager()
     $ getAshBasics()
     $ setBG()
-
+    $ timeContingencies()
     stop music fadeout 1.0 
     $ print(f"Name: {name}\nRelationship: {relationship}\nQuiz Topics: {', '.join(ashley.getValue('quizTopics'))}")
     
