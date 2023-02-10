@@ -26,10 +26,11 @@ init python:
     
     def timeContingencies():
         global ashley
-        lastLogin_str = ashley.getValue("lastPlayed")
-        lastLogin_obj = datetime.strptime(lastLogin_str, "%d/%m/%Y %H:%M:%S")
-        currentTime_obj = datetime.now().strptime("%d/%m/%Y %H:%M:%S")
-        timeDiscrepancy = timedelta(lastLogin_obj, currentTime_obj)
+        lastLogin = datetime.strptime(ashley.getValue("lastPlayed"), "%d-%m-%Y %H:%M:%S")
+        currentTime = datetime.now().replace(microsecond=0)
+        timeDiscrepancy = currentTime - lastLogin
+        print(lastLogin)
+        print(currentTime)
         print(timeDiscrepancy)
         # use TimeDelta to calculate time elapsed since last login
         # if time is earlier in the day than last login, then add 1 to the number of days difference

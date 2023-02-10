@@ -293,6 +293,6 @@ label quit:
     if not main_menu:
         show ash close
         $ a(f"{randomResponse('quit')}")
-        $ ashley.setValue("lastPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        $ ashley.setValue("lastPlayed", datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
 # This ends the game.
 #return

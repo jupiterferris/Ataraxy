@@ -33,7 +33,7 @@ init python:
 
             firstPlayed = self.json.get("firstPlayed")
             if firstPlayed is None:
-                self.setValue("firstPlayed", datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+                self.setValue("firstPlayed", datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
 
             # Last time the player logged on
             lastPlayed = self.json.get("lastPlayed")
